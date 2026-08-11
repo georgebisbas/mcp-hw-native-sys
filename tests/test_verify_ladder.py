@@ -20,7 +20,7 @@ def test_codegen_orchestration_greedy_prefix_wins():
 
 def test_host_orch_substring_rule():
     result = verify_ladder_impl(["pypto/src/ir/foo_host_orch_bar.cpp"])
-    assert "pypto-tooling:host_collectives_ut_sim" in result["suggested_tasks"]
+    assert "pypto-docker:host_collectives_ut_sim" in result["suggested_tasks"]
 
 
 def test_tasks_deduplicated_preserving_order():

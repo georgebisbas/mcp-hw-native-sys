@@ -59,7 +59,7 @@ def test_heavy_task_classification():
 
 
 def test_sim_docker_flag_parsed():
-    tasks = server._tasks_for_repo("pypto-tooling")
+    tasks = server._tasks_for_repo("pypto-docker")
     assert tasks["host_collectives_ut_sim"].sim_docker is True
     assert tasks["docker_build_sim"].sim_docker is True
     # a plain host test task is not marked containerized

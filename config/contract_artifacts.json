@@ -4,7 +4,7 @@
     "pto_mlir": "builtin.tensor.* collective ops",
     "orch_abi": "submit_next_level / distributed orchestration C++",
     "runtime": "simpler L3 comm-domain worker",
-    "verify_tasks": ["pypto-tooling:host_collectives_ut_sim", "pypto:host_collectives_st_npu"]
+    "verify_tasks": ["pypto-docker:host_collectives_ut_sim", "pypto:host_collectives_st_npu"]
   },
   "LowerCompositeOps": {
     "ir_layer": "pypto pass",

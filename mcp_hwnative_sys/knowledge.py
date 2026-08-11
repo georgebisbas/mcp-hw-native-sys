@@ -758,7 +758,7 @@ def register_knowledge(mcp: FastMCP) -> None:
     def summarize_profile(
         run_dir: Annotated[str, Field(description="Path to a profiling campaign directory containing results.json. Accepts workspace-relative or absolute paths.")],
     ) -> dict[str, Any]:
-        """Summarize a pypto-tooling profiling campaign directory (results.json, anomalies)."""
+        """Summarize a pypto-profiling campaign directory (results.json, anomalies)."""
         from mcp_hwnative_sys.profiling_summarize import summarize_profile_impl
 
         return summarize_profile_impl(run_dir)

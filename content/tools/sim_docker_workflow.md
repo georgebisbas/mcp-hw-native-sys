@@ -20,7 +20,7 @@ task:
 or run the command inside the container yourself. Commands that already run
 inside a container (`docker run …`, `docker exec …`) are always allowed.
 
-Sim image tags (built from `pypto-tooling/Dockerfile.*sim.ubuntu22.04`):
+Sim image tags (built from `pypto-docker/Dockerfile.*sim.ubuntu22.04`):
 
 | Repo | Image |
 |------|-------|
@@ -29,7 +29,7 @@ Sim image tags (built from `pypto-tooling/Dockerfile.*sim.ubuntu22.04`):
 | pypto-lib | `pypto-lib-hw-native-sys:sim` |
 
 ```bash
-# Build the sim images (pypto-tooling repo root)
+# Build the sim images (pypto-docker repo root)
 docker build -t pypto3-hw-native-sys:sim -f Dockerfile.hw-native-sys.sim.ubuntu22.04 .
 docker build -t simpler-hw-native-sys:sim -f Dockerfile.simpler.sim.ubuntu22.04 .
 docker build -t pypto-lib-hw-native-sys:sim -f Dockerfile.pypto-lib.sim.ubuntu22.04 .
@@ -50,7 +50,7 @@ docker build -t pypto-lib-hw-native-sys:sim -f Dockerfile.pypto-lib.sim.ubuntu22
 Build the image **once** (`docker build`), then iterate with `-v` mount + `pip install -e`:
 
 ```bash
-# Build the image ONCE (~15-30 min — see pypto-tooling Dockerfile)
+# Build the image ONCE (~15-30 min — see pypto-docker Dockerfile)
 docker build -t pypto3-hw-native-sys:sim -f Dockerfile.hw-native-sys.sim.ubuntu22.04 .
 
 # Every code change: mount + pip install (scikit-build-core, ~2-5 min)
@@ -103,6 +103,6 @@ pytest tests/ut/ir/transforms/test_lower_host_tensor_collectives.py \
 
 ## Reference
 
-- `pypto-tooling/README.md` § Sim Dev Iteration Workflow
+- `pypto-docker/README.md` § Sim Dev Iteration Workflow
 - `pypto-3.0-notes/memories/sim_docker_workflow.md` — lessons learned
 - `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md` § Sim Docker iteration loop

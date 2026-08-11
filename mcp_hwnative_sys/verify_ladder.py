@@ -14,15 +14,15 @@ _VERIFY_RULES: list[tuple[str, str, list[str]]] = [
     ("pypto/src/ir/transforms/", "pypto", ["pypto:unit_tests_fast"]),
     ("pypto/src/ir/op/distributed/", "pypto", ["pypto:system_tests_sim"]),
     ("pypto/python/pypto/ir/", "pypto", ["pypto:unit_tests_fast"]),
-    ("host_orch", "pypto", ["pypto-tooling:host_collectives_ut_sim"]),
-    ("LowerHostTensorCollectives", "pypto", ["pypto-tooling:host_collectives_ut_sim"]),
+    ("host_orch", "pypto", ["pypto-docker:host_collectives_ut_sim"]),
+    ("LowerHostTensorCollectives", "pypto", ["pypto-docker:host_collectives_ut_sim"]),
     ("simpler/src/common/comm/", "simpler", ["simpler:system_tests"]),
     ("simpler/examples/l3/", "simpler", ["simpler:system_tests"]),
     ("simpler/src/", "simpler", ["simpler:unit_tests"]),
     ("PTOAS/", "PTOAS", ["PTOAS:unit_tests"]),
     ("pto-isa/", "pto-isa", ["pto-isa:cpu_sim_tests"]),
     ("pypto-lib/", "pypto-lib", ["pypto-lib:golden_tests"]),
-    ("pypto-tooling/profiling/", "pypto-tooling", []),
+    ("pypto-profiling/", "pypto-profiling", []),
 ]
 
 # C++ repos and file extensions: a changed C/C++ file in one of these repos

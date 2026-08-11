@@ -16,12 +16,15 @@ This doc is the full reference: setup, every tool/resource/prompt, the config fi
 | `pypto-3.0-notes` | Enriched planning notes, retrospectives, cross-repo status (secondary tier — not canonical) |
 | `pypto_top_level_documents` | Top-level design/architecture proposals (design tier — non-canonical, forward-looking) |
 | `pytorch-hccl-tests` | OSU-style PyTorch/HCCL bandwidth micro-benchmarks (NPU) |
-| `pypto-tooling` | Docker images, profiling campaigns, and this MCP server |
+| `pypto-tooling` | Umbrella: agent skills, runbooks, task-submit doc |
+| `pypto-docker` | Docker images and build scripts for the pypto stack (this server's sim images) |
+| `pypto-profiling` | Personal collective benchmark harness (pypto vs simpler vs HCCL) |
+| `mcp-hw-native-sys` | This MCP server |
 
 ## Setup
 
 ```bash
-cd /home/georgios/workspace/hw-native-sys/pypto-tooling/mcp-hw-native-sys
+cd /home/georgios/workspace/hw-native-sys/mcp-hw-native-sys
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -34,7 +37,7 @@ Requires Python ≥3.10, the `mcp` package (installed via the above), and `rg` (
 The server needs to know where the sibling repos live. In order of precedence:
 
 1. `HW_NATIVE_SYS_ROOT` env var, if set.
-2. `config/repos.json`'s `"workspace_root"` field (checked in as `"../.."`, i.e. two directories up from `mcp-hw-native-sys/` — this is what makes the server work out of the box for the standard checkout layout).
+2. `config/repos.json`'s `"workspace_root"` field (checked in as `".."`, i.e. one directory up from `mcp-hw-native-sys/` — this is what makes the server work out of the box for the standard checkout layout).
 3. Fallback: `project_root().parents[1]`.
 
 You generally don't need to set `HW_NATIVE_SYS_ROOT` unless you're running the server from a copy that isn't in its usual place relative to the sibling repos.
@@ -49,25 +52,25 @@ hw-native-sys-mcp
 
 ### Claude Code integration
 
-`pypto-tooling/.mcp.json` already registers this server under the name `hw-native-sys`:
+`pypto-tooling/.mcp.json` (the umbrella repo) already registers this server under the name `hw-native-sys`, pointing at this repo's `.venv`:
 
 ```json
 {
   "mcpServers": {
     "hw-native-sys": {
-      "command": "/home/georgios/workspace/hw-native-sys/pypto-tooling/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
+      "command": "/home/georgios/workspace/hw-native-sys/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
     }
   }
 }
 ```
 
-Any Claude Code session started with `pypto-tooling` (or a parent directory) as the working directory picks this up automatically — tools appear as `mcp__hw-native-sys__<tool_name>`. No env var needed since `config/repos.json`'s relative `workspace_root` resolves correctly from the checked-in `.venv` location.
+Any Claude Code session started with `pypto-tooling` or `mcp-hw-native-sys` (or a parent directory) as the working directory picks this up automatically — tools appear as `mcp__hw-native-sys__<tool_name>`. No env var needed since `config/repos.json`'s relative `workspace_root` resolves correctly from the checked-in `.venv` location.
 
 ### Cursor / VS Code MCP integration
 
 Register a stdio MCP server manually:
 
-- **command:** `/home/georgios/workspace/hw-native-sys/pypto-tooling/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp`
+- **command:** `/home/georgios/workspace/hw-native-sys/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp`
 - **env:** `HW_NATIVE_SYS_ROOT=/home/georgios/workspace/hw-native-sys` (optional, see workspace root resolution above)
 
 ## Recommended daily workflow
@@ -92,7 +95,7 @@ reachable. Every heavy (build/test/package) task is routed on
   (mounted worktree + in-container install) and reports the redirect in the
   result's `note`. Images: `pypto3-hw-native-sys:sim` (pypto/pto-isa),
   `simpler-hw-native-sys:sim`, `pypto-lib-hw-native-sys:sim` — built from
-  `pypto-tooling/Dockerfile.*sim.ubuntu22.04`.
+  `pypto-docker/Dockerfile.*sim.ubuntu22.04`.
 - **No NPU + image missing** → the task is refused with the exact `docker build`
   command to create the image first.
 - **No sim image for the repo** (e.g. PTOAS) → refused with guidance.
@@ -142,7 +145,7 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `knowledge_health` | Self-audit: missing paths, stale enriched docs (>30 days since `last_verified`), Ascend corpus checks, pto-isa/PTOAS index **coverage**, pass-index build status |
 | `ascend_env_check` | Read-only NPU/CANN/HCCL environment diagnosis (devices, `LD_PRELOAD`, Docker hints) |
 | `generate_verify_handoff` | Generate a markdown handoff for a human developer to run NPU/hardware verification in a container |
-| `summarize_profile` | Summarize a `pypto-tooling/profiling/` campaign directory (`results.json`, anomalies) |
+| `summarize_profile` | Summarize a `pypto-profiling/` campaign directory (`results.json`, anomalies) |
 
 ## MCP resources
 
@@ -210,7 +213,7 @@ Each prompt returns a short markdown playbook naming the exact tool-call sequenc
 
 | Agent | Task |
 |-------|------|
-| Sim UT gate | `pypto-tooling:host_collectives_ut_sim` |
+| Sim UT gate | `pypto-docker:host_collectives_ut_sim` |
 | NPU ST (developer) | `pypto:host_collectives_st_npu` |
 
 Read `hw-native-sys://agent/distributed_work_policy` and `hw-native-sys://notes/host_collectives` before resuming fork work in this area.

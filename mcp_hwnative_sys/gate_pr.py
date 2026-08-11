@@ -133,7 +133,7 @@ def _validate_preconditions(
         if not _docker_image_exists("pypto3-hw-native-sys:sim"):
             errors.append(
                 "Docker image 'pypto3-hw-native-sys:sim' not found. "
-                "Build it first: run pypto-tooling:docker_build_sim."
+                "Build it first: run pypto-docker:docker_build_sim."
             )
 
     # 6. Test paths exist

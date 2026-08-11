@@ -7,7 +7,7 @@
       "route_task": "host_collectives_program",
       "plan": "pypto-3.0-notes/pr_plans/33-pypto-host-collectives-builtin-program.md",
       "memory": "pypto-3.0-notes/memories/host_collectives.md",
-      "agent_verify": "pypto-tooling:host_collectives_ut_sim",
+      "agent_verify": "pypto-docker:host_collectives_ut_sim",
       "developer_verify": "pypto:host_collectives_st_npu",
       "blockers": ["#1782"]
     },

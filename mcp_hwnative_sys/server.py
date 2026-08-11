@@ -289,7 +289,7 @@ def _require_repo(repo_name: str) -> tuple[Path, RepoConfig]:
 #
 # Policy: the server never builds/tests directly on a local repo unless NPUs are
 # reachable. When npu_available() is False, build/test tasks are re-routed into
-# the simulation Docker images (pypto-tooling Dockerfile.*sim.ubuntu22.04), and
+# the simulation Docker images (pypto-docker Dockerfile.*sim.ubuntu22.04), and
 # ad-hoc build/test shell commands are refused with guidance.
 
 # Task categories that compile or execute code and therefore require either an
@@ -742,8 +742,8 @@ def run_task(
                 "npu": npu_state,
                 "note": (
                     f"No NPU detected and sim Docker image '{image}' is not present. "
-                    "Build it first from pypto-tooling: "
-                    "`docker build -t {image} -f Dockerfile.{repo}.sim.ubuntu22.04 .` "
+                    "Build it first from pypto-docker: "
+                    "`cd ../pypto-docker && docker build -t {image} -f Dockerfile.{repo}.sim.ubuntu22.04 .` "
                     "(for pypto also docker_build_sim). Then re-run this task — it will "
                     "auto-redirect into the container."
                 ),
@@ -799,7 +799,7 @@ def run_command(
         raise ValueError(
             "No NPU reachable — building/testing on the local repo is disallowed by "
             "policy. Run this inside the sim Docker image instead: "
-            "`docker build -t pypto3-hw-native-sys:sim -f Dockerfile.hw-native-sys.sim.ubuntu22.04 .` "
+            "`cd ../pypto-docker && docker build -t pypto3-hw-native-sys:sim -f Dockerfile.hw-native-sys.sim.ubuntu22.04 .` "
             "(and the simpler/pypto-lib sim images), then `docker run --rm -v <repo>:/opt/<repo> <image> bash -lc '...'`. "
             "For a named task, use run_task — it auto-redirects into the container."
         )

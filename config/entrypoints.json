@@ -120,9 +120,25 @@
     ]
   },
   "pypto-tooling": {
-    "hccl_docker": [
-      "Dockerfile.pytorch-hccl-tests.cann9.0",
+    "dockerfile_skills": [
       "dockerfile_skills/SKILL.md"
+    ]
+  },
+  "pypto-docker": {
+    "dockerfiles": [
+      "Dockerfile.hw-native-sys.cann9.0",
+      "Dockerfile.simpler.cann9.0",
+      "Dockerfile.hw-native-sys.sim.ubuntu22.04",
+      "Dockerfile.simpler.sim.ubuntu22.04",
+      "Dockerfile.pypto-lib.cann9.0",
+      "Dockerfile.pypto-lib.sim.ubuntu22.04",
+      "Dockerfile.pytorch-hccl-tests.cann9.0",
+      "Dockerfile.server.cann:9.0",
+      "docker-entrypoint-cann.sh",
+      "scripts/"
+    ],
+    "hccl_docker": [
+      "Dockerfile.pytorch-hccl-tests.cann9.0"
     ]
   }
 }

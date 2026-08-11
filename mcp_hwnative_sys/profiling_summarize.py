@@ -106,7 +106,7 @@ def summarize_profile_impl(run_dir: str) -> dict[str, Any]:
     trace_files = list(candidate.rglob("trace.json"))[:5]
     if trace_files:
         summary["trace_files_found"] = len(trace_files)
-        summary["note"] = "Use pypto-tooling profiling scripts for full swimlane; raw trace.json not inlined."
+        summary["note"] = "Use pypto-profiling scripts for full swimlane; raw trace.json not inlined."
     else:
         summary["trace_files_found"] = 0
 

@@ -37,10 +37,10 @@ an explicit CI/workflow change — sim is the primary gate for PRs.
 
 ## Local Docker reproduction (verified 2026-06-20)
 
-Image: [`Dockerfile.simpler.sim.ubuntu22.04`](../../../../pypto-tooling/Dockerfile.simpler.sim.ubuntu22.04)
+Image: [`Dockerfile.simpler.sim.ubuntu22.04`](../../../../pypto-docker/Dockerfile.simpler.sim.ubuntu22.04)
 
 ```bash
-cd pypto-tooling
+cd pypto-docker
 docker build -t simpler-hw-native-sys:sim -f Dockerfile.simpler.sim.ubuntu22.04 .
 
 # L3 distributed subset — use --shm-size (default Docker /dev/shm is too small for forked L3 + torch)
@@ -68,7 +68,7 @@ docker run --rm --shm-size=4g -v /path/to/simpler:/opt/simpler simpler-hw-native
 ```
 
 Helper script scopes: `distributed` | `allreduce` | `all` — see
-[`scripts/run-simpler-l3-sim.sh`](../../../../pypto-tooling/scripts/run-simpler-l3-sim.sh).
+[`scripts/run-simpler-l3-sim.sh`](../../../../pypto-docker/scripts/run-simpler-l3-sim.sh).
 
 ## What sim exercises vs hardware
 

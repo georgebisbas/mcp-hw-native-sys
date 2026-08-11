@@ -1,5 +1,5 @@
 {
-  "workspace_root": "../..",
+  "workspace_root": "..",
   "repository_meta": {
     "pypto": {
       "role": "Compiler framework: Python DSL → IR → passes → codegen",
@@ -43,11 +43,32 @@
       "canonical_docs": ["pypto-3.0-notes/AGENTS.md"],
       "agent_rules": ["pypto-3.0-notes/AGENTS.md"]
     },
-    "pypto-tooling": {
-      "role": "Docker images, profiling campaigns, MCP server",
+    "mcp-hw-native-sys": {
+      "role": "MCP server operating over the hw-native-sys workspace: repos, tasks, knowledge index, verify ladder",
       "layer": "tooling",
-      "outputs": ["containers", "profiling reports"],
-      "canonical_docs": [],
+      "outputs": ["MCP tool/resource surface", "knowledge index"],
+      "canonical_docs": ["mcp-hw-native-sys/README.md"],
+      "agent_rules": []
+    },
+    "pypto-docker": {
+      "role": "Docker images and build scripts for pypto / simpler / pypto-lib / pytorch-hccl-tests",
+      "layer": "tooling",
+      "outputs": ["CANN + sim images"],
+      "canonical_docs": ["pypto-docker/README.md"],
+      "agent_rules": []
+    },
+    "pypto-profiling": {
+      "role": "Personal collective benchmark harness: pypto vs simpler vs HCCL L3 collectives",
+      "layer": "benchmarks",
+      "outputs": ["campaign results.json", "figures"],
+      "canonical_docs": ["pypto-profiling/README.md"],
+      "agent_rules": []
+    },
+    "pypto-tooling": {
+      "role": "Umbrella: agent skills, runbooks, task-submit doc, personal setup glue",
+      "layer": "tooling",
+      "outputs": [],
+      "canonical_docs": ["pypto-tooling/README.md"],
       "agent_rules": []
     },
     "pytorch-hccl-tests": {
@@ -71,6 +92,9 @@
     "pypto": "pypto",
     "pypto-3.0-notes": "pypto-3.0-notes",
     "pypto-lib": "pypto-lib",
+    "mcp-hw-native-sys": "mcp-hw-native-sys",
+    "pypto-docker": "pypto-docker",
+    "pypto-profiling": "pypto-profiling",
     "pypto-tooling": "pypto-tooling",
     "pypto_top_level_documents": "pypto_top_level_documents",
     "pytorch-hccl-tests": "pytorch-hccl-tests",
@@ -355,7 +379,7 @@
         "warning": "Requires accessible Ascend device and matching runtime/toolchain setup."
       }
     },
-    "pypto-tooling": {
+    "pypto-docker": {
       "docker_build_pypto_standalone": {
         "command": "docker build -t pypto3-hw-native-sys:cann9 - < Dockerfile.hw-native-sys.cann9.0",
         "category": "build",
@@ -421,24 +445,6 @@
           "Docker daemon available"
         ]
       },
-      "profiling_smoke": {
-        "command": "cd profiling && bash run_campaign.sh --p-values 2 --timed-rounds 1 --warmup-rounds 0",
-        "category": "profiling",
-        "risk": "environment-sensitive",
-        "long_running": true,
-        "environment_sensitive": true,
-        "duration_hint": "2-10m",
-        "warning": "Profiling runs consume compute resources and may require hardware/runtime dependencies."
-      },
-      "profiling_full": {
-        "command": "cd profiling && bash run_campaign.sh --p-values 2,4,8 --timed-rounds 5 --warmup-rounds 1",
-        "category": "profiling",
-        "risk": "environment-sensitive",
-        "long_running": true,
-        "environment_sensitive": true,
-        "duration_hint": "10-45m",
-        "warning": "Full profiling campaign is intentionally heavy and best run off the critical development path."
-      },
       "docker_build_pytorch_hccl": {
         "command": "docker build -t pytorch-hccl-tests:cann9 - < Dockerfile.pytorch-hccl-tests.cann9.0",
         "category": "build",
@@ -460,9 +466,31 @@
         "prerequisites": [
           "Network access to github.com"
         ]
+      }
+    },
+    "pypto-profiling": {
+      "profiling_smoke": {
+        "command": "bash run_campaign.sh --p-values 2 --timed-rounds 1 --warmup-rounds 0",
+        "category": "profiling",
+        "risk": "environment-sensitive",
+        "long_running": true,
+        "environment_sensitive": true,
+        "duration_hint": "2-10m",
+        "warning": "Profiling runs consume compute resources and may require hardware/runtime dependencies."
       },
+      "profiling_full": {
+        "command": "bash run_campaign.sh --p-values 2,4,8 --timed-rounds 5 --warmup-rounds 1",
+        "category": "profiling",
+        "risk": "environment-sensitive",
+        "long_running": true,
+        "environment_sensitive": true,
+        "duration_hint": "10-45m",
+        "warning": "Full profiling campaign is intentionally heavy and best run off the critical development path."
+      }
+    },
+    "mcp-hw-native-sys": {
       "config_freshness": {
-        "command": "cd mcp-hw-native-sys && .venv/bin/python -c \"from mcp_hwnative_sys.knowledge import knowledge_health_impl; import json; print(json.dumps(knowledge_health_impl(), indent=2))\"",
+        "command": ".venv/bin/python -c \"from mcp_hwnative_sys.knowledge import knowledge_health_impl; import json; print(json.dumps(knowledge_health_impl(), indent=2))\"",
         "category": "diagnostics",
         "risk": "safe-read-only",
         "duration_hint": "<10s"
@@ -485,7 +513,7 @@
         "container_notes": "Run inside the pytorch-hccl-tests:cann9 container: docker run --rm -it --privileged --ipc=host --pid=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi:ro -v /usr/local/Ascend/driver:/usr/local/Ascend/driver:ro -v /dev:/dev pytorch-hccl-tests:cann9 ; then `cd /opt/pytorch-hccl-tests`. bibw is point-to-point (exactly 2 ranks). No LD_PRELOAD.",
         "prerequisites": [
           "Ascend NPU with >=2 devices",
-          "pytorch-hccl-tests:cann9 image (run pypto-tooling:docker_build_pytorch_hccl first)"
+          "pytorch-hccl-tests:cann9 image (run pypto-docker:docker_build_pytorch_hccl first)"
         ],
         "warning": "Developer verification only — agent must not run. Requires NPU hardware."
       },
