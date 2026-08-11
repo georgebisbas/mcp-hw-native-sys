@@ -4,7 +4,7 @@
 
 ## Sim CI runs these (confirmed)
 
-The `st-sim-a2a3` job in [`.github/workflows/ci.yml`](../../../../simpler/.github/workflows/ci.yml) runs:
+The `st-sim-a2a3` job in [`.github/workflows/ci.yml`](../../../simpler/.github/workflows/ci.yml) runs:
 
 ```bash
 pytest examples tests/st --platform a2a3sim --device 0-15 -v
@@ -37,7 +37,7 @@ an explicit CI/workflow change — sim is the primary gate for PRs.
 
 ## Local Docker reproduction (verified 2026-06-20)
 
-Image: [`Dockerfile.simpler.sim.ubuntu22.04`](../../../../pypto-docker/Dockerfile.simpler.sim.ubuntu22.04)
+Image: [`Dockerfile.simpler.sim.ubuntu22.04`](../../../pypto-docker/Dockerfile.simpler.sim.ubuntu22.04)
 
 ```bash
 cd pypto-docker
@@ -68,7 +68,7 @@ docker run --rm --shm-size=4g -v /path/to/simpler:/opt/simpler simpler-hw-native
 ```
 
 Helper script scopes: `distributed` | `allreduce` | `all` — see
-[`scripts/run-simpler-l3-sim.sh`](../../../../pypto-docker/scripts/run-simpler-l3-sim.sh).
+[`scripts/run-simpler-l3-sim.sh`](../../../pypto-docker/scripts/run-simpler-l3-sim.sh).
 
 ## What sim exercises vs hardware
 

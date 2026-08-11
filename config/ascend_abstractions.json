@@ -153,7 +153,7 @@
     "arch_families": ["a2a3", "a5"],
     "paths": ["simpler/docs/hardware/chip-architecture.md"],
     "docs_canonical": ["simpler/docs/hardware/chip-architecture.md"],
-    "docs_enriched": ["pypto-lib/docs/performance-tuning.md"],
+    "docs_enriched": ["pypto-lib/docs/debug-and-tune/performance-tuning.md"],
     "rules": [],
     "related": ["MTE1", "MTE2", "UB"],
     "downstream": ["operand staging between GM and L0"]
@@ -249,10 +249,10 @@
     "repos": ["pypto-lib"],
     "tags": ["cann", "soc", "arch32", "arch35"],
     "arch_families": ["a2a3", "a5"],
-    "paths": ["pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/"],
+    "paths": ["simpler/docs/hardware/chip-architecture.md"],
     "docs_enriched": [
-      "pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/SKILL.md",
-      "pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/references/npu-arch-guide.md"
+      "simpler/docs/hardware/chip-architecture.md",
+      "simpler/docs/hardware/chip-architecture.md"
     ],
     "rules": [],
     "related": ["SocVersion"],
@@ -264,8 +264,8 @@
     "repos": ["pypto-lib"],
     "tags": ["cann", "soc", "910b", "950"],
     "arch_families": ["a2a3", "a5"],
-    "paths": ["pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/references/npu-arch-guide.md"],
-    "docs_enriched": ["pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/SKILL.md"],
+    "paths": ["simpler/docs/hardware/chip-architecture.md"],
+    "docs_enriched": ["simpler/docs/hardware/chip-architecture.md"],
     "rules": [],
     "related": ["NpuArch", "Ascend910B", "Ascend950"],
     "downstream": ["CANN kernel build", "soc-version flags"]

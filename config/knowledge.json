@@ -63,7 +63,7 @@
     "pypto-lib/overview": {
       "paths": [
         "pypto-lib/README.md",
-        "pypto-lib/docs/pypto-coding-style.md"
+        "pypto-lib/docs/pypto-coding/pypto-coding-style.md"
       ],
       "max_chars": 4000
     },
@@ -112,7 +112,7 @@
       "tier": "enriched"
     },
     "flows/compile_to_device": {
-      "path": "pypto-lib/docs/compile-runtime-workflow.md",
+      "path": "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md",
       "max_chars": 8000
     },
     "flows/matmul_demo": {
@@ -156,14 +156,14 @@
     "ascend/memory_hierarchy": {
       "paths": [
         "simpler/docs/hardware/chip-architecture.md",
-        "pypto-lib/docs/performance-tuning.md"
+        "pypto-lib/docs/debug-and-tune/performance-tuning.md"
       ],
       "max_chars": 8000
     },
     "ascend/cann_mapping": {
       "paths": [
-        "pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/SKILL.md",
-        "pypto-lib/.claude/skills/cannbot-skills/ascendc-npu-arch/references/npu-arch-guide.md"
+        "simpler/docs/hardware/chip-architecture.md",
+        "simpler/docs/hardware/chip-architecture.md"
       ],
       "max_chars": 8000,
       "tier": "enriched"
@@ -350,8 +350,8 @@
       "description": "N6 distributed ops, collectives, multi-rank",
       "read_first_canonical": [
         "pypto/docs/en/dev/distributed_ops.md",
-        "pypto/docs/en/dev/passes/38-materialize_comm_domain_scopes.md",
-        "pypto/docs/en/dev/passes/39-lower_host_tensor_collectives.md"
+        "pypto/docs/en/dev/passes/41-materialize_comm_domain_scopes.md",
+        "pypto/docs/en/dev/passes/42-lower_host_tensor_collectives.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/abstractions/composite_collectives.md",
@@ -387,8 +387,8 @@
       "description": "Host builtin collectives program (plan 33): barrier, broadcast, reduce_scatter, allgather on #1798 rail",
       "read_first_canonical": [
         "pypto/docs/en/dev/distributed_ops.md",
-        "pypto/docs/en/dev/passes/38-materialize_comm_domain_scopes.md",
-        "pypto/docs/en/dev/passes/39-lower_host_tensor_collectives.md"
+        "pypto/docs/en/dev/passes/41-materialize_comm_domain_scopes.md",
+        "pypto/docs/en/dev/passes/42-lower_host_tensor_collectives.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/memories/host_collectives.md",
@@ -423,7 +423,7 @@
       "description": "simpler comm-domain, L3 worker, remote execution",
       "read_first_canonical": [
         "simpler/docs/comm-domain.md",
-        "simpler/docs/hierarchical_level_runtime.md",
+        "simpler/docs/hierarchical-level-runtime.md",
         "simpler/docs/remote-l3-worker-design.md"
       ],
       "read_first_enriched": [
@@ -440,9 +440,9 @@
     "large_model_inference": {
       "description": "pypto-lib models, golden harness, inference paths",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding-style.md",
-        "pypto-lib/docs/compile-runtime-workflow.md",
-        "pypto-lib/docs/debugging.md"
+        "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
+        "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md",
+        "pypto-lib/docs/debug-and-tune/debugging.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/pypto-lib-status/pypto-lib-summary.md",
@@ -492,7 +492,7 @@
     "runtime": {
       "description": "simpler task runtime execution on Ascend",
       "read_first_canonical": [
-        "simpler/docs/hierarchical_level_runtime.md",
+        "simpler/docs/hierarchical-level-runtime.md",
         "simpler/docs/task-flow.md",
         "simpler/docs/orchestrator.md"
       ],
@@ -510,8 +510,8 @@
     "pypto_lib": {
       "description": "Model zoo, kernels, golden validation harness",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding-style.md",
-        "pypto-lib/docs/compile-runtime-workflow.md"
+        "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
+        "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/pypto-lib-status/pypto-lib-summary.md",
@@ -527,7 +527,7 @@
     "pypto_lib_building_blocks": {
       "description": "What building blocks / ops / models exist in pypto-lib and whether each is single-device or has distributed (multi-NPU) support",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding-style.md"
+        "pypto-lib/docs/pypto-coding/pypto-coding-style.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/pypto-lib-status/README.md",
@@ -595,7 +595,7 @@
     "npu_tuning": {
       "description": "Performance tuning: block_dim, swimlanes, PMU, arch-specific backend handlers",
       "read_first_canonical": [
-        "pypto-lib/docs/performance-tuning.md"
+        "pypto-lib/docs/debug-and-tune/performance-tuning.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/performance_tuning/ascend-architectures.md"

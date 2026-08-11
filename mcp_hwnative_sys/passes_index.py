@@ -28,15 +28,15 @@ def _phase_for_order(order: int) -> str:
 
 def _default_verify_for_pass(name: str) -> list[str]:
     distributed = {
-        "MaterializeCommDomainScopes",
-        "LowerHostTensorCollectives",
-        "LowerCompositeOps",
+        "materialize_comm_domain_scopes",
+        "lower_host_tensor_collectives",
+        "lower_composite_ops",
     }
     codegen = {
-        "DeriveCallDirections",
-        "AutoDeriveTaskDependencies",
-        "MaterializeRuntimeScopes",
-        "NormalizeReturnOrder",
+        "derive_call_directions",
+        "auto_derive_task_dependencies",
+        "materialize_runtime_scopes",
+        "normalize_return_order",
     }
     if name in distributed:
         return ["pypto:system_tests_sim"]
@@ -57,8 +57,12 @@ def build_passes_index() -> dict[str, Any]:
         }
 
     text = path.read_text(encoding="utf-8")
-    # Extract pass names from PassSpec tuples: ("PassName", lambda: passes.foo())
-    names = re.findall(r'\(\s*"([A-Z][A-Za-z0-9]+)"\s*,\s*lambda:\s*passes\.', text)
+    # The Default strategy builds its recipe from `passes.<name>` factory
+    # references inside _get_pass_factories (pass_manager.py refactored away
+    # the old ("PassName", lambda: passes.foo()) PassSpec tuples).
+    method = re.search(r"def _get_pass_factories\(.*?(?=\n    def )", text, re.DOTALL)
+    recipe = method.group(0) if method else text
+    names = re.findall(r"passes\.([a-z_][a-z0-9_]*)", recipe)
     # Deduplicate preserving first occurrence (Simplify appears twice in Default pipeline)
     seen: set[str] = set()
     ordered_names: list[str] = []
