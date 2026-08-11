@@ -6,7 +6,7 @@
       "max_chars": 6000
     },
     "pytorch-hccl-tests/bandwidth-runbook": {
-      "path": "pypto-tooling/dockerfile_skills/issue_pytorch_hccl_tests.md",
+      "path": "pypto-docker/dockerfile_skills/issue_pytorch_hccl_tests.md",
       "max_chars": 8000
     },
     "overview/ecosystem": {
@@ -625,10 +625,10 @@
       "description": "PyTorch/HCCL collective + p2p bandwidth benchmarking on Ascend NPU (osu bibw/bw/mbw_mr/allreduce) via the pytorch-hccl-tests image",
       "read_first_canonical": [
         "pytorch-hccl-tests/README.md",
-        "pypto-tooling/dockerfile_skills/issue_pytorch_hccl_tests.md"
+        "pypto-docker/dockerfile_skills/issue_pytorch_hccl_tests.md"
       ],
       "read_first_enriched": [
-        "pypto-tooling/dockerfile_skills/SKILL.md"
+        "pypto-docker/dockerfile_skills/SKILL.md"
       ],
       "rules": [],
       "entrypoint_areas": ["pytorch-hccl-tests:benchmarks", "pypto-docker:hccl_docker"],
@@ -640,11 +640,11 @@
     "dockerfile_sync": {
       "description": "Sync Dockerfile SHA pins to latest origin/main: pypto, simpler, pypto-lib, pytorch-hccl-tests, pto-isa, PTOAS",
       "read_first_canonical": [
-        "pypto-tooling/dockerfile_skills/SKILL.md"
+        "pypto-docker/dockerfile_skills/SKILL.md"
       ],
       "read_first_enriched": [],
       "rules": [
-        "pypto-tooling/dockerfile_skills/SKILL.md"
+        "pypto-docker/dockerfile_skills/SKILL.md"
       ],
       "entrypoint_areas": ["pypto-docker:dockerfiles"],
       "verify_tasks": ["pypto-docker:dockerfile_sync"],

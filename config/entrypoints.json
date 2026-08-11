@@ -119,11 +119,6 @@
       "Makefile"
     ]
   },
-  "pypto-tooling": {
-    "dockerfile_skills": [
-      "dockerfile_skills/SKILL.md"
-    ]
-  },
   "pypto-docker": {
     "dockerfiles": [
       "Dockerfile.hw-native-sys.cann9.0",
@@ -139,6 +134,9 @@
     ],
     "hccl_docker": [
       "Dockerfile.pytorch-hccl-tests.cann9.0"
+    ],
+    "dockerfile_skills": [
+      "dockerfile_skills/SKILL.md"
     ]
   }
 }
