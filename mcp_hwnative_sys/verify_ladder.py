@@ -16,12 +16,12 @@ _VERIFY_RULES: list[tuple[str, str, list[str]]] = [
     ("pypto/python/pypto/ir/", "pypto", ["pypto:unit_tests_fast"]),
     ("host_orch", "pypto", ["pypto-docker:host_collectives_ut_sim"]),
     ("LowerHostTensorCollectives", "pypto", ["pypto-docker:host_collectives_ut_sim"]),
-    ("simpler/src/common/comm/", "simpler", ["simpler:system_tests"]),
-    ("simpler/examples/l3/", "simpler", ["simpler:system_tests"]),
-    ("simpler/src/", "simpler", ["simpler:unit_tests"]),
-    ("PTOAS/", "PTOAS", ["PTOAS:unit_tests"]),
-    ("pto-isa/", "pto-isa", ["pto-isa:cpu_sim_tests"]),
-    ("pypto-lib/", "pypto-lib", ["pypto-lib:golden_tests"]),
+    ("simpler/src/common/comm/", "simpler", ["simpler:test_sim"]),
+    ("simpler/examples/l3/", "simpler", ["simpler:test_sim"]),
+    ("simpler/src/", "simpler", ["simpler:test_ut_python"]),
+    ("PTOAS/", "PTOAS", ["PTOAS:ir_smoke"]),
+    ("pto-isa/", "pto-isa", ["pto-isa:cpu_smoke"]),
+    ("pypto-lib/", "pypto-lib", ["pypto-lib:tests_golden"]),
     ("pypto-profiling/", "pypto-profiling", []),
 ]
 

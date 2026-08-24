@@ -1416,7 +1416,7 @@
       "HCCL window sync"
     ],
     "verify_tasks": [
-      "pto-isa:cpu_sim_tests"
+      "pto-isa:cpu_smoke"
     ]
   },
   "TWAIT": {
@@ -1448,7 +1448,7 @@
       "HCCL window sync"
     ],
     "verify_tasks": [
-      "pto-isa:cpu_sim_tests"
+      "pto-isa:cpu_smoke"
     ]
   },
   "TPUT": {
@@ -1481,7 +1481,7 @@
       "HCCL window RDMA"
     ],
     "verify_tasks": [
-      "pto-isa:cpu_sim_tests"
+      "pto-isa:cpu_smoke"
     ]
   },
   "TGET": {
@@ -1512,7 +1512,7 @@
       "HCCL window RDMA"
     ],
     "verify_tasks": [
-      "pto-isa:cpu_sim_tests"
+      "pto-isa:cpu_smoke"
     ]
   },
   "HCCLWindow": {
@@ -1546,7 +1546,7 @@
       "L3 broadcast"
     ],
     "verify_tasks": [
-      "simpler:system_tests"
+      "simpler:test_sim"
     ]
   },
   "Worker_L3": {
@@ -1577,7 +1577,7 @@
       "L3 collectives"
     ],
     "verify_tasks": [
-      "simpler:system_tests"
+      "simpler:test_sim"
     ]
   },
   "pl.at": {

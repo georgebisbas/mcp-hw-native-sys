@@ -753,7 +753,7 @@ def run_task(
                 "note": (
                     f"No NPU detected and sim Docker image '{image}' is not present. "
                     "Build it first from pypto-docker: "
-                    "`cd ../pypto-docker && docker build -t {image} -f Dockerfile.{repo}.sim.ubuntu22.04 .` "
+                    f"`cd ../pypto-docker && docker build -t {image} -f Dockerfile.{repo}.sim.ubuntu22.04 .` "
                     "(for pypto also docker_build_sim). Then re-run this task — it will "
                     "auto-redirect into the container."
                 ),

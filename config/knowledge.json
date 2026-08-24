@@ -200,6 +200,11 @@
       "max_chars": 6000,
       "tier": "mcp-owned"
     },
+    "tools/gate_pr_workflow": {
+      "path": "content/tools/gate_pr_workflow.md",
+      "max_chars": 6000,
+      "tier": "mcp-owned"
+    },
     "notes/freshness": {
       "path": "pypto-3.0-notes/NOTES_FRESHNESS.md",
       "max_chars": 8000,

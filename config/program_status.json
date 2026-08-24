@@ -92,10 +92,10 @@
     {
       "repo": "pypto",
       "branch": "feat/synthesize-allreduce-shared-signal",
-      "sha": "f6ba0c83",
+      "sha": "a02e117f",
       "plan": "[plan 88](88-pypto-in-loop-allreduce-shared-signal.md) (= plan 83 PR-2)",
       "npu": "**required**",
-      "blocker": "Shared synthesized signal per `host_orch` to lift the HOST-rail in-loop `pld.tensor.allreduce` restriction (closes [#2310](https://github.com/hw-native-sys/pypto/issues/2310)); **restacked 2026-08-10 onto the current #2279 head `84729fb4`** (was `9d8e1407` on pre-merge main) \u2014 conflict-merge folded #2160's `core_num` into the shared binding; **full UT 9176 passed / 13 skipped in sim Docker**; ST remains NPU-only; NPU gate + upstream PR \u2014 **unblocked 2026-08-19 (#2279 merged `9533ae36`)**"
+      "blocker": "Shared synthesized signal per `host_orch` to lift the HOST-rail in-loop `pld.tensor.allreduce` restriction (closes [#2310](https://github.com/hw-native-sys/pypto/issues/2310)); **rebased onto `origin/main` `fef2831c` + force-pushed to `fork-gbisbas` 2026-08-24** (commits `f511c895`+`a02e117f`; was `f6ba0c83` on #2279 head `84729fb4`). **Full UT 10266 passed / 14 skipped / 2 xfailed** in sim Docker (2 unrelated Docker-env failures); ST remains NPU-only; NPU gate + upstream PR"
     },
     {
       "repo": "pypto",
@@ -146,12 +146,7 @@
       "blocker": "\u2014"
     }
   ],
-  "blockers": [
-    {
-      "branch": "feat/synthesize-allreduce-shared-signal",
-      "blocker": "Shared synthesized signal per `host_orch` to lift the HOST-rail in-loop `pld.tensor.allreduce` restriction (closes [#2310](https://github.com/hw-native-sys/pypto/issues/2310)); **restacked 2026-08-10 onto the current #2279 head `84729fb4`** (was `9d8e1407` on pre-merge main) \u2014 conflict-merge folded #2160's `core_num` into the shared binding; **full UT 9176 passed / 13 skipped in sim Docker**; ST remains NPU-only; NPU gate + upstream PR \u2014 **unblocked 2026-08-19 (#2279 merged `9533ae36`)**"
-    }
-  ],
+  "blockers": [],
   "plan_cross_index": [
     {
       "plan": "01",

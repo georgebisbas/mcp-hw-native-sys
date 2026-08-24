@@ -93,4 +93,4 @@ Typical pattern for distributed collectives and comm-domain demos:
 - [simpler #1092](https://github.com/hw-native-sys/simpler/pull/1092) — consolidate allreduce variants (`--mode`); CI green
 - `simpler/docs/comm-domain.md` — domain allocation API
 - `simpler/docs/testing.md` — `--platform` / marker semantics
-- `hw-native-sys://ascend/which_platform` — general sim vs NPU decision tree
+- `hw-native-sys://ascend/platform_decisions` — general sim vs NPU decision tree

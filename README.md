@@ -125,6 +125,7 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `git_diff` | `git diff` for a repo, `stat_only` for orientation or full patch text |
 | `read_file` | Read an arbitrary source file from a repo (paginated via `offset`/`max_lines`) without shelling out |
 | `bootstrap_session` | Single-call session bootstrap: route + `read_plan` + health + program hints |
+| `gate_pr_script` | Generate a self-contained bash script for the PR gate (rebase → pre-commit → sim-Docker tests → squash → force-push). Validates preconditions but never executes git/docker itself |
 
 ### Knowledge (`mcp_hwnative_sys/knowledge.py` and friends)
 
@@ -162,6 +163,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `agent/*` | `agent/invariants`, `agent/distributed_work_policy`, `agent/routing` | Agent-facing rules and the task-routing index |
 | `ascend/*` | `ascend/hardware`, `ascend/arch_families`, `ascend/memory_hierarchy`, `ascend/cann_mapping`, `ascend/hccl_runtime`, `ascend/platform_decisions`, `ascend/alignment_rules`, `ascend/hccl_container_checklist` | Ascend hardware/platform reference |
 | `flows/*` | `flows/compile_to_device`, `flows/matmul_demo`, `flows/distributed_allreduce`, `flows/dependency_triangle`, `flows/performance` | End-to-end worked examples |
+| `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate) |
 | `notes/*` | see notes topics below | Enriched notes (secondary tier) |
 
 **Doc tiers** (returned by `read_doc`/`route_task`): `canonical` (sibling repo docs — authoritative) > `enriched` (`pypto-3.0-notes` — secondary, check `last_verified`) > `design` (`pypto_top_level_documents` — forward-looking proposals, non-canonical) > `mcp-owned` (`content/` — this server's own decision-tree docs) > `ephemeral` (`pr_plans/`, `pull_requests/` — living/scratch, refused by `read_doc`, use `program_status`/`collective_status` instead).
