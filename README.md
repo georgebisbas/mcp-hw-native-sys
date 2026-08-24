@@ -114,13 +114,13 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 
 | Tool | Purpose |
 |------|---------|
-| `list_repositories` | Repos, paths, architecture metadata, disk availability |
+| `list_repositories` | Repos, paths, and architecture metadata |
 | `repository_health` | Branch, dirty state, ahead/behind upstream, last commit, `active_program_hints` per repo |
 | `search_code` | Ripgrep across one/many/all repos. `mode=locations` (default, file+line only) or `mode=context` (+ matched text and surrounding lines); `use_regex`, `file_glob`, `group_by_file` |
 | `list_tasks` | Named tasks configured for a repo (from `config/repos.json`), with risk/warning metadata |
-| `run_task` | Run a named task in a repo, with `extra_args` and a timeout |
-| `run_command` | Ad-hoc shell command in a repo's root; destructive patterns (`git reset --hard`, `rm -rf /`, …) are blocked |
-| `explain_task` | Show the exact command + metadata for one named task |
+| `run_task` | Run a named task in a repo, with `extra_args` and a timeout. Returns `elapsed_ms` and `output_bytes` for cost awareness |
+| `run_command` | Ad-hoc shell command in a repo's root; destructive patterns (`git reset --hard`, `rm -rf /`, …) are blocked. Returns `elapsed_ms` and `output_bytes` |
+| `explain_task` | Show the exact command + metadata for one named task (repo-first: `explain_task(repo, task)`) |
 | `git_log` | Structured commit list (sha, author, date, message) for a repo |
 | `git_diff` | `git diff` for a repo, `stat_only` for orientation or full patch text |
 | `read_file` | Read an arbitrary source file from a repo (paginated via `offset`/`max_lines`) without shelling out |
@@ -134,14 +134,15 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `route_task` | Read-first docs (canonical + enriched), rules, entrypoints, and verify tasks for a `task_type` |
 | `list_knowledge_topics` | Enumerate all task routes, MCP resources, notes topics, and bootstrap prompts in one call |
 | `read_doc` | Read a workspace doc with tier labeling (`canonical`/`enriched`/`design`/`mcp-owned`); optional `section` extracts one markdown heading |
-| `explain_abstraction` | Concept card for an IR node, pass, codegen stage, ISA instruction, PTOAS op, or Ascend hardware concept. Reports `source: curated` or `source: generated` (see Provenance below) |
-| `search_abstractions` | Keyword search across the full abstraction index (name, layer, kind, tags, `one_liner`, related/downstream); ranked by relevance |
-| `explain_pass` | Pass-pipeline card: order, phase, neighbors, verify tasks (from the `Default` pypto pipeline) |
+| `explain_abstraction` | Concept card for an IR node, pass, codegen stage, ISA instruction, PTOAS op, or Ascend hardware concept. Reports `source: curated` or `source: generated` (see Provenance below); on a miss suggests near-name cards |
+| `search_abstractions` | Keyword search across the full abstraction index (name, layer, kind, tags, `one_liner`, related/downstream); ranked by relevance. Multi-word queries match snake_case names; on 0 hits returns `suggestions` ("did you mean") |
+| `explain_pass` | Pass-pipeline card: order, phase, neighbors, verify tasks (from the `Default` pypto pipeline); on a miss suggests near-name passes |
 | `program_status` | Structured open PRs, blockers, and plan cross-index from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `collective_status` | Collective-comm feature parity status (merged/planned/gap) from the parity matrix in `pypto-3.0-notes/distributed/current_status.md`, with optional `op`/`axis` substring filters. Read-only — never writes to the source doc |
 | `verify_ladder` | Minimal suggested verify tasks for a list of changed file paths (longest-matching-prefix rules) |
 | `find_entrypoints` | Code entrypoints for a repo and optional sub-area |
-| `trace_in_stack` / `trace_contract` | Locate a symbol or path in the `pypto → PTOAS → pto-isa → simpler` stack, with dependency-triangle and contract-artifact enrichment |
+| `trace_in_stack` | Locate a symbol or path in the `pypto → PTOAS → pto-isa → simpler` stack (lightweight: abstraction card or path-prefix stage only) |
+| `trace_contract` | Enriched cross-layer trace: stack location + contract triangle + cross-layer verify tasks + active-PR links |
 | `knowledge_health` | Self-audit: missing paths, stale enriched docs (>30 days since `last_verified`), Ascend corpus checks, pto-isa/PTOAS index **coverage**, pass-index build status |
 | `ascend_env_check` | Read-only NPU/CANN/HCCL environment diagnosis (devices, `LD_PRELOAD`, Docker hints) |
 | `generate_verify_handoff` | Generate a markdown handoff for a human developer to run NPU/hardware verification in a container |
@@ -177,6 +178,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `start_distributed_work` | `focus`: `collectives` / `host_collectives` / `codegen` / `runtime` / `inference` | Collectives, L3 runtime, distributed codegen, large-scale inference |
 | `start_ascend_work` | `focus`: `arch` / `tuning` / `hccl` / `runtime` / `verify` | Ascend hardware architecture, performance tuning, HCCL |
 | `start_npu_verify` | — | Developer-only: hand off to real-NPU container verification (agent must not run this itself — see the prompt body for the exact gate) |
+| `finish_work` | — | Closing loop: verify_ladder → agent_verify_tasks → clang-tidy (if C++ changed) → generate_verify_handoff for the NPU-gated remainder |
 
 Each prompt returns a short markdown playbook naming the exact tool-call sequence for that kind of work.
 
@@ -321,4 +323,4 @@ Every tool follows the same shape: a plain, unit-testable `_impl(...)` function 
 ## Known caveats
 
 - `pypto/python/pypto/ir/pass_manager.py` has moved to building its pipeline via a runtime C++ `PassPipeline` object; the static regex-based pass scraper in `passes_index.py` can no longer recover pass names by re-scraping live (the checked-in `passes_index.json` cache still has real, valid data — only a fresh `build_passes_index()` call is affected). Fixing this properly means dynamically instantiating pypto's pass manager instead of regex-scraping — not yet done.
-- A "Resource already exists" warning may print at server startup for a handful of `notes/*` resource URIs — harmless (the server still initializes correctly), but indicates some resource registration path runs more than once somewhere; not yet root-caused.
+- Some `notes/*` topics are defined both in `resources` and `notes_topics`; `register_knowledge` deduplicates them at registration time (the `resources` entry, with its per-topic `max_chars`, wins).

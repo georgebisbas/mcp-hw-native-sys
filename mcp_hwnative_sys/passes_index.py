@@ -126,8 +126,12 @@ def explain_pass_impl(name: str) -> dict[str, Any]:
         lowered = key.lower()
         match = next((p for p in passes if p["name"].lower() == lowered), None)
     if match is None:
+        from mcp_hwnative_sys.knowledge import suggest_similar
+
+        suggestions = suggest_similar(key, [p["name"] for p in passes], limit=5)
+        hint = f" Did you mean: {', '.join(suggestions)}." if suggestions else ""
         available = ", ".join(p["name"] for p in passes[:15])
-        raise ValueError(f"Unknown pass '{name}'. Examples: {available}")
+        raise ValueError(f"Unknown pass '{name}'.{hint} Examples: {available}")
 
     order = match["order"]
     neighbors = {

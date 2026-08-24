@@ -4,6 +4,8 @@ import re
 import shlex
 import shutil
 import subprocess
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any
@@ -444,7 +446,7 @@ def _truncate_text(text: str, max_lines: int = 200, max_chars: int = 20000) -> s
 
 @mcp.tool()
 def list_repositories() -> list[dict[str, Any]]:
-    """List configured repositories, architecture metadata, and disk availability."""
+    """List configured repositories, their paths, and architecture metadata."""
     root, repositories = _load_repositories()
     meta = get_repository_meta()
 
@@ -464,71 +466,76 @@ def list_repositories() -> list[dict[str, Any]]:
     return output
 
 
+def _repository_health_row(repo: RepoConfig, root: Path) -> dict[str, Any]:
+    """Build one repository's health row (git state + program hints)."""
+    row: dict[str, Any] = {
+        "repo": repo.name,
+        "path": safe_relpath(repo.path, root),
+        "exists": repo.path.exists(),
+    }
+
+    if not repo.path.exists():
+        row["error"] = "Path does not exist"
+        return row
+
+    if not (repo.path / ".git").exists():
+        row["error"] = "Not a git repository"
+        return row
+
+    branch_result = _git(repo.path, ["rev-parse", "--abbrev-ref", "HEAD"])
+    row["branch"] = branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
+
+    status_result = _git(repo.path, ["status", "--porcelain"])
+    status_lines = status_result.stdout.splitlines() if status_result.returncode == 0 else []
+    staged, unstaged, untracked = _status_counts(status_lines)
+    row["staged"] = staged
+    row["unstaged"] = unstaged
+    row["untracked"] = untracked
+    row["clean"] = staged == 0 and unstaged == 0 and untracked == 0
+
+    upstream_result = _git(
+        repo.path,
+        ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
+    )
+    if upstream_result.returncode == 0:
+        upstream = upstream_result.stdout.strip()
+        row["upstream"] = upstream
+        ahead_behind = _git(repo.path, ["rev-list", "--left-right", "--count", f"{upstream}...HEAD"])
+        if ahead_behind.returncode == 0:
+            counts = ahead_behind.stdout.strip().split()
+            if len(counts) == 2:
+                row["behind"] = int(counts[0])
+                row["ahead"] = int(counts[1])
+    else:
+        row["upstream"] = None
+        row["behind"] = 0
+        row["ahead"] = 0
+
+    commit_result = _git(repo.path, ["log", "-1", "--pretty=%h %cr %s"])
+    row["last_commit"] = commit_result.stdout.strip() if commit_result.returncode == 0 else "unknown"
+
+    branch = row.get("branch", "")
+    if branch and branch != "unknown":
+        hints = match_program_hints(repo.name, branch)
+        if hints:
+            row["active_program_hints"] = hints
+
+    return row
+
+
 @mcp.tool()
 def repository_health(
     include_clean: Annotated[bool, Field(description="When True (default) all repos are returned; set False to show only dirty repos")] = True,
 ) -> dict[str, Any]:
     """Get branch, dirty state, and ahead/behind for every configured repo."""
     root, repositories = _load_repositories()
-    output: list[dict[str, Any]] = []
 
-    for repo in repositories:
-        row: dict[str, Any] = {
-            "repo": repo.name,
-            "path": safe_relpath(repo.path, root),
-            "exists": repo.path.exists(),
-        }
+    # Per-repo git calls are independent subprocesses; run them concurrently to
+    # avoid ~60 serial `git` invocations across 12 repos.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        rows = list(pool.map(lambda repo: _repository_health_row(repo, root), repositories))
 
-        if not repo.path.exists():
-            row["error"] = "Path does not exist"
-            output.append(row)
-            continue
-
-        if not (repo.path / ".git").exists():
-            row["error"] = "Not a git repository"
-            output.append(row)
-            continue
-
-        branch_result = _git(repo.path, ["rev-parse", "--abbrev-ref", "HEAD"])
-        row["branch"] = branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
-
-        status_result = _git(repo.path, ["status", "--porcelain"])
-        status_lines = status_result.stdout.splitlines() if status_result.returncode == 0 else []
-        staged, unstaged, untracked = _status_counts(status_lines)
-        row["staged"] = staged
-        row["unstaged"] = unstaged
-        row["untracked"] = untracked
-        row["clean"] = staged == 0 and unstaged == 0 and untracked == 0
-
-        upstream_result = _git(
-            repo.path,
-            ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
-        )
-        if upstream_result.returncode == 0:
-            upstream = upstream_result.stdout.strip()
-            row["upstream"] = upstream
-            ahead_behind = _git(repo.path, ["rev-list", "--left-right", "--count", f"{upstream}...HEAD"])
-            if ahead_behind.returncode == 0:
-                counts = ahead_behind.stdout.strip().split()
-                if len(counts) == 2:
-                    row["behind"] = int(counts[0])
-                    row["ahead"] = int(counts[1])
-        else:
-            row["upstream"] = None
-            row["behind"] = 0
-            row["ahead"] = 0
-
-        commit_result = _git(repo.path, ["log", "-1", "--pretty=%h %cr %s"])
-        row["last_commit"] = commit_result.stdout.strip() if commit_result.returncode == 0 else "unknown"
-
-        branch = row.get("branch", "")
-        if branch and branch != "unknown":
-            hints = match_program_hints(repo.name, branch)
-            if hints:
-                row["active_program_hints"] = hints
-
-        if include_clean or not row["clean"]:
-            output.append(row)
+    output = [row for row in rows if include_clean or not row.get("clean", False)]
 
     return {
         "workspace_root": str(root),
@@ -688,6 +695,7 @@ def run_task(
     if timeout_seconds < 1 or timeout_seconds > 7200:
         raise ValueError("timeout_seconds must be between 1 and 7200")
 
+    start = time.perf_counter()
     root, repo_cfg = _require_repo(repo)
     if not repo_cfg.path.exists():
         raise ValueError(f"Repository path does not exist: {repo_cfg.path}")
@@ -729,6 +737,8 @@ def run_task(
                 "exit_code": -1,
                 "stdout": "",
                 "stderr": "Refused: no NPU reachable and no sim Docker image for this repo.",
+                "elapsed_ms": int((time.perf_counter() - start) * 1000),
+                "output_bytes": 0,
             }
         docker_command, image = redirect
         if not _docker_image_present(image):
@@ -750,6 +760,8 @@ def run_task(
                 "exit_code": -1,
                 "stdout": "",
                 "stderr": f"Refused: sim Docker image '{image}' not found (no NPU reachable).",
+                "elapsed_ms": int((time.perf_counter() - start) * 1000),
+                "output_bytes": 0,
             }
         note = f"No NPU detected — redirected into sim Docker image '{image}'."
         proc = _run_shell(docker_command, repo_cfg.path, timeout_seconds)
@@ -772,6 +784,8 @@ def run_task(
         "exit_code": proc.returncode,
         "stdout": _truncate_text(proc.stdout),
         "stderr": _truncate_text(proc.stderr),
+        "elapsed_ms": int((time.perf_counter() - start) * 1000),
+        "output_bytes": len(proc.stdout) + len(proc.stderr),
     }
 
 
@@ -787,6 +801,7 @@ def run_command(
     install, pytest, …) are refused — those must run inside the sim Docker
     images, never on the local repo. Read-only commands are unaffected.
     """
+    start = time.perf_counter()
     if not command.strip():
         raise ValueError("command cannot be empty")
     if timeout_seconds < 1 or timeout_seconds > 7200:
@@ -817,13 +832,15 @@ def run_command(
         "exit_code": proc.returncode,
         "stdout": _truncate_text(proc.stdout),
         "stderr": _truncate_text(proc.stderr),
+        "elapsed_ms": int((time.perf_counter() - start) * 1000),
+        "output_bytes": len(proc.stdout) + len(proc.stderr),
     }
 
 
 @mcp.tool()
 def explain_task(
-    task: Annotated[str, Field(description="Named task key to inspect, e.g. unit_tests_fast")],
     repo: Annotated[str, Field(description='Repository name from list_repositories(). Required — always specify to avoid querying the wrong repo.')],
+    task: Annotated[str, Field(description="Named task key to inspect, e.g. unit_tests_fast")],
 ) -> dict[str, Any]:
     """Show the exact command and metadata configured for a named task."""
     _, _ = _require_repo(repo)

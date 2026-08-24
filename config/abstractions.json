@@ -971,7 +971,7 @@
     ],
     "docs_canonical": [
       "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
-      "pypto/docs/en/user/01-language_guide.md"
+      "pypto/docs/en/user/language/index.md"
     ],
     "docs_enriched": [],
     "rules": [],
@@ -1591,7 +1591,7 @@
       "pypto/python/pypto/language/scope.py"
     ],
     "docs_canonical": [
-      "pypto/docs/en/user/01-language_guide.md"
+      "pypto/docs/en/user/language/index.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/abstractions/pypto-abstractions.md",

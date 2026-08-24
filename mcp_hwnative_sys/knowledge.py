@@ -97,6 +97,51 @@ def _resolve_abstraction_name(name: str) -> str | None:
     return None
 
 
+def suggest_similar(query: str, candidates: list[str], limit: int = 5) -> list[str]:
+    """Return near-miss candidates for a query, preserving original casing.
+
+    Used for "did you mean" hints on 0-hit lookups. Two-stage: exact
+    normalize-stripped token overlap first, then fuzzy string similarity.
+    """
+    from difflib import get_close_matches
+
+    q = query.strip().lower()
+    if not q:
+        return []
+
+    # Token-overlap matches (handles snake_case vs "natural language").
+    tokens = [t for t in re.split(r"[^a-z0-9]+", q) if t]
+    by_lower = {}
+    for c in candidates:
+        by_lower.setdefault(c.lower(), c)
+    overlap: list[tuple[int, str]] = []
+    if tokens:
+        for lower, orig in by_lower.items():
+            norm = re.sub(r"[^a-z0-9]+", " ", lower)
+            hits = sum(1 for t in tokens if t in norm)
+            if hits:
+                overlap.append((hits, orig))
+    overlap.sort(key=lambda pair: -pair[0])
+
+    # Fuzzy matches for typos.
+    fuzzy = get_close_matches(q, list(by_lower), n=limit, cutoff=0.6)
+    fuzzy_orig = [by_lower[f] for f in fuzzy]
+
+    merged: list[str] = []
+    seen: set[str] = set()
+    for _, orig in overlap:
+        if orig in seen:
+            continue
+        seen.add(orig)
+        merged.append(orig)
+    for orig in fuzzy_orig:
+        if orig in seen:
+            continue
+        seen.add(orig)
+        merged.append(orig)
+    return merged[:limit]
+
+
 def _bootstrap_prompt_for_task(task_type: str) -> str:
     if task_type in ("ascend_arch", "ascend_runtime", "npu_tuning", "npu_verify_handoff"):
         return "start_ascend_work"
@@ -333,7 +378,7 @@ def list_knowledge_topics_impl() -> dict[str, Any]:
             {"topic": key, "uri": f"hw-native-sys://notes/{key}"}
             for key in sorted(notes_topics)
         ],
-        "prompts": ["start_compiler_work", "start_distributed_work", "start_ascend_work", "start_npu_verify"],
+        "prompts": ["start_compiler_work", "start_distributed_work", "start_ascend_work", "start_npu_verify", "finish_work"],
     }
 
 
@@ -341,8 +386,10 @@ def explain_abstraction_impl(name: str) -> dict[str, Any]:
     abstractions = load_abstractions()
     key = _resolve_abstraction_name(name)
     if key is None:
+        suggestions = suggest_similar(name, list(abstractions), limit=5)
+        hint = f" Did you mean: {', '.join(suggestions)}." if suggestions else ""
         available = ", ".join(sorted(abstractions)[:25])
-        raise ValueError(f"Unknown abstraction '{name}'. Examples: {available}")
+        raise ValueError(f"Unknown abstraction '{name}'.{hint} Examples: {available}")
 
     card = abstractions[key]
     return {
@@ -403,8 +450,9 @@ def search_abstractions_impl(
         raise ValueError("max_results must be between 1 and 100")
 
     needle = query.strip().lower()
+    tokens = [token for token in re.split(r"[^a-z0-9]+", needle) if token]
     abstractions = load_abstractions()
-    scored: list[tuple[int, str, dict[str, Any]]] = []
+    scored: list[tuple[int, int, str, dict[str, Any]]] = []
 
     for name, card in abstractions.items():
         haystack = " ".join(
@@ -420,12 +468,16 @@ def search_abstractions_impl(
                 " ".join(card.get("downstream", [])),
             ]
         ).lower()
-        if needle in haystack or needle in name.lower():
-            scored.append((_abstraction_relevance(name, card, needle), name, card))
+        # Normalize separators so snake_case names ("host_collectives_program")
+        # match natural-language multi-word queries ("host collectives").
+        normalized = re.sub(r"[^a-z0-9]+", " ", haystack)
+        if tokens and all(token in normalized for token in tokens):
+            coverage = sum(1 for token in tokens if token in normalized)
+            scored.append((coverage, _abstraction_relevance(name, card, needle), name, card))
 
-    scored.sort(key=lambda t: -t[0])
+    scored.sort(key=lambda t: (-t[0], -t[1]))
     matches: list[dict[str, Any]] = []
-    for _, name, card in scored[:max_results]:
+    for _, _, name, card in scored[:max_results]:
         if fields == "full":
             matches.append(
                 {
@@ -446,7 +498,10 @@ def search_abstractions_impl(
                 }
             )
 
-    return {"query": query, "match_count": len(matches), "matches": matches}
+    result: dict[str, Any] = {"query": query, "match_count": len(matches), "matches": matches}
+    if not matches:
+        result["suggestions"] = suggest_similar(query, list(abstractions), limit=5)
+    return result
 
 
 def find_entrypoints_impl(repo: str, area: str = "") -> dict[str, Any]:
@@ -467,9 +522,9 @@ def find_entrypoints_impl(repo: str, area: str = "") -> dict[str, Any]:
 
 
 def trace_in_stack_impl(symbol_or_path: str) -> dict[str, Any]:
-    from mcp_hwnative_sys.contract_trace import trace_contract_impl
+    from mcp_hwnative_sys.contract_trace import trace_in_stack_impl as _impl
 
-    return trace_contract_impl(symbol_or_path)
+    return _impl(symbol_or_path)
 
 
 def _path_exists(relative_path: str) -> bool:
@@ -655,7 +710,14 @@ def register_knowledge(mcp: FastMCP) -> None:
 
     mcp.resource("hw-native-sys://agent/routing")(agent_routing_resource)
 
+    # Some notes topics are also listed under `resources` with richer metadata
+    # (per-topic max_chars). Skip re-registering them here to avoid duplicate
+    # "Resource already exists" warnings; the resource handler serves them.
+    resource_uris = set(config.get("resources", {}))
     for topic in config.get("notes_topics", {}):
+        if f"notes/{topic}" in resource_uris:
+            continue
+
         def _make_notes_handler(note_topic: str):
             def _handler() -> str:
                 return render_resource(f"notes/{note_topic}")
@@ -767,7 +829,10 @@ def register_knowledge(mcp: FastMCP) -> None:
     def trace_contract(
         symbol_or_path: Annotated[str, Field(description='Symbol name or path to trace through the stack (e.g. "LowerHostTensorCollectives", "pypto/src/codegen/distributed/foo.cc"). Matched against abstraction cards, path-prefix rules, and contract artifacts.')],
     ) -> dict[str, Any]:
-        """Trace symbol through dependency triangle with contract artifacts and cross-layer verify."""
+        """Full cross-layer trace: stack location + contract triangle + cross-layer verify tasks + active-PR links.
+
+        This is the enriched trace. Use trace_in_stack for a lightweight
+        stack-location-only lookup."""
         from mcp_hwnative_sys.contract_trace import trace_contract_impl
 
         return trace_contract_impl(symbol_or_path)
@@ -784,7 +849,10 @@ def register_knowledge(mcp: FastMCP) -> None:
     def trace_in_stack(
         symbol_or_path: Annotated[str, Field(description='Symbol name or file path to locate in the pypto→PTOAS→pto-isa→simpler stack. Path prefix matching is used for file paths; abstraction card matching for concept names.')],
     ) -> dict[str, Any]:
-        """Trace where a symbol or path sits in the pypto→PTOAS→pto-isa→simpler stack."""
+        """Lightweight stack location: matched abstraction card or path-prefix pipeline stage only.
+
+        No contract artifacts or PR links. Use trace_contract for the enriched
+        cross-layer trace."""
         return trace_in_stack_impl(symbol_or_path)
 
     @mcp.tool()
@@ -824,15 +892,37 @@ def register_knowledge(mcp: FastMCP) -> None:
 
     @mcp.prompt(title="Start full-stack compiler work")
     def start_compiler_work(area: str = "stack_overview") -> str:
-        return f"""You are working on the hw-native-sys compiler stack for Ascend NPUs.
+        return f"""You are working on the hw-native-sys compiler stack (Ascend NPUs): pypto → PTOAS → pto-isa → simpler, with pypto-lib as the model/harness layer.
 
-Before editing any code:
-1. Call bootstrap_session with task_type="{area}" (single-call bootstrap)
-2. Follow read_plan from bootstrap_session; use read_doc(path, section=...) for large enriched notes
-3. Use explain_pass / explain_abstraction for specific concepts
-4. Run agent_verify_tasks from route before claiming work is done
+## Workflow — run these tools in order
 
-Stack: pypto → PTOAS → pto-isa → simpler. pypto-lib is the model/harness layer."""
+1. Orient (one call):
+   bootstrap_session(task_type="{area}", detail="<symbol or feature you are touching>")
+   It returns read_plan (docs in priority order), abstraction_seeds, program_hints,
+   and health_summary. Follow read_plan; for large notes use read_doc(path, section=...)
+   instead of reading whole files.
+
+2. Pin concepts before writing code:
+   - search_abstractions("<keyword>") to discover canonical names
+   - explain_abstraction("<name>") for an IR node / pass / ISA instruction / hardware concept
+   - explain_pass("<PassName>") for pipeline order, phase, neighbors, and verify tasks
+   - trace_contract("<symbol or path>") for cross-layer contract and active PR blockers
+
+3. Implement. Keep changes scoped to the requested area; do not touch unrelated layers.
+
+4. Verify before claiming done:
+   - verify_ladder(changed_paths=[...]) → minimal verify set
+   - Run only agent_verify_tasks (sim-Docker UT). NEVER run developer_verify_tasks
+     (NPU/hardware-gated) — those are for the human developer.
+
+## Gates
+- Agent gate: sim Docker UT (run_task auto-redirects when no NPU is reachable).
+- Developer gate: NPU ST via generate_verify_handoff — do not run it yourself.
+- Push to fork-gbisbas only; never `gh pr create`.
+
+## Stop when
+- read_plan points at docs you already read this session (do not re-read them).
+- verify_ladder returns developer_only tasks → stop and hand off, do not run."""
 
     @mcp.prompt(title="Start distributed / large-scale work")
     def start_distributed_work(focus: str = "collectives") -> str:
@@ -846,13 +936,23 @@ Stack: pypto → PTOAS → pto-isa → simpler. pypto-lib is the model/harness l
 
         return f"""You are working on distributed / large-scale training or inference on Ascend NPUs.
 
-Before editing any code:
-1. Call bootstrap_session with task_type="{focus_route}"
-2. Check program_status for open PRs and blockers (e.g. plan 33 → #1782)
-3. Use trace_contract for collectives/pass symbols (LowerHostTensorCollectives, pld.tensor.*)
-4. Run agent_verify_tasks only — not developer_verify_tasks
+## Workflow — run these tools in order
 
-Agent gate: sim Docker UT. Developer gate: NPU ST. Push to fork-gbisbas only."""
+1. bootstrap_session(task_type="{focus_route}", detail="<op or symbol>")
+2. program_status → open PRs + blockers; collective_status(op=..., axis=...) for parity gaps
+3. trace_contract("<symbol>") for cross-layer verify (e.g. LowerHostTensorCollectives, pld.tensor.*)
+4. Implement.
+5. verify_ladder(changed_paths=[...]) → run agent_verify_tasks only.
+
+## Context to read first
+- Host collectives: hw-native-sys://agent/distributed_work_policy and hw-native-sys://notes/host_collectives
+- Collectives parity: hw-native-sys://notes/stack_availability
+
+## Gates
+- Agent gate: sim Docker UT. Developer gate: NPU ST. Push to fork-gbisbas only.
+
+## Stop when
+- A required task is developer_only → stop and generate_verify_handoff, do not run it."""
 
     @mcp.prompt(title="Start Ascend architecture / NPU work")
     def start_ascend_work(focus: str = "arch") -> str:
@@ -866,12 +966,20 @@ Agent gate: sim Docker UT. Developer gate: NPU ST. Push to fork-gbisbas only."""
 
         return f"""You are working on Huawei Ascend NPU architecture, tuning, or distributed runtime.
 
-Before editing any code:
-1. Call bootstrap_session with task_type="{focus_route}"
-2. Use explain_abstraction for hardware concepts (AIC, AIV, HCCLWindow, etc.)
-3. Call ascend_env_check on NPU hosts; generate_verify_handoff for developer verify
+## Workflow — run these tools in order
 
-Canonical docs are authoritative. Enriched notes are secondary."""
+1. bootstrap_session(task_type="{focus_route}")
+2. search_abstractions("<concept>") then explain_abstraction("<name>")
+   (AIC, AIV, HCCLWindow, Ascend910B, etc.)
+3. ascend_env_check on NPU hosts — read-only diagnosis (devices, CANN_HOME, LD_PRELOAD)
+4. generate_verify_handoff(repo, branch, platform, device_ids) for the developer to run NPU verify
+
+## Gates
+- Canonical docs are authoritative; enriched notes are secondary.
+- Agent never runs NPU tests — always hand off via generate_verify_handoff.
+
+## Stop when
+- A task requires real NPUs → hand off; do not run it yourself."""
 
     @mcp.prompt(title="Start NPU container verification (developer gate)")
     def start_npu_verify() -> str:
@@ -885,3 +993,24 @@ Workflow:
 5. export LD_PRELOAD=${CANN_HOME}/aarch64-linux/lib64/libhccl.so  (test shell only)
 6. Run developer_verify_tasks from route_task(npu_verify_handoff) — NOT agent sim tasks
 7. Record git rev-parse HEAD; do not open upstream PR unless explicitly asked"""
+
+    @mcp.prompt(title="Finish work — verify and hand off")
+    def finish_work() -> str:
+        return """You are finishing a coding task and must confirm verification before handoff.
+
+## Closing loop
+
+1. Collect changed paths (git status / git diff).
+2. verify_ladder(changed_paths=[...]) → minimal verify set.
+3. Run agent_verify_tasks only; skip any developer_only task.
+4. If a C++ file changed, run clang-tidy on the changed files first (see static_checks
+   and the tools/clang_tidy_workflow resource).
+5. If any task needs NPU hardware, call generate_verify_handoff(repo, branch, sha, ...)
+   and hand off — do not run it.
+
+## Record for handoff
+- Branch name and `git rev-parse HEAD`.
+- Do not open a PR (gh pr create) unless explicitly asked.
+
+## Stop when
+- All agent_verify_tasks pass and the NPU-gated remainder is captured in a handoff."""

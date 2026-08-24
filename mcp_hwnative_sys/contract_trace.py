@@ -132,6 +132,16 @@ def _load_contract_artifacts() -> dict[str, dict[str, Any]]:
     return load_json_cached(path)
 
 
+def trace_in_stack_impl(symbol_or_path: str) -> dict[str, Any]:
+    """Locate a symbol/path in the stack without contract/PR enrichment.
+
+    Lightweight counterpart to ``trace_contract_impl``: returns only the
+    matched abstraction card or path-prefix stage. Use ``trace_contract`` when
+    you also want contract artifacts and active-PR links.
+    """
+    return _trace_stack_base(symbol_or_path)
+
+
 def trace_contract_impl(symbol_or_path: str) -> dict[str, Any]:
     """Trace symbol through dependency triangle with contract artifacts."""
     base = _trace_stack_base(symbol_or_path)
