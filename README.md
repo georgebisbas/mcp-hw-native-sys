@@ -242,7 +242,6 @@ Read `hw-native-sys://agent/distributed_work_policy` and `hw-native-sys://notes/
 | `config/pto_isa_generated.json` | ~150 pto-isa instruction cards (tile-local + comm) | **Generated** by `tools/build_pto_isa_index.py` from `pto-isa/docs/isa/manifest.yaml` + `docs/isa/comm/README.md` |
 | `config/ptoas_generated.json` | ~510 PTOAS IR op cards | **Generated** by `tools/build_ptoas_index.py`, regex-scraped from `PTOOps.td`/`VPTOOps.td`'s `let summary`/`let description` fields |
 | `config/passes_index.json` | Default pipeline pass order, phase, verify tasks | **Generated** by `tools/build_knowledge_index.py` from `pypto/python/pypto/ir/pass_manager.py` — see caveat below |
-| `config/programs.json` | Branch → active program hints (route, verify, blockers) | Hand-maintained |
 | `config/program_status.json` | Structured PR status | **Generated** by `tools/sync_status_to_json.py` from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `config/collective_status.json` | Structured collective-comm parity matrix | **Generated** by `tools/sync_collective_status_to_json.py` from `pypto-3.0-notes/distributed/current_status.md` |
 | `content/ascend/*.md` | MCP-owned decision trees (platform, alignment, HCCL) | Hand-maintained |
@@ -253,7 +252,7 @@ All generated files are checked into git (so a fresh checkout works without a bu
 
 `load_abstractions()` merges four sources: `pto_isa_generated.json` and `ptoas_generated.json` first (broad, mechanical coverage), then `abstractions.json` and `ascend_abstractions.json` last — so **any hand-curated card always wins outright** on a name collision. `explain_abstraction` reports which one you got via its `source` field (`curated` or `generated`). Generated cards additionally carry `generated_from` (the exact source file scraped) so you can tell where a summary came from.
 
-Why this split exists: pto-isa and PTOAS have far more instructions/ops (~140 and ~500 respectively) than anyone has hand-written cards for (~15 combined, as of writing). Rather than leave the long tail undocumented, the generators mechanically extract what pto-isa/PTOAS already document about themselves (structured `manifest.yaml` entries, TableGen `let summary` fields) — lower-quality than hand curation, but far better than nothing, and it never silently overrides a hand-written card.
+Why this split exists: pto-isa and PTOAS have far more instructions/ops (~150 and ~510 respectively) than hand-curated cards cover (~70 combined). Rather than leave the long tail undocumented, the generators mechanically extract what pto-isa/PTOAS already document about themselves (structured `manifest.yaml` entries, TableGen `let summary` fields) — lower-quality than hand curation, but far better than nothing, and it never silently overrides a hand-written card.
 
 ### Maintaining the knowledge config
 
