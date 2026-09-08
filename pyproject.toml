@@ -29,3 +29,14 @@ packages = ["mcp_hwnative_sys"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+# Explicit default rule set (pycodestyle E4/E7/E9 + Pyflakes F) so the lint
+# gate behaves identically regardless of which ruff version runs it — newer
+# ruff releases enable additional categories (DTZ, PERF, EXE, RUF, ...) by
+# default, which made CI and local diverge.
+select = ["E4", "E7", "E9", "F"]
