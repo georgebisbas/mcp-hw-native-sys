@@ -26,14 +26,14 @@
       "role": "PTO2 runtime: task graph execution on AICPU and AICore",
       "layer": "runtime",
       "outputs": ["orchestration .so", "device execution"],
-      "canonical_docs": ["simpler/docs/hierarchical_level_runtime.md", "simpler/docs/task-flow.md"],
-      "agent_rules": ["simpler/.claude/CLAUDE.md"]
+      "canonical_docs": ["simpler/docs/hierarchical-level-runtime.md", "simpler/docs/task-flow.md"],
+      "agent_rules": ["simpler/CLAUDE.md"]
     },
     "pypto-lib": {
       "role": "Model zoo and golden validation harness on pypto",
       "layer": "applications",
       "outputs": ["compiled models", "golden test results"],
-      "canonical_docs": ["pypto-lib/docs/pypto-coding-style.md"],
+      "canonical_docs": ["pypto-lib/docs/pypto-coding/pypto-coding-style.md"],
       "agent_rules": ["pypto-lib/.claude/CLAUDE.md"]
     },
     "pypto-3.0-notes": {

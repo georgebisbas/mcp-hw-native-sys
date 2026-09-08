@@ -249,7 +249,14 @@ Why this split exists: pto-isa and PTOAS have far more instructions/ops (~140 an
 
 ### Maintaining the knowledge config
 
-Run these after upstream changes to the scraped sources (pass pipeline, pto-isa manifest, PTOAS `.td` files, PR/plan status, or the collective status matrix):
+Run these after upstream changes to the scraped sources (pass pipeline, pto-isa manifest, PTOAS `.td` files, PR/plan status, or the collective status matrix). For a full refresh in one command:
+
+```bash
+# Regenerate every generated index, re-stamp config/.index_build_time, then audit
+./tools/refresh_all.sh
+```
+
+Or run the steps individually when only one source changed:
 
 ```bash
 # Verify every path referenced by knowledge.json/abstractions/entrypoints actually exists
@@ -272,7 +279,7 @@ python tools/sync_status_to_json.py
 python tools/sync_collective_status_to_json.py
 ```
 
-**Caveat on `build_knowledge_index.py`**: it only rebuilds `passes_index.json` when re-run explicitly — `load_passes_index()` does not invalidate the on-disk cache on its own (unlike `load_abstractions()`, which is mtime-keyed). If you rebuild it and `pypto_pass_count` comes back as `0` with a warning, that means `pypto/python/pypto/ir/pass_manager.py` upstream no longer matches the scraper's expected `("Name", lambda: passes.foo())` shape — check whether the pass pipeline has since moved to a different registration mechanism before assuming the scraper is simply stale. **Don't blindly overwrite a healthy checked-in cache with a broken re-scrape** — diff it first; if the rebuild produces materially less data than what's committed, something upstream changed and needs a matching fix in `passes_index.py`, not a cache overwrite.
+**Caveat on `build_knowledge_index.py`**: it only rebuilds `passes_index.json` when re-run explicitly — `load_passes_index()` does not invalidate the on-disk cache on its own (unlike `load_abstractions()`, which is mtime-keyed). The scraper matches `passes.<name>` factory references inside `pass_manager.py`'s `_get_pass_factories` body (the old `("Name", lambda: passes.foo())` PassSpec tuples are gone — the pipeline now runs through a C++ `PassPipeline` but the recipe is still a Python tuple list of factories). If a rebuild returns `pypto_pass_count` as `0` with a warning, upstream moved away from that shape again — inspect the recipe before assuming the scraper is simply stale. **Don't blindly overwrite a healthy checked-in cache with a broken re-scrape** — diff it first; if the rebuild produces materially less data than what's committed, something upstream changed and needs a matching fix in `passes_index.py`, not a cache overwrite.
 
 ### Self-auditing: `knowledge_health`
 
@@ -324,5 +331,5 @@ Every tool follows the same shape: a plain, unit-testable `_impl(...)` function 
 
 ## Known caveats
 
-- `pypto/python/pypto/ir/pass_manager.py` has moved to building its pipeline via a runtime C++ `PassPipeline` object; the static regex-based pass scraper in `passes_index.py` can no longer recover pass names by re-scraping live (the checked-in `passes_index.json` cache still has real, valid data — only a fresh `build_passes_index()` call is affected). Fixing this properly means dynamically instantiating pypto's pass manager instead of regex-scraping — not yet done.
+- `passes_index.py` recovers pass names by regex-scraping `passes.<name>` factory references inside `pypto/python/pypto/ir/pass_manager.py`'s `_get_pass_factories` body, deduplicated in source order. It is current as of the September 2026 recipe shape; if pypto changes the recipe syntax again (or moves pass description out of Python entirely), the scraper must be updated in the same change — `knowledge_health`'s `pypto_passes_index_warning` is the tripwire, and `tools/refresh_all.sh` regenerates the checked-in cache after any pass-pipeline change.
 - Some `notes/*` topics are defined both in `resources` and `notes_topics`; `register_knowledge` deduplicates them at registration time (the `resources` entry, with its per-topic `max_chars`, wins).

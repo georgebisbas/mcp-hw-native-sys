@@ -225,7 +225,7 @@
       "pypto/include/pypto/ir/stmt.h"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/41-materialize_comm_domain_scopes.md"
+      "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/distributed/pypto-3.0-distributed_support.md"
@@ -253,7 +253,7 @@
       "pypto/src/ir/transforms/normalize_return_order_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/25-normalize_return_order.md"
+      "pypto/docs/en/dev/passes/28-normalize_return_order.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/codegen_infrastructure.md"
@@ -310,7 +310,7 @@
       "pypto/src/ir/transforms/lower_host_tensor_collectives_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/42-lower_host_tensor_collectives.md"
+      "pypto/docs/en/dev/passes/46-lower_host_tensor_collectives.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/memories/host_collectives.md",
@@ -1076,7 +1076,7 @@
       "pypto/src/ir/transforms/auto_derive_task_dependencies_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/38-auto_derive_task_dependencies.md"
+      "pypto/docs/en/dev/passes/42-auto_derive_task_dependencies.md"
     ],
     "docs_enriched": [],
     "rules": [
@@ -1249,7 +1249,7 @@
       "pypto/src/ir/transforms/init_memref.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/31-init_memref.md"
+      "pypto/docs/en/dev/passes/34-init_memref.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/pass_infrastructure.md"
@@ -1279,7 +1279,7 @@
       "pypto/src/ir/transforms/memory_reuse_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/33-memory_reuse.md"
+      "pypto/docs/en/dev/passes/36-memory_reuse.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/pass_infrastructure.md"
@@ -1308,7 +1308,7 @@
       "pypto/src/ir/transforms/lower_composite_ops_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/12-lower_composite_ops.md"
+      "pypto/docs/en/dev/passes/13-lower_composite_ops.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/abstractions/allreduce.md"
@@ -1338,7 +1338,7 @@
       "pypto/src/ir/transforms/materialize_comm_domain_scopes_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/41-materialize_comm_domain_scopes.md"
+      "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/pass_infrastructure.md",
@@ -1368,7 +1368,7 @@
       "pypto/src/ir/transforms/convert_tensor_to_tile_ops_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/10-convert_tensor_to_tile_ops.md"
+      "pypto/docs/en/dev/passes/11-convert_tensor_to_tile_ops.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/pass_infrastructure.md"

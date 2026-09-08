@@ -305,24 +305,6 @@
       "High-Level Synchronization Ops"
     ]
   },
-  "bind_tile": {
-    "description": "Wraps a memref with PTO metadata (valid dimensions and config).",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Binds metadata and implicitly casts layout",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Multi-buffer tile allocation and slot selection"
-    ]
-  },
   "bitcast": {
     "description": "Returns a tile buffer view with a different element type (dtype) while reusing the same underlying storage as the source. This op is a metadata/config rewrite only (no data movement).",
     "docs_canonical": [],
@@ -396,7 +378,7 @@
     ]
   },
   "cmo.cacheinvalid": {
-    "description": "Cache maintenance operation for the specified memory space. The whole-cache form lowers to PTO-ISA's two-argument `dcci((__gm__ void*)0, cache_line_t::ENTIRE_DATA_CACHE)`. The single-cache-line form carries the GM payload address selected by the producer DSL/user. When it is required for a cacheable scalar path, it lowers to `dcci(addr, cache_line_t::SINGLE_CACHE_LINE)`. When it only marks a non-cacheable payload for signal release analysis, MemoryConsistency may consume it as marker-only IR and erase it before EmitC lowering. MemoryConsistency interprets both forms as explicit CMO boundaries on producer release and consumer acquire paths. It also uses the addressed form to match a TNotify payload against pending MTE2, MTE3, FIX, or scalar GM accesses before deciding which pipe drains are required. Precise coverage of the selected line is the producer DSL/user's responsibility in this phase.",
+    "description": "Cache maintenance operation for the specified memory space. The whole-cache form lowers to PTO-ISA's two-argument `dcci((__gm__ void*)0, cache_line_t::ENTIRE_DATA_CACHE)`. The single-cache-line form carries the GM payload address selected by the producer DSL/user and lowers to `dcci(addr, cache_line_t::SINGLE_CACHE_LINE)`. This op is an explicit CMO boundary. PTOAS no longer runs the historical MemoryConsistency analysis pass that consumed marker-only CMO ops or inferred signal/payload pipe drains, so precise placement and coverage are the producer DSL/user's responsibility.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -917,6 +899,42 @@
       "uncategorized"
     ]
   },
+  "cos": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "create_cbuf_matrix": {
+    "description": "Canonical micro-op for filling a strided L1/CBUF matrix region with a raw bit pattern. Produced by the `pto.raw_fill_l1` wrapper expansion. `dst` must be a 32-byte-aligned `!pto.ptr<ui16|ui32, #pto.address_space<mat>>` pointer that already includes `byte_offset`. For a 16-bit fill, the low 16 bits of `raw_value` are repeated in every 16-bit word; for a 32-bit fill, all 32 bits are used. The static `fill_word_bits` i64 attribute selects the fill word width, exactly 16 or 32, and must match the destination view width. `repeat_times` counts repetitions; `block_num_32b` and `dst_gap_32b` count 32-byte blocks. All three geometry operands must be in the inclusive range [0, 32767].",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Canonical L1 raw-pattern fill micro-op",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
   "dcci": {
     "description": "Lowers to the `llvm.hivm.DCCI*` intrinsic family. The pointer address space selects the intrinsic variant: GM pointers use `DCCI` / `DCCI.DST`; UB pointers use `DCCI.UB` / `DCCI.DST.UB`.",
     "docs_canonical": [],
@@ -989,6 +1007,24 @@
       "Stack-local array (minimum set)"
     ]
   },
+  "declare_struct": {
+    "description": "Lowers to a plain C++ stack variable like `PtoStruct_X s;`. Field types are restricted to scalars (integers of width 8/16/32/64, f16/bf16/f32/f64) or a nested `!pto.struct`. This op does not participate in PTO memory planning. The resulting struct's address is determined by the host C++ compiler. The struct is stack storage owned by the scope that declares it, and a `!pto.struct` value lowers to a pointer to that storage. Handing the value to a terminator would publish the address outside the owning scope, so it is rejected: returning it would leave the caller holding a pointer to a dead frame. Module-level provenance validation also rejects function results and derived operation results of this type, so aliases cannot launder that address past the direct-use check. Struct storage originates from this op or is received through a function argument. Since `pto.struct_set` mutates in place, a struct never needs to be returned or yielded \u2014 declare it in the outer scope and pass it down as a function argument instead.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Declare a stack-local heterogeneous aggregate",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Stack-local heterogeneous aggregate (struct)"
+    ]
+  },
   "declare_tile": {
     "description": "",
     "docs_canonical": [],
@@ -1005,24 +1041,6 @@
     "source": "generated",
     "tags": [
       "TPUSH/TPOP Pipe Communication Ops"
-    ]
-  },
-  "declare_tile_memref": {
-    "description": "Internal lowering op used by PTOViewToMemref. This op does not allocate storage; it only provides a memref-typed SSA handle so later passes can attach tile metadata through pto.bind_tile before the address is filled by pipe operations such as pto.tpop.",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Internal memref placeholder for a tile whose address is assigned later",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Stack-local array (minimum set)"
     ]
   },
   "dhistv2": {
@@ -1116,7 +1134,7 @@
     ]
   },
   "fence.barrier_all": {
-    "description": "Memory fence for a visibility scope. Around signal/payload communication it can be used as the producer-side publish barrier or the consumer-side acquire barrier depending on placement. `scope = gm` lowers to `dsb(DSB_DDR)`.",
+    "description": "Memory fence for a visibility scope. Around signal/payload communication it can be used as the producer-side publish barrier or the consumer-side acquire barrier depending on placement. In EmitC, `scope = gm` and `scope = all` drain all vector-kernel pipes with `PIPE_ALL` before lowering to `dsb(DSB_DDR)`. Other kernel kinds conservatively drain MTE2, MTE3, and FIX before the DDR barrier. Users therefore do not need to separately model producer pipe classes before a GM visibility fence.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -1292,7 +1310,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer Cast Op (existing)"
+      "DMA Ops"
     ]
   },
   "get_block_idx_x": {
@@ -1364,7 +1382,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer Cast Op (existing)"
+      "DMA Ops"
     ]
   },
   "get_buf": {
@@ -1652,7 +1670,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer Cast Op (existing)"
+      "DMA Ops"
     ]
   },
   "get_subblock_num": {
@@ -1670,11 +1688,11 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer Cast Op (existing)"
+      "DMA Ops"
     ]
   },
   "get_tensor_view_dim": {
-    "description": "Returns the size of the given dimension of a logical tensor view. This op accepts either !pto.tensor_view or the memref it is lowered to. IR (tensor_view form): %dim_size = pto.get_tensor_view_dim %tv, %dim_index : !pto.tensor_view, index -> index IR (memref form, after lowering): %dim_size = pto.get_tensor_view_dim %mr, %dim_index : memref<...>, index -> index",
+    "description": "Returns the size of the given dimension of a logical tensor view. This op accepts !pto.tensor_view or !pto.partition_tensor_view. IR: %dim_size = pto.get_tensor_view_dim %tv, %dim_index : !pto.tensor_view, index -> index",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -1692,7 +1710,7 @@
     ]
   },
   "get_tensor_view_stride": {
-    "description": "Returns the stride, measured in elements, of the given dimension of a logical tensor view. This op accepts either !pto.tensor_view or the memref it is lowered to.",
+    "description": "Returns the stride, measured in elements, of the given dimension of a logical tensor view. This op accepts !pto.tensor_view or !pto.partition_tensor_view.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -1925,8 +1943,26 @@
       "uncategorized"
     ]
   },
+  "ld_dev": {
+    "description": "Load one integer scalar element from GM through the AICore device-memory path while bypassing the local L1 data cache. The offset operand is an element offset, not a byte offset. The operation does not provide atomicity, synchronization, memory-ordering, or L2 cache-policy semantics.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Load one scalar GM element while bypassing the local L1 data cache.",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
   "ldg": {
-    "description": "Load a scalar or packed vector value from GM (Global Memory). Supported value types: - Scalar: i8/i16/i32/i64, f16/bf16/f32/f64, fp8/hif8 - Packed: vector<2xf16>, vector<2xbf16>, vector<2xf32>, vector<2xf8E4M3FN>, vector<2xf8E5M2>, vector<2xi8>, vector<2xi16>, vector<2xi32>, and !pto.hif8x2 The offset operand is an element-level ``index`` (not byte offset). For ``!pto.ptr<vector<2xf32>, gm>``, offset 1 advances by 8 bytes (2 \u00d7 sizeof(f32)). The effective address for ``vector<2xf32>`` must satisfy 8-byte alignment.",
+    "description": "Load a scalar or packed vector value from GM (Global Memory). Supported value types: - Scalar: i8/i16/i32/i64, f16/bf16/f32/f64, fp8/hif8 - Packed: vector<2xf16>, vector<2xbf16>, vector<2xf32>, vector<2/4/8xf8E4M3FN>, vector<2/4/8xf8E5M2>, vector<2xi8>, vector<2xi16>, vector<2xi32>, and !pto.hif8x2 The offset operand is an element-level ``index`` (not byte offset). For ``!pto.ptr<vector<2xf32>, gm>``, offset 1 advances by 8 bytes (2 \u00d7 sizeof(f32)). The effective address for ``vector<2xf32>`` must satisfy 8-byte alignment.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
@@ -2357,24 +2393,6 @@
       "Scalar pointer load/store"
     ]
   },
-  "materialize_tile": {
-    "description": "Bridges the memref-based memory-planning/sync IR back into tile-buffer handle IR immediately before EmitC. The source remains the planned memref address, while the result carries the tile type, valid dims, and config expected by tile operations and C++ tile codegen.",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Materializes a tile buffer handle from a planned memref",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Multi-buffer tile allocation and slot selection"
-    ]
-  },
   "mem_bar": {
     "description": "Low-level memory ordering barrier that lowers to one of the `llvm.hivm.mem.bar.*` intrinsics exposed by Bisheng.",
     "docs_canonical": [],
@@ -2754,7 +2772,7 @@
     ]
   },
   "multi_tile_get": {
-    "description": "Returns a single-slot view of a `multi_tile_buf`. The result `tile_buf` must equal the source's per-slot type; the only thing this op selects is which of the N physical slots is referred to. The slot index is an `index` value in `[0, count)`. If it is a constant, the verifier checks the range. If it is a runtime SSA value, downstream sync analysis treats this use as a slot-indexed dynamic access; ptoas does NOT rewrite the user expression into `iv mod N`. This op is metadata-only (no data movement); the lowering merely annotates the underlying memref view with the slot index for PlanMemory / sync / EnableBufferSelect to consume.",
+    "description": "Returns a single-slot view of a `multi_tile_buf`. The result `tile_buf` must equal the source's per-slot type; the only thing this op selects is which of the N physical slots is referred to. The slot index is an `index` value in `[0, count)`. If it is a constant, the verifier checks the range. If it is a runtime SSA value, downstream sync analysis treats this use as a slot-indexed dynamic access; ptoas does NOT rewrite the user expression into `iv mod N`. This op is metadata-only (no data movement). PlanMemory preserves it, sync analysis consumes its slot index directly, and PTOResolveBufferSelect replaces it with an addressed `pto.alloc_tile`.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -3149,24 +3167,6 @@
       "uncategorized"
     ]
   },
-  "pointer_cast": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Casts an integer address to a MemRef with optional valid dims",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Pointer Cast Op (existing)"
-    ]
-  },
   "por": {
     "description": "",
     "docs_canonical": [],
@@ -3384,7 +3384,7 @@
     ]
   },
   "ptrtoint": {
-    "description": "Converts a global pointer value to an i64 byte address. If the source pointer is produced by `pto.addptr`, lowering materializes the addptr offset as an explicit byte offset before converting to EmitC.",
+    "description": "Converts a global pointer value to an i64 byte address. Pointer arithmetic such as `pto.addptr` remains explicit until backend lowering.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -3426,6 +3426,24 @@
     "kind": "ir_op",
     "layer": "ptoas/ir",
     "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "raw_fill_l1": {
+    "description": "Public wrapper for filling a strided L1 matrix-buffer region with a raw bit pattern. `dst` may be a memref or `!pto.ptr` buffer-like value and is expanded to the canonical `pto.create_cbuf_matrix` micro-op by the wrapper-expansion pass. Fields (in order): - `dst`: destination buffer; after expansion must resolve to the MAT/L1 address space. - `byte_offset`: non-negative byte distance applied to `dst` before the fill; it must be a multiple of 32 bytes. - `raw_value`: raw fill pattern. For a 16-bit fill, the low 16 bits are repeated in every 16-bit word; for a 32-bit fill, all 32 bits are used. - `repeat_times`: number of fill repetitions. - `block_num_32b`: number of 32-byte blocks per repeat. - `dst_gap_32b`: destination gap between repeats, in 32-byte blocks. - `fill_word_bits`: static i64 attribute selecting the compile-time fill word width, exactly 16 or 32. `repeat_times`, `block_num_32b`, and `dst_gap_32b` must each be in the inclusive range [0, 32767], including when dynamically computed. The verifier diagnoses known constants outside that range. The effective destination address (`dst + byte_offset`) must be aligned to 32 bytes. The verifier diagnoses known constant offsets that are not multiples of 32; dynamic offsets are a caller precondition.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Fill a strided L1/MAT region with a raw bit pattern",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -3671,6 +3689,24 @@
       "Section Ops (Macros Containers)"
     ]
   },
+  "section.simt": {
+    "description": "`pto.section.simt` keeps an inline SIMT body in the enclosing kernel function until downstream PTOAS lowering consumes it. It is a source-level carrier for transformations that need to observe the lexical relationship between surrounding code and SIMT regions. Launch dimensions are explicit static i32 attributes. The textual launch dimension order matches `pto.simt_launch`: `<<<dimX, dimY, dimZ>>>`.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Container for inline SIMT code",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Section Ops (Macros Containers)"
+    ]
+  },
   "section.vector": {
     "description": "",
     "docs_canonical": [],
@@ -3687,6 +3723,150 @@
     "source": "generated",
     "tags": [
       "Section Ops (Macros Containers)"
+    ]
+  },
+  "set_atomic_add": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_bf16": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_f16": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_f32": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_max": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_min": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_none": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "set_atomic_s16": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
     ]
   },
   "set_atomic_s32": {
@@ -3743,22 +3923,22 @@
       "uncategorized"
     ]
   },
-  "set_ctrl": {
-    "description": "",
+  "set_cross_block": {
+    "description": "Canonicalizes to `pto.sync.set` with FFTS mode 0.",
     "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Signal a cross-block synchronization flag",
     "paths": [
-      "PTOAS/include/PTO/IR/VPTOOps.td"
+      "PTOAS/include/PTO/IR/PTOOps.td"
     ],
     "repos": [
       "PTOAS"
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "Buffer-ID Synchronization (A5)"
     ]
   },
   "set_ffts": {
@@ -3849,6 +4029,24 @@
     "source": "generated",
     "tags": [
       "uncategorized"
+    ]
+  },
+  "set_intra_block": {
+    "description": "Lowers to `__builtin_cce_set_intra_block`.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Signal an intra-block synchronization flag",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Buffer-ID Synchronization (A5)"
     ]
   },
   "set_loop1_stride_outtol1": {
@@ -4157,6 +4355,24 @@
       "uncategorized"
     ]
   },
+  "set_store_atomic_cfg": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
   "set_validshape": {
     "description": "Updates the runtime valid_row/valid_col metadata on an existing dynamic tile_buf handle in place. This op does not allocate or alias a new tile handle. It is only valid for tile_buf types whose valid_row and valid_col are both dynamic (`?`), and the source must be a locally bound tile handle (for example `alloc_tile` or a view derived from it). Function arguments/results are not supported.",
     "docs_canonical": [],
@@ -4247,24 +4463,6 @@
       "uncategorized"
     ]
   },
-  "simd.tile_to_memref": {
-    "description": "This op is the canonical bridge marker for OP-Lib templates to expose a memref view from tile-like values while keeping external ABI as !pto.tile_buf. In tile_buf world, src is !pto.tile_buf and dst is the corresponding memref bridge type. After memref-world lowering, src may already be memref and this op remains as a marker for backend lowering (EmitC) to materialize tile data access.",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Bridge cast from tile_buf to memref in OP-Lib bodies.",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "SIMD Bridge Ops"
-    ]
-  },
   "simt_launch": {
     "description": "`pto.simt_launch` is source-level sugar for configuring SIMT VF launch dimensions and calling a function marked with `pto.simt_entry`. The textual dimension order follows the familiar launch order `<<<x, y, z>>>`; the canonical `pto.store_vfsimt_info` operation stores the same values in `z, y, x` order for the backend.",
     "docs_canonical": [],
@@ -4283,22 +4481,22 @@
       "uncategorized"
     ]
   },
-  "slot_marker": {
-    "description": "Internal op materialized by `PTOViewToMemref` while lowering `pto.multi_tile_get`. It carries the slot SSA index through the memref layer so that PlanMemory, sync analysis (InsertSync / GraphSyncSolver), and the buffer-select lowering pass can identify which physical slot this memref reference touches. The op is metadata-only (no data movement, no extra address arithmetic); its result memref aliases the source memref byte-for-byte. Frontends do not produce this op directly -- use `pto.multi_tile_get` instead.",
+  "sin": {
+    "description": "",
     "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Tag a memref view as referring to one slot of a multi_tile_buf",
+    "one_liner": "",
     "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
+      "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
     "repos": [
       "PTOAS"
     ],
     "source": "generated",
     "tags": [
-      "Pointer Cast Op (existing)"
+      "uncategorized"
     ]
   },
   "sprclr": {
@@ -4362,6 +4560,24 @@
     "kind": "ir_op",
     "layer": "ptoas/ir",
     "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "st_dev": {
+    "description": "Store one integer scalar element to GM through the AICore device-memory path while bypassing the local L1 data cache. The offset operand is an element offset, not a byte offset. The operation does not provide atomicity, synchronization, memory-ordering, or L2 cache-policy semantics.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Store one scalar GM element while bypassing the local L1 data cache.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -4446,7 +4662,7 @@
     ]
   },
   "strict_vecscope": {
-    "description": "`pto.strict_vecscope` is the strict form of `pto.vecscope`. Values used by the body must be passed explicitly through op operands and corresponding block arguments; implicit SSA capture from the surrounding scope is rejected.",
+    "description": "`pto.strict_vecscope` is the strict form of `pto.vecscope`. Values used by the body must be passed explicitly through op operands and corresponding block arguments; implicit SSA capture from the surrounding scope is rejected. It has the same synchronization boundary rules as `pto.vecscope`.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
@@ -4461,6 +4677,42 @@
     "source": "generated",
     "tags": [
       "uncategorized"
+    ]
+  },
+  "struct_get": {
+    "description": "Reads the field reached by following the constant `path` of field indices from the struct, descending through nested structs. Lowers to `s.fA.fB...` member access, read into a fresh variable so the SSA value keeps its value if the struct is mutated later (mirrors `pto.local_array_get`). The path must end at a scalar field, and the result type must equal that field's type. A path stopping on a nested `!pto.struct` is rejected \u2014 extend it to reach a scalar inside.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Read a field from a stack-local struct by constant path",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Stack-local heterogeneous aggregate (struct)"
+    ]
+  },
+  "struct_set": {
+    "description": "Writes `value` into the field reached by following the constant `path` of field indices, descending through nested structs. Lowers to `s.fA.fB... = value;`. The path must end at a scalar field, and the value type must equal that field's type. A path stopping on a nested `!pto.struct` is rejected \u2014 extend it to reach a scalar inside.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Write a field into a stack-local struct by constant path",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Stack-local heterogeneous aggregate (struct)"
     ]
   },
   "subview": {
@@ -4482,7 +4734,7 @@
     ]
   },
   "sync.set": {
-    "description": "Sets a synchronization signal on the specified pipeline stage. Corresponds to `ffts_cross_core_sync` (A3) or `set_intra_block` (A5). On A3, the optional `ffts_mode` attribute selects the first argument passed to `getFFTSMsg`; if omitted, the legacy `FFTS_MODE_VAL` path is preserved.",
+    "description": "Sets a synchronization signal on the specified pipeline stage. Corresponds to `ffts_cross_core_sync` on both A3 and A5. The optional `ffts_mode` selects FFTS mode 0 (inter), 1 (subblock), or 2 (block); if omitted, block mode (2) is used for backward compatibility.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -4500,7 +4752,7 @@
     ]
   },
   "sync.wait": {
-    "description": "Waits for a synchronization signal on the specified pipeline stage. Corresponds to `wait_flag_dev` (A3) or `wait_intra_block` (A5).",
+    "description": "Waits for a synchronization signal on the specified pipeline stage. Corresponds to `wait_flag_dev` on both A3 and A5. `ffts_mode` records the matching set-side FFTS mode (0, 1, or 2).",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -4518,7 +4770,7 @@
     ]
   },
   "syncall": {
-    "description": "Models `pto::SYNCALL`. Supported IR forms: - hard sync: no operands, `mode = hard` - soft AIV-only sync: `gm_workspace`, `ub_workspace`, optional `used_cores` - soft AIC-only sync: `gm_workspace`, `l1_workspace`, optional `used_cores` - soft mixed sync: `gm_workspace`, `ub_workspace`, `l1_workspace`, optional `used_cores` The verifier mirrors the input-form constraints exposed by the public `pto-isa` API.",
+    "description": "Models `pto::SYNCALL`. Supported IR forms: - hard sync: no operands, `mode = hard` - soft sync: `gm_workspace`, optional `used_cores` The soft operand ABI is identical for AIV-only, AIC-only, and mixed synchronization. The GM workspace must reserve at least 16 `i32` elements (64 bytes), be zero-initialized before first use, and occupy an exclusive cache line.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -4596,6 +4848,24 @@
     "kind": "ir_op",
     "layer": "ptoas/ir",
     "one_liner": "Elementwise ternary add of tiles ",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "PTO_TOPs(Tilebuffer, DPS)"
+    ]
+  },
+  "taddrelu": {
+    "description": "For each element (i, j): dst[i,j] = max(0, src0[i,j] + src1[i,j]). Maps to the fused VADDRELU intrinsic on C220.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Fused elementwise add + ReLU of two tiles",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -5129,6 +5399,24 @@
       "PTO_TOPs(Tilebuffer, DPS)"
     ]
   },
+  "tdeinterleave": {
+    "description": "The two-source form de-interleaves two source tiles with matching valid shapes. The single-source form de-interleaves one source tile into two destination tiles whose valid column count is half the source count.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "TDEINTERLEAVE: De-interleave one or two source tiles into two destination tiles.",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "PTOOps.td  (add TROWSUM TBDPS/tile buffer op)"
+    ]
+  },
   "tdequant": {
     "description": "Converts an integer (int8 or int16) src tile to float32, applying per-row scale and offset parameters held in the scale and offset tiles. Formula: dst[i][j] = (float(src[i][j]) - offset[i][0]) * scale[i][0] The scale and offset tiles are row-vectors: one f32 value per row is broadcast across all columns of that row. DPS form: pto.tdequant ins(%src, %scale, %offset : <src_type>, <scale_type>, <offset_type>) outs(%dst : <dst_type>)",
     "docs_canonical": [],
@@ -5184,7 +5472,7 @@
     ]
   },
   "tensor_view_addr": {
-    "description": "Returns the address view carried by a `tensor_view` or `partition_tensor_view` value. The result may be either a memref view or a typed PTO pointer, depending on the requested destination type. In authoring-form IR this op preserves the descriptor-style surface; during view-to-memref lowering it collapses to the underlying memref value or to a memref-derived pointer. This op may also accept a memref operand after earlier view lowering, in which case it behaves as an identity marker and is removed by lowering.",
+    "description": "Returns the address view carried by a `tensor_view` or `partition_tensor_view` value. The result may be either a memref view or a typed PTO pointer, depending on the requested destination type. In authoring-form IR this op preserves the descriptor-style surface; tile-native inputs remain unchanged through memory planning and sync. This op may also accept a memref operand after earlier view lowering, in which case it behaves as an identity marker and is removed by lowering.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
@@ -5255,67 +5543,13 @@
       "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
     ]
   },
-  "textract_fp": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Extract acc tile window into dst using fp/scaling tile (tilebuf, DPS)",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
-    ]
-  },
   "tfillpad": {
     "description": "",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Copy src into dst and fill padded elements using dst PadVal (tilebuf, DPS)",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
-    ]
-  },
-  "tfillpad_expand": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Copy src into dst and fill padded elements using dst PadVal, allowing dst to be larger (tilebuf, DPS)",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
-    ]
-  },
-  "tfillpad_inplace": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "In-place fill padding on shared backing storage: src supplies valid-region bounds, dst supplies target pad bounds (tilebuf, DPS)",
+    "one_liner": "Fill padding with compiler-inferred lowering semantics (tilebuf, DPS)",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -5378,7 +5612,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Stack-local array (minimum set)"
+      "Stack-local heterogeneous aggregate (struct)"
     ]
   },
   "tfree_from_aic": {
@@ -5441,7 +5675,7 @@
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Gather elements using byte offsets (tilebuf, DPS)",
+    "one_liner": "Gather 32-byte blocks using byte addresses (tilebuf, DPS)",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -5652,7 +5886,7 @@
     ]
   },
   "tile_buf_addr": {
-    "description": "Returns the address view of the data region of a `tile_buf` value. The result may be either a memref view or a typed PTO pointer, depending on the requested destination type. Memref results use the tile's static shape and address space. This op is emitted by TileLang DSL templates and resolved by the FoldTileBufIntrinsics pass after inlining. Hand-written `.pto` may also use it directly on the memref result of `pto.bind_tile` / lowered `pto.alloc_tile`.",
+    "description": "Returns the address view of the data region of a `tile_buf` value. The result may be either a memref view or a typed PTO pointer, depending on the requested destination type. Memref results use the tile's static shape and address space. This op is emitted by TileLang DSL templates and resolved by the FoldTileBufIntrinsics pass after inlining. Hand-written `.pto` may also use it directly on lowered memref/tile handles.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
@@ -5684,7 +5918,7 @@
     ],
     "source": "generated",
     "tags": [
-      "SIMD Bridge Ops"
+      "Buffer-ID Synchronization (A5)"
     ]
   },
   "tile_valid_rows": {
@@ -5702,7 +5936,7 @@
     ],
     "source": "generated",
     "tags": [
-      "SIMD Bridge Ops"
+      "Buffer-ID Synchronization (A5)"
     ]
   },
   "tinsert": {
@@ -5723,13 +5957,13 @@
       "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
     ]
   },
-  "tinsert_fp": {
-    "description": "",
+  "tinterleave": {
+    "description": "Interleaves src0 and src1 and splits the result into dst0 and dst1. The operation uses the same valid shape for all four tiles.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Insert acc tile window into dst using fp/scaling tile (tilebuf, DPS)",
+    "one_liner": "TINTERLEAVE: Interleave two source tiles into two destination tiles.",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -5738,7 +5972,7 @@
     ],
     "source": "generated",
     "tags": [
-      "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
+      "PTOOps.td  (add TROWSUM TBDPS/tile buffer op)"
     ]
   },
   "tload": {
@@ -5993,24 +6227,6 @@
       "DMA Ops"
     ]
   },
-  "tmov.fp": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "TMOV_FP: move/convert using fp (scaling) tile (tilebuf, DPS)",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
-    ]
-  },
   "tmrgsort": {
     "description": "",
     "docs_canonical": [],
@@ -6260,7 +6476,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Stack-local array (minimum set)"
+      "Stack-local heterogeneous aggregate (struct)"
     ]
   },
   "tpop_from_aic": {
@@ -6462,7 +6678,7 @@
     ]
   },
   "tquant": {
-    "description": "Converts src tile elements to a lower-precision format using the scaling parameters held in the fp tile, writing results into dst. For INT8_ASYM an additional offset tile must be supplied in ins. The optional tmp tile is the scratch buffer used by the A2/A3 TQUANT_IMPL row-wise broadcast (the fp->s32 conversion reuses it). On pto-isa builds where the 4-arg TQUANT overload routes through the fixed TMP_UB_OFFSET scratch area, supplying tmp selects the tmp-aware 5-arg overload and avoids the fixed-address collision. PTOAS auto-synthesizes this scratch tile for A2/A3 only. On A5 the tmp operand is accepted as a placeholder and does not add extra shape or memory-planning constraints. DPS form (INT8_SYM): pto.tquant ins(%src, %fp : <src_type>, <fp_type>) outs(%dst : <dst_type>) {quant_type = #pto<quant_type INT8_SYM>} DPS form (INT8_SYM, with tmp): pto.tquant ins(%src, %fp : <src_type>, <fp_type>) outs(%dst, %tmp : <dst_type>, <tmp_type>) {quant_type = #pto<quant_type INT8_SYM>} DPS form (INT8_ASYM): pto.tquant ins(%src, %fp, %offset : <src_type>, <fp_type>, <offset_type>) outs(%dst : <dst_type>) {quant_type = #pto<quant_type INT8_ASYM>} DPS form (INT8_ASYM, with tmp): pto.tquant ins(%src, %fp, %offset : <src_type>, <fp_type>, <offset_type>) outs(%dst, %tmp : <dst_type>, <tmp_type>) {quant_type = #pto<quant_type INT8_ASYM>}",
+    "description": "Converts src tile elements to a lower-precision format using the scaling parameters held in the fp tile, writing results into dst. For INT8_ASYM an additional offset tile must be supplied in ins. The optional tmp tile is the scratch buffer used by the A2/A3 TQUANT_IMPL row-wise broadcast (the fp->s32 conversion reuses it). On pto-isa builds where the 4-arg TQUANT overload routes through the fixed TMP_UB_OFFSET scratch area, supplying tmp selects the tmp-aware 5-arg overload and avoids the fixed-address collision. PTOAS preserves an omitted tmp and lowers it through the 4-arg overload. On A5 the tmp operand is accepted as a placeholder and does not add extra shape or memory-planning constraints. DPS form (INT8_SYM): pto.tquant ins(%src, %fp : <src_type>, <fp_type>) outs(%dst : <dst_type>) {quant_type = #pto<quant_type INT8_SYM>} DPS form (INT8_SYM, with tmp): pto.tquant ins(%src, %fp : <src_type>, <fp_type>) outs(%dst, %tmp : <dst_type>, <tmp_type>) {quant_type = #pto<quant_type INT8_SYM>} DPS form (INT8_ASYM): pto.tquant ins(%src, %fp, %offset : <src_type>, <fp_type>, <offset_type>) outs(%dst : <dst_type>) {quant_type = #pto<quant_type INT8_ASYM>} DPS form (INT8_ASYM, with tmp): pto.tquant ins(%src, %fp, %offset : <src_type>, <fp_type>, <offset_type>) outs(%dst, %tmp : <dst_type>, <tmp_type>) {quant_type = #pto<quant_type INT8_ASYM>}",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -6480,7 +6696,7 @@
     ]
   },
   "tquant.mx": {
-    "description": "A5-only MX quantization form. Quantizes `src` into `dst` and additionally materializes the auxiliary `exp`, `max`, and `scaling` tiles required by PTO-ISA MX quantization. DPS form: pto.tquant.mx ins(%src : <src_type>) outs(%dst, %exp, %max, %scaling : <dst_type>, <exp_type>, <max_type>, <scaling_type>) {quant_type = #pto<quant_type MXFP8>} pto.tquant.mx ins(%src : <src_type>) outs(%dst, %exp, %max, %scaling, %exp_zz : <dst_type>, <exp_type>, <max_type>, <scaling_type>, <exp_type>) {quant_type = #pto<quant_type MXFP8>, storeMode = #pto<vec_store_mode nz>}",
+    "description": "A5-only MX quantization form. Quantizes `src` into `dst` and additionally materializes the auxiliary `exp`, `max`, and `scaling` tiles required by PTO-ISA MX quantization. The legacy fused form with `exp_zz` and `storeMode` is deprecated. Use a separate `pto.tmov` with a non-scaling X-to-ZZ temporary tile when an exponent layout conversion is required. DPS form: pto.tquant.mx ins(%src : <src_type>) outs(%dst, %exp, %max, %scaling : <dst_type>, <exp_type>, <max_type>, <scaling_type>) {quant_type = #pto<quant_type MXFP8>} pto.tquant.mx ins(%src : <src_type>) outs(%dst, %exp, %max, %scaling, %exp_zz : <dst_type>, <exp_type>, <max_type>, <scaling_type>, <exp_type>) {quant_type = #pto<quant_type MXFP8>, storeMode = #pto<vec_store_mode nz>}",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -7091,24 +7307,6 @@
       "DMA Ops"
     ]
   },
-  "tstore_fp": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "TSTORE_FP: Store an accumulator tile into global memory using a scaling (fp) tile for vector quantization parameters.",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "PTOOps.td  (add TSTORE_FP TBDPS/tile buffer op)"
-    ]
-  },
   "tsub": {
     "description": "",
     "docs_canonical": [],
@@ -7124,7 +7322,7 @@
     ],
     "source": "generated",
     "tags": [
-      "PTOOps.td  (add TSUB TBDPS/tile buffer op)"
+      "PTOOps.td  (add TSQRT TBDPS/tile buffer op)"
     ]
   },
   "tsubc": {
@@ -7794,7 +7992,7 @@
     ]
   },
   "vecscope": {
-    "description": "`pto.vecscope` marks a structured vector-scope interval without overloading a dummy carrier loop with scope metadata. Lowering and emission passes may use the region boundary to preserve loop shape while treating the enclosed body as one VPTO vector interval.",
+    "description": "`pto.vecscope` marks a structured vector-scope interval without overloading a dummy carrier loop with scope metadata. Lowering and emission passes may use the region boundary to preserve loop shape while treating the enclosed body as one VPTO vector interval. Pipeline, system, cache, SIMT, and cross-core synchronization operations delimit vector scopes and must remain outside the region. `pto.mem_bar` is the exception: it orders vector memory operations within the region.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
@@ -7848,12 +8046,12 @@
     ]
   },
   "vgather2": {
-    "description": "",
+    "description": "Masked indexed gather from a UB-backed source. For 8-bit integer sources the result is a 16-bit integer (i8/ui8 -> i16/ui16) produced by zero-extension (one byte per lane, upper 8 bits zero-filled). Sign-extension is not performed.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Masked indexed gather from a UB-backed source. For 8-bit integer sources the result is a 16-bit integer (i8/ui8 -> i16/ui16) produced by zero-extension (one byte per lane, upper 8 bits zero-filled). Sign-extension is not performed.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -8909,6 +9107,24 @@
       "uncategorized"
     ]
   },
+  "wait_cross_block": {
+    "description": "Canonicalizes to `pto.sync.wait` with FFTS mode 0.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Wait for a cross-block synchronization flag",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Buffer-ID Synchronization (A5)"
+    ]
+  },
   "wait_event": {
     "description": "Waits for an event from a source operation type to a destination operation type. Will be lowered to `pto.wait_flag` based on op-to-pipe mapping.",
     "docs_canonical": [],
@@ -8961,6 +9177,24 @@
     "source": "generated",
     "tags": [
       "Synchronization Ops"
+    ]
+  },
+  "wait_intra_block": {
+    "description": "Lowers to `__builtin_cce_wait_intra_block`.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Wait for an intra-block synchronization flag",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "Buffer-ID Synchronization (A5)"
     ]
   },
   "yield": {

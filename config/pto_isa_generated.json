@@ -56,36 +56,6 @@
       "Manual / Resource Binding"
     ]
   },
-  "SETHF32MODE": {
-    "docs_canonical": [],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Configure HF32 transform mode (implementation-defined).",
-    "paths": [],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Manual / Resource Binding"
-    ]
-  },
-  "SETTF32MODE": {
-    "docs_canonical": [],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Configure TF32 transform mode (implementation-defined).",
-    "paths": [],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Manual / Resource Binding"
-    ]
-  },
   "SET_IMG2COL_PADDING": {
     "docs_canonical": [
       "pto-isa/docs/isa/SET_IMG2COL_PADDING.md"
@@ -122,6 +92,63 @@
     "source": "generated",
     "tags": [
       "Manual / Resource Binding"
+    ]
+  },
+  "SET_QUANT_SCALAR": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/SET_QUANT_SCALAR.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Set the scalar quantization parameter for subsequent TPUSH operations.",
+    "paths": [
+      "pto-isa/docs/isa/SET_QUANT_SCALAR.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Manual / Resource Binding"
+    ]
+  },
+  "SET_QUANT_VECTOR": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/SET_QUANT_VECTOR.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Set the vector quantization parameter from a Scaling tile for subsequent TPUSH operations.",
+    "paths": [
+      "pto-isa/docs/isa/SET_QUANT_VECTOR.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Manual / Resource Binding"
+    ]
+  },
+  "SYNCALL": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/SYNCALL.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Cross-core synchronization barrier (hardware FFTS or software GM polling).",
+    "paths": [
+      "pto-isa/docs/isa/SYNCALL.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Synchronization"
     ]
   },
   "TABS": {
@@ -162,44 +189,6 @@
       "Elementwise (Tile-Tile)"
     ]
   },
-  "TADDC": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TADDC.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Elementwise ternary add: `src0 + src1 + src2`.",
-    "paths": [
-      "pto-isa/docs/isa/TADDC.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Elementwise (Tile-Tile)"
-    ]
-  },
-  "TADDReluConv": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TADDReluConv.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Fused elementwise add, ReLU clamp, and type conversion: dst = convert(max(0, src0 + src1)).",
-    "paths": [
-      "pto-isa/docs/isa/TADDReluConv.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Complex"
-    ]
-  },
   "TADDS": {
     "docs_canonical": [
       "pto-isa/docs/isa/TADDS.md"
@@ -219,23 +208,23 @@
       "Tile-Scalar / Tile-Immediate"
     ]
   },
-  "TADDSC": {
+  "TALLOC": {
     "docs_canonical": [
-      "pto-isa/docs/isa/TADDSC.md"
+      "pto-isa/docs/isa/TALLOC.md"
     ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Elementwise fused add with scalar and a second tile: `src0 + scalar + src1`.",
+    "one_liner": "Allocate a TPipe FIFO slot as a GlobalTensor view.",
     "paths": [
-      "pto-isa/docs/isa/TADDSC.md"
+      "pto-isa/docs/isa/TALLOC.md"
     ],
     "repos": [
       "pto-isa"
     ],
     "source": "generated",
     "tags": [
-      "Tile-Scalar / Tile-Immediate"
+      "Cross-core Communication"
     ]
   },
   "TAND": {
@@ -314,25 +303,6 @@
       "Tile-Scalar / Tile-Immediate"
     ]
   },
-  "TAddDeqRelu": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TAddDeqRelu.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Fused elementwise add, dequantization scale, and ReLU clamp: dst = half(max(0, (src0 + src1) * deqScale)).",
-    "paths": [
-      "pto-isa/docs/isa/TAddDeqRelu.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Complex"
-    ]
-  },
   "TBROADCAST": {
     "docs_canonical": [
       "pto-isa/docs/isa/comm/TBROADCAST.md"
@@ -407,6 +377,44 @@
     "source": "generated",
     "tags": [
       "Tile-Scalar / Tile-Immediate"
+    ]
+  },
+  "TCOLARGMAX": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TCOLARGMAX.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Get the row index /(value and row index) of the maximum element for each column.",
+    "paths": [
+      "pto-isa/docs/isa/TCOLARGMAX.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Axis Reduce / Expand"
+    ]
+  },
+  "TCOLARGMIN": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TCOLARGMIN.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Get the row index /(value and row index) of the minimum element for each column.",
+    "paths": [
+      "pto-isa/docs/isa/TCOLARGMIN.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Axis Reduce / Expand"
     ]
   },
   "TCOLEXPAND": {
@@ -619,12 +627,16 @@
     ]
   },
   "TCOLSUM": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TCOLSUM.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Reduce each column by summing across rows.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TCOLSUM.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -669,6 +681,25 @@
     "source": "generated",
     "tags": [
       "Elementwise (Tile-Tile)"
+    ]
+  },
+  "TDEINTERLEAVE": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TDEINTERLEAVE.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Deinterleave source tile data into even-position and odd-position element streams, the inverse of TINTERLEAVE.",
+    "paths": [
+      "pto-isa/docs/isa/TDEINTERLEAVE.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Data Movement / Layout"
     ]
   },
   "TDEQUANT": {
@@ -792,7 +823,7 @@
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Extract with fp/scaling tile (vector-quantization parameters).",
+    "one_liner": "Source-compatible C++ alias for the legacy fp-quantized extraction form.",
     "paths": [
       "pto-isa/docs/isa/TEXTRACT_FP.md"
     ],
@@ -899,42 +930,23 @@
       "Tile-Scalar / Tile-Immediate"
     ]
   },
-  "TFUSEDMULADD": {
+  "TFREE": {
     "docs_canonical": [
-      "pto-isa/docs/isa/TFUSEDMULADD.md"
+      "pto-isa/docs/isa/TFREE.md"
     ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Elementwise ternary op: `src0 * dst + src1`.",
+    "one_liner": "Release FIFO space for a TPipe entry; no-op for TileData TPOP flow on some targets.",
     "paths": [
-      "pto-isa/docs/isa/TFUSEDMULADD.md"
+      "pto-isa/docs/isa/TFREE.md"
     ],
     "repos": [
       "pto-isa"
     ],
     "source": "generated",
     "tags": [
-      "Elementwise (Tile-Tile)"
-    ]
-  },
-  "TFUSEDMULADDRELU": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TFUSEDMULADDRELU.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Elementwise ternary op: `ReLU(src0 * dst + src1)`.",
-    "paths": [
-      "pto-isa/docs/isa/TFUSEDMULADDRELU.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Elementwise (Tile-Tile)"
+      "Cross-core Communication"
     ]
   },
   "TGATHER": {
@@ -982,12 +994,16 @@
     ]
   },
   "TGEMV": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TGEMV.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "General Matrix-Vector multiplication producing an accumulator/output tile.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TGEMV.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1035,12 +1051,16 @@
     ]
   },
   "TGEMV_MX": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TGEMV_MX.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "GEMV with additional scaling tiles for mixed-precision / quantized matrix-vector compute.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TGEMV_MX.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1085,25 +1105,6 @@
     "source": "generated",
     "tags": [
       "Communication"
-    ]
-  },
-  "TGET_SCALE_ADDR": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TGET_SCALE_ADDR.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Bind the on-chip address of output tile to a scaled factor of that of input tile.",
-    "paths": [
-      "pto-isa/docs/isa/TGET_SCALE_ADDR.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Manual / Resource Binding"
     ]
   },
   "THISTOGRAM": {
@@ -1170,9 +1171,28 @@
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Insert with fp/scaling tile (vector-quantization parameters).",
+    "one_liner": "Source-compatible C++ alias for the legacy fp-quantized insertion form.",
     "paths": [
       "pto-isa/docs/isa/TINSERT_FP.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Data Movement / Layout"
+    ]
+  },
+  "TINTERLEAVE": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TINTERLEAVE.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Interleave two source tiles into an alternating even/odd element stream, split into two destination halves.",
+    "paths": [
+      "pto-isa/docs/isa/TINTERLEAVE.md"
     ],
     "repos": [
       "pto-isa"
@@ -1239,6 +1259,25 @@
       "Tile-Scalar / Tile-Immediate"
     ]
   },
+  "TMADD": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMADD.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Elementwise ternary op: `src0 * dst + src1`.",
+    "paths": [
+      "pto-isa/docs/isa/TMADD.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Elementwise (Tile-Tile)"
+    ]
+  },
   "TMATMUL": {
     "docs_canonical": [
       "pto-isa/docs/isa/TMATMUL.md"
@@ -1259,12 +1298,16 @@
     ]
   },
   "TMATMUL_ACC": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMATMUL_ACC.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Matrix multiply with accumulator input (fused accumulate).",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TMATMUL_ACC.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1274,12 +1317,16 @@
     ]
   },
   "TMATMUL_BIAS": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMATMUL_BIAS.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Matrix multiply with bias add.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TMATMUL_BIAS.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1289,12 +1336,35 @@
     ]
   },
   "TMATMUL_MX": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMATMUL_MX.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Matrix multiply (GEMM) with additional scaling tiles for mixed-precision / quantized matmul on supported targets.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TMATMUL_MX.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Matrix Multiply"
+    ]
+  },
+  "TMATMUL_MX_HIF4": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMATMUL_MX_HIF4.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "HiFloat4 Cube matmul variant for mixed-precision TMATMUL_MX flows.",
+    "paths": [
+      "pto-isa/docs/isa/TMATMUL_MX_HIF4.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1380,12 +1450,16 @@
     ]
   },
   "TMOV": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TMOV.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Move/copy between tiles, optionally applying implementation-defined conversion modes.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TMOV.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1401,7 +1475,7 @@
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Move/convert from an accumulator tile into a destination tile, using a scaling (`fp`) tile for vector quantization parameters.",
+    "one_liner": "Source-compatible C++ alias for the legacy fp-quantized move form.",
     "paths": [
       "pto-isa/docs/isa/TMOV_FP.md"
     ],
@@ -1451,16 +1525,16 @@
       "Elementwise (Tile-Tile)"
     ]
   },
-  "TMULADDDST": {
+  "TMULA": {
     "docs_canonical": [
-      "pto-isa/docs/isa/TMULADDDST.md"
+      "pto-isa/docs/isa/TMULA.md"
     ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Elementwise ternary op: `src0 * src1 + dst`.",
     "paths": [
-      "pto-isa/docs/isa/TMULADDDST.md"
+      "pto-isa/docs/isa/TMULA.md"
     ],
     "repos": [
       "pto-isa"
@@ -1603,6 +1677,44 @@
       "Complex"
     ]
   },
+  "TPARTARGMAX": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPARTARGMAX.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Partial elementwise max selection returning corresponding index (argmax), with implementation-defined handling of mismatched valid regions.",
+    "paths": [
+      "pto-isa/docs/isa/TPARTARGMAX.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Complex"
+    ]
+  },
+  "TPARTARGMIN": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPARTARGMIN.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Partial elementwise min selection returning corresponding index (argmin), with implementation-defined handling of mismatched valid regions.",
+    "paths": [
+      "pto-isa/docs/isa/TPARTARGMIN.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Complex"
+    ]
+  },
   "TPARTMAX": {
     "docs_canonical": [
       "pto-isa/docs/isa/TPARTMAX.md"
@@ -1660,6 +1772,63 @@
       "Complex"
     ]
   },
+  "TPOP": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPOP.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Pop a consumer tile or GlobalTensor from a TPipe FIFO for Cube-Vector communication.",
+    "paths": [
+      "pto-isa/docs/isa/TPOP.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Cross-core Communication"
+    ]
+  },
+  "TPOW": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPOW.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Elementwise power of two tiles.",
+    "paths": [
+      "pto-isa/docs/isa/TPOW.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Elementwise (Tile-Tile)"
+    ]
+  },
+  "TPOWS": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPOWS.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Elementwise power of a tile by a scalar.",
+    "paths": [
+      "pto-isa/docs/isa/TPOWS.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Tile-Scalar / Tile-Immediate"
+    ]
+  },
   "TPREFETCH": {
     "docs_canonical": [
       "pto-isa/docs/isa/TPREFETCH.md"
@@ -1699,12 +1868,16 @@
     ]
   },
   "TPRELU": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPRELU.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Elementwise PReLU (parametric ReLU) with a per-element slope tile.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TPRELU.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -1714,18 +1887,41 @@
     ]
   },
   "TPRINT": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPRINT.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Debug/print elements from a tile (implementation-defined).",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TPRINT.md"
+    ],
     "repos": [
       "pto-isa"
     ],
     "source": "generated",
     "tags": [
       "Complex"
+    ]
+  },
+  "TPUSH": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TPUSH.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Push a producer tile into a TPipe FIFO for Cube-Vector communication.",
+    "paths": [
+      "pto-isa/docs/isa/TPUSH.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Cross-core Communication"
     ]
   },
   "TPUT": {
@@ -1776,6 +1972,63 @@
     "one_liner": "Quantize a tile (e.g. FP32 to FP8) producing exponent/scaling/max outputs.",
     "paths": [
       "pto-isa/docs/isa/TQUANT.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Complex"
+    ]
+  },
+  "TQUANT_DN": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TQUANT_DN.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Axis-0 grouped quantization and DN-to-ZZ exponent layout conversion.",
+    "paths": [
+      "pto-isa/docs/isa/TQUANT_DN.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Complex"
+    ]
+  },
+  "TQUANT_HIF4": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TQUANT_HIF4.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "BF16 to HiFloat4 quantization algorithm and CCE mapping.",
+    "paths": [
+      "pto-isa/docs/isa/TQUANT_HIF4.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Complex"
+    ]
+  },
+  "TRANDOM": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TRANDOM.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Generates random numbers in the destination tile using a counter-based cipher algorithm.",
+    "paths": [
+      "pto-isa/docs/isa/TRANDOM.md"
     ],
     "repos": [
       "pto-isa"
@@ -2090,12 +2343,16 @@
     ]
   },
   "TROWMAX": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TROWMAX.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Reduce each row by taking the maximum across columns.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TROWMAX.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2105,12 +2362,35 @@
     ]
   },
   "TROWMIN": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TROWMIN.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Reduce each row by taking the minimum across columns.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TROWMIN.md"
+    ],
+    "repos": [
+      "pto-isa"
+    ],
+    "source": "generated",
+    "tags": [
+      "Axis Reduce / Expand"
+    ]
+  },
+  "TROWPROD": {
+    "docs_canonical": [
+      "pto-isa/docs/isa/TROWPROD.md"
+    ],
+    "generated_from": "pto-isa/docs/isa/manifest.yaml",
+    "kind": "isa_instruction",
+    "layer": "pto-isa/instr",
+    "one_liner": "Reduce each row by multiplying across columns.",
+    "paths": [
+      "pto-isa/docs/isa/TROWPROD.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2120,12 +2400,16 @@
     ]
   },
   "TROWSUM": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TROWSUM.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Reduce each row by summing across columns.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TROWSUM.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2135,12 +2419,16 @@
     ]
   },
   "TRSQRT": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TRSQRT.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Elementwise reciprocal square root.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TRSQRT.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2175,12 +2463,16 @@
     ]
   },
   "TSEL": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TSEL.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Select between two tiles using a mask tile (per-element selection).",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TSEL.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2190,12 +2482,16 @@
     ]
   },
   "TSELS": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TSELS.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Select one of two source tiles using a scalar `selectMode` (global select).",
-    "paths": [],
+    "one_liner": "Select between source tile and scalar using a mask tile (per-element selection for source tile).",
+    "paths": [
+      "pto-isa/docs/isa/TSELS.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2287,7 +2583,7 @@
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Sort a fixed-size 32-element block and produce an index mapping.",
+    "one_liner": "Sort 32-element blocks of `src` with accompanying `idx` entries and output sorted value-index pairs.",
     "paths": [
       "pto-isa/docs/isa/TSORT32.md"
     ],
@@ -2344,7 +2640,7 @@
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
-    "one_liner": "Store an accumulator tile into global memory using a scaling (`fp`) tile for vector quantization parameters.",
+    "one_liner": "Source-compatible C++ alias for the legacy fp-quantized store form.",
     "paths": [
       "pto-isa/docs/isa/TSTORE_FP.md"
     ],
@@ -2375,44 +2671,6 @@
       "Elementwise (Tile-Tile)"
     ]
   },
-  "TSUBC": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TSUBC.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Elementwise ternary op: `src0 - src1 + src2`.",
-    "paths": [
-      "pto-isa/docs/isa/TSUBC.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Elementwise (Tile-Tile)"
-    ]
-  },
-  "TSUBRELU": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TSUBRELU.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Elementwise subtract then ReLU of two tiles.",
-    "paths": [
-      "pto-isa/docs/isa/TSUBRELU.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Elementwise (Tile-Tile)"
-    ]
-  },
   "TSUBS": {
     "docs_canonical": [
       "pto-isa/docs/isa/TSUBS.md"
@@ -2430,63 +2688,6 @@
     "source": "generated",
     "tags": [
       "Tile-Scalar / Tile-Immediate"
-    ]
-  },
-  "TSUBSC": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TSUBSC.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Elementwise fused op: `src0 - scalar + src1`.",
-    "paths": [
-      "pto-isa/docs/isa/TSUBSC.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Tile-Scalar / Tile-Immediate"
-    ]
-  },
-  "TSUBVIEW": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TSUBVIEW.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Reinterpret a tile as a subtile of another tile.",
-    "paths": [
-      "pto-isa/docs/isa/TSUBVIEW.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Manual / Resource Binding"
-    ]
-  },
-  "TSYNC": {
-    "docs_canonical": [
-      "pto-isa/docs/isa/TSYNC.md"
-    ],
-    "generated_from": "pto-isa/docs/isa/manifest.yaml",
-    "kind": "isa_instruction",
-    "layer": "pto-isa/instr",
-    "one_liner": "Synchronize PTO execution (wait on events or insert a per-op pipeline barrier).",
-    "paths": [
-      "pto-isa/docs/isa/TSYNC.md"
-    ],
-    "repos": [
-      "pto-isa"
-    ],
-    "source": "generated",
-    "tags": [
-      "Synchronization"
     ]
   },
   "TTEST": {
@@ -2566,12 +2767,16 @@
     ]
   },
   "TXOR": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TXOR.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Elementwise bitwise XOR of two tiles.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TXOR.md"
+    ],
     "repos": [
       "pto-isa"
     ],
@@ -2581,12 +2786,16 @@
     ]
   },
   "TXORS": {
-    "docs_canonical": [],
+    "docs_canonical": [
+      "pto-isa/docs/isa/TXORS.md"
+    ],
     "generated_from": "pto-isa/docs/isa/manifest.yaml",
     "kind": "isa_instruction",
     "layer": "pto-isa/instr",
     "one_liner": "Elementwise bitwise XOR of a tile and a scalar.",
-    "paths": [],
+    "paths": [
+      "pto-isa/docs/isa/TXORS.md"
+    ],
     "repos": [
       "pto-isa"
     ],

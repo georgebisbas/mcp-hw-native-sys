@@ -1,8 +1,9 @@
 {
-  "last_verified": "2026-07-16",
+  "last_verified": "2026-08-25",
   "legend": {
     "\u2705": "Merged to `main`",
     "\ud83d\udfe1": "In review (PR open)",
+    "\u26a0\ufe0f": "Implemented on a fork branch; no upstream PR yet",
     "\ud83d\udd35": "Planned (not started)",
     "\u274c": "Gap \u2014 plan exists but not implemented",
     "N/A": "Not applicable"
@@ -56,6 +57,12 @@
         "symbol": "\u2705",
         "ref": "#1937",
         "meaning": "Merged to `main`"
+      },
+      "All-to-All-v": {
+        "raw": "\u2705 #2112",
+        "symbol": "\u2705",
+        "ref": "#2112",
+        "meaning": "Merged to `main`"
       }
     },
     "Host builtin": {
@@ -66,10 +73,10 @@
         "meaning": "Merged to `main`"
       },
       "AllReduce (ring)": {
-        "raw": "\u274c Plan 41",
-        "symbol": "\u274c",
-        "ref": "Plan 41",
-        "meaning": "Gap \u2014 plan exists but not implemented"
+        "raw": "\u2705 #2094",
+        "symbol": "\u2705",
+        "ref": "#2094",
+        "meaning": "Merged to `main`"
       },
       "AllReduce (bidir)": {
         "raw": "\u274c",
@@ -102,10 +109,16 @@
         "meaning": "Merged to `main`"
       },
       "All-to-All": {
-        "raw": "\ud83d\udfe1 #1997",
-        "symbol": "\ud83d\udfe1",
+        "raw": "\u2705 #1997",
+        "symbol": "\u2705",
         "ref": "#1997",
-        "meaning": "In review (PR open)"
+        "meaning": "Merged to `main`"
+      },
+      "All-to-All-v": {
+        "raw": "\u2705 #2243",
+        "symbol": "\u2705",
+        "ref": "#2243",
+        "meaning": "Merged to `main`"
       }
     },
     "Dynamic NR": {
@@ -119,7 +132,7 @@
         "raw": "\u26a0\ufe0f Monolithic only",
         "symbol": "\u26a0\ufe0f",
         "ref": "Monolithic only",
-        "meaning": "\u26a0\ufe0f"
+        "meaning": "Implemented on a fork branch; no upstream PR yet"
       },
       "AllReduce (bidir)": {
         "raw": "\u274c",
@@ -156,6 +169,12 @@
         "symbol": "\u274c",
         "ref": "",
         "meaning": "Gap \u2014 plan exists but not implemented"
+      },
+      "All-to-All-v": {
+        "raw": "\u274c",
+        "symbol": "\u274c",
+        "ref": "",
+        "meaning": "Gap \u2014 plan exists but not implemented"
       }
     },
     "System test (ST)": {
@@ -166,9 +185,9 @@
         "meaning": "Merged to `main`"
       },
       "AllReduce (ring)": {
-        "raw": "\u2705 #1778",
+        "raw": "\u2705 #1778 + #2094 (host ring ST)",
         "symbol": "\u2705",
-        "ref": "#1778",
+        "ref": "#1778 + #2094 (host ring ST)",
         "meaning": "Merged to `main`"
       },
       "AllReduce (bidir)": {
@@ -205,6 +224,12 @@
         "raw": "\u2705 #1937",
         "symbol": "\u2705",
         "ref": "#1937",
+        "meaning": "Merged to `main`"
+      },
+      "All-to-All-v": {
+        "raw": "\u2705 #2112 + #2243 (HOST ST)",
+        "symbol": "\u2705",
+        "ref": "#2112 + #2243 (HOST ST)",
         "meaning": "Merged to `main`"
       }
     },
@@ -256,6 +281,12 @@
         "symbol": "\u2705",
         "ref": "#1267",
         "meaning": "Merged to `main`"
+      },
+      "All-to-All-v": {
+        "raw": "\u274c",
+        "symbol": "\u274c",
+        "ref": "",
+        "meaning": "Gap \u2014 plan exists but not implemented"
       }
     },
     "Auto-select algorithm": {
@@ -302,6 +333,12 @@
         "meaning": "Not applicable"
       },
       "All-to-All": {
+        "raw": "N/A",
+        "symbol": "N/A",
+        "ref": "",
+        "meaning": "Not applicable"
+      },
+      "All-to-All-v": {
         "raw": "N/A",
         "symbol": "N/A",
         "ref": "",
