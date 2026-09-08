@@ -133,7 +133,7 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | Tool | Purpose |
 |------|---------|
 | `list_task_types` | All valid `task_type` values (for `route_task`/`bootstrap_session`) with descriptions |
-| `route_task` | Read-first docs (canonical + enriched), rules, entrypoints, and verify tasks for a `task_type` |
+| `route_task` | Read-first docs (canonical + enriched), rules, entrypoints, matching skills, and verify tasks for a `task_type` |
 | `list_knowledge_topics` | Enumerate all task routes, MCP resources, notes topics, and bootstrap prompts in one call |
 | `read_doc` | Read a workspace doc with tier labeling (`canonical`/`enriched`/`design`/`mcp-owned`); optional `section` extracts one markdown heading |
 | `explain_abstraction` | Concept card for an IR node, pass, codegen stage, ISA instruction, PTOAS op, or Ascend hardware concept. Reports `source: curated` or `source: generated` (see Provenance below); on a miss suggests near-name cards |
@@ -297,6 +297,20 @@ paths, broken routes) never lands. Install once per clone:
 
 ```bash
 git config core.hooksPath tools/hooks
+```
+
+### CI and knowledge freshness
+
+`.github/workflows/ci.yml` runs the same gate (ruff → `verify_knowledge_config.py`
+→ tests) on every push/PR, cloning the sibling repos shallowly so the audit and
+the real-workspace smoke tests see the same tree as local. On a weekly schedule
+(and manually via `workflow_dispatch`) a `freshness` job runs
+`tools/check_fresh.sh`, which regenerates every generated cache and fails when
+the checked-in indexes have drifted from the upstream sources:
+
+```bash
+# Local equivalent — fail when the caches are stale (ignores the build-time marker)
+bash tools/check_fresh.sh
 ```
 
 ### Self-auditing: `knowledge_health`

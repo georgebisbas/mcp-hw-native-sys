@@ -286,6 +286,56 @@ def read_doc_payload(path: str, max_chars: int = 12000, section: str = "") -> di
     }
 
 
+_SKILL_STOPWORDS = {
+    "for", "the", "and", "are", "via", "with", "from", "into", "across", "over",
+    "you", "your", "new", "each", "every", "per", "any", "see", "use", "used",
+    "when", "what", "that", "this", "these", "those", "can", "may", "all", "its",
+}
+
+
+def _route_skill_hints(task_type: str, description: str) -> list[dict[str, str]]:
+    """Best-effort top-5 skill hints for a route, matched by token overlap.
+
+    The skill inventory (config/skills.json + live SKILL.md frontmatter) is the
+    agent-skill corpus; surfacing it in route_task means an agent discovers the
+    right workflow (compare-codegen, generate-ir-trace, dfx-analyze, ...) in the
+    first orientation call instead of needing a separate find_skill call.
+    """
+    try:
+        from mcp_hwnative_sys.skills import build_skills_index
+
+        index = build_skills_index()
+    except Exception:  # noqa: BLE001 - hints must never break routing
+        return []
+    text = f"{task_type} {description}".lower().replace("_", " ")
+    tokens = {
+        t for t in re.split(r"[^a-z0-9]+", text)
+        if len(t) >= 3 and t not in _SKILL_STOPWORDS
+    }
+    if not tokens:
+        return []
+    scored: list[tuple[int, str, dict[str, str]]] = []
+    for repo, skills in index.get("repos", {}).items():
+        for skill in skills:
+            haystack = (skill["name"] + " " + skill["summary"]).lower()
+            hits = sum(1 for token in tokens if token in haystack)
+            if hits:
+                scored.append(
+                    (
+                        hits,
+                        skill["name"],
+                        {
+                            "repo": repo,
+                            "name": skill["name"],
+                            "summary": skill["summary"][:200],
+                            "path": skill["path"],
+                        },
+                    )
+                )
+    scored.sort(key=lambda item: (-item[0], item[1]))
+    return [card for _, _, card in scored[:5]]
+
+
 def _resolve_entrypoints(entrypoint_areas: list[str]) -> dict[str, list[str]]:
     entrypoints = load_entrypoints()
     output: dict[str, list[str]] = {}
@@ -343,6 +393,7 @@ def route_task_impl(task_type: str, detail: str = "") -> dict[str, Any]:
         "read_first_canonical": canonical_docs,
         "read_first_enriched": enriched_docs,
         "rules": rules,
+        "skills": _route_skill_hints(task_type, route.get("description", "")),
         "entrypoints": _resolve_entrypoints(route.get("entrypoint_areas", [])),
         "verify_tasks": route.get("verify_tasks", []),
         "agent_verify_tasks": route.get("agent_verify_tasks", route.get("verify_tasks", [])),

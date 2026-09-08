@@ -575,7 +575,8 @@
         "pypto/docs/en/dev/07-ir-lower-trace.md",
         "pypto/docs/en/dev/codegen/00-pto_codegen.md",
         "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md",
-        "pypto/docs/en/dev/03-runtime-dfx.md"
+        "pypto/docs/en/dev/03-runtime-dfx.md",
+        "pypto-lib/docs/debug-and-tune/debugging.md"
       ],
       "read_first_enriched": [],
       "rules": [],
