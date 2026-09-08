@@ -21,7 +21,7 @@ from mcp_hwnative_sys.knowledge import (  # noqa: E402
     load_knowledge_config,
     resolve_doc_tier,
 )
-from mcp_hwnative_sys.paths import project_root, resolve_doc_path, workspace_root  # noqa: E402
+from mcp_hwnative_sys.paths import resolve_doc_path, workspace_root  # noqa: E402
 
 
 def _check_path(root: Path, path: str, errors: list[str], warnings: list[str]) -> None:
@@ -92,6 +92,20 @@ def main() -> int:
             for path in route.get("read_first_canonical", []) + route.get("read_first_enriched", []):
                 if path.startswith(prefix):
                     errors.append(f"Ephemeral path referenced in route: {path}")
+
+    # Skills inventory: every configured dir/file must exist on disk.
+    skills_cfg_path = CONFIG_DIR / "skills.json"
+    if skills_cfg_path.exists():
+        skills_cfg = json.loads(skills_cfg_path.read_text(encoding="utf-8"))
+        for repo_key, entry in (skills_cfg.get("repos", {}) or {}).items():
+            for rel in entry.get("files", []):
+                if not (root / rel).exists():
+                    errors.append(f"Missing skill file [{repo_key}]: {rel}")
+            directory = entry.get("dir")
+            if directory and not (root / directory).is_dir():
+                errors.append(f"Missing skill dir [{repo_key}]: {directory}")
+    else:
+        errors.append("Missing skills config: config/skills.json")
 
     print(f"Workspace: {root}")
     print(f"Routes: {len(config.get('routes', {}))}")

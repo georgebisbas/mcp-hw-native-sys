@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "repos": {
+    "pypto": {
+      "dir": "pypto/.agents/skills"
+    },
+    "pypto-lib": {
+      "dir": "pypto-lib/.agents/skills"
+    },
+    "simpler": {
+      "dir": "simpler/.agents/skills"
+    },
+    "PTOAS": {
+      "dir": "PTOAS/.agents/skills"
+    },
+    "pto-isa": {
+      "dir": "pto-isa/.claude/skills"
+    },
+    "pypto-user": {
+      "dir": "pypto-skills/plugins/pypto-user/skills"
+    },
+    "pypto-developer": {
+      "dir": "pypto-skills/plugins/pypto-developer/skills"
+    },
+    "pypto-tooling": {
+      "files": [
+        "pypto-tooling/debugging_skills/SKILL.md"
+      ]
+    }
+  }
+}

@@ -205,6 +205,11 @@
       "max_chars": 6000,
       "tier": "mcp-owned"
     },
+    "debug/codegen-inspection": {
+      "path": "content/debug/codegen-inspection.md",
+      "max_chars": 10000,
+      "tier": "mcp-owned"
+    },
     "notes/freshness": {
       "path": "pypto-3.0-notes/NOTES_FRESHNESS.md",
       "max_chars": 8000,
@@ -563,6 +568,21 @@
       "entrypoint_areas": ["pypto:passes", "simpler:worker"],
       "verify_tasks": ["pypto-profiling:profiling_smoke"],
       "resources": ["flows/performance", "ascend/arch_families", "ascend/alignment_rules"]
+    },
+    "debug_codegen": {
+      "description": "Debug by inspecting generated code across the pipeline: pass dumps, .pto MLIR, ptoas pass dumps, kernel/orchestration C++, dfx artifacts",
+      "read_first_canonical": [
+        "pypto/docs/en/dev/07-ir-lower-trace.md",
+        "pypto/docs/en/dev/codegen/00-pto_codegen.md",
+        "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md",
+        "pypto/docs/en/dev/03-runtime-dfx.md"
+      ],
+      "read_first_enriched": [],
+      "rules": [],
+      "entrypoint_areas": ["pypto:codegen_pto", "pypto:codegen_orch"],
+      "verify_tasks": ["pypto:codegen_tests"],
+      "agent_verify_tasks": ["pypto:codegen_tests"],
+      "resources": ["debug/codegen-inspection", "pypto/codegen", "tools/sim_docker_workflow"]
     },
     "ascend_arch": {
       "description": "Ascend chip architecture: AIC/AIV, memory hierarchy, A2A3 vs A5",

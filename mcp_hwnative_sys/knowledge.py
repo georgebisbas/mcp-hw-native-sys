@@ -616,6 +616,27 @@ def knowledge_health_impl() -> dict[str, Any]:
         gen_path = project_root() / "config" / filename
         coverage[repo_key] = len(load_json_cached(gen_path)) if gen_path.exists() else 0
 
+    # Skill corpus: how many SKILL.md files the configured dirs currently
+    # resolve, and which configured dirs/files are missing on disk.
+    skills_issues: list[str] = []
+    skills_total = 0
+    try:
+        from mcp_hwnative_sys.skills import build_skills_index, load_skills_config
+
+        skills_cfg = load_skills_config()
+        root = workspace_root()
+        for repo_key, entry in (skills_cfg.get("repos", {}) or {}).items():
+            for rel in entry.get("files", []):
+                if not (root / rel).exists():
+                    skills_issues.append(f"Missing skill file [{repo_key}]: {rel}")
+            directory = entry.get("dir")
+            if directory and not (root / directory).is_dir():
+                skills_issues.append(f"Missing skill dir [{repo_key}]: {directory}")
+        skills_index = build_skills_index()
+        skills_total = skills_index.get("total_skills", 0)
+    except Exception as exc:  # noqa: BLE001 - health must never raise
+        skills_issues.append(f"Skill scan failed: {exc}")
+
     return {
         "config_version": config.get("version", "unknown"),
         "workspace_root": str(root),
@@ -627,6 +648,9 @@ def knowledge_health_impl() -> dict[str, Any]:
         "stale_enriched": stale_enriched[:20],
         "ascend_issues_count": len(ascend_issues),
         "ascend_issues": ascend_issues[:20],
+        "skills_total": skills_total,
+        "skills_issues_count": len(skills_issues),
+        "skills_issues": skills_issues[:20],
         "pypto_pass_count": len(passes_index.get("passes", [])),
         "pypto_passes_index_warning": passes_index_warning,
         "coverage": coverage,
@@ -815,6 +839,41 @@ def register_knowledge(mcp: FastMCP) -> None:
         from mcp_hwnative_sys.verify_ladder import verify_ladder_impl
 
         return verify_ladder_impl(changed_paths)
+
+    @mcp.tool()
+    def find_generated_artifacts(
+        repo: Annotated[str, Field(description='Optional repository name (e.g. "pypto", "pypto-lib") to scope the search. Empty searches every repo\'s artifact roots.')] = "",
+        kind: Annotated[str, Field(description="Optional artifact kind filter, e.g. passes_dump, pto_mlir, kernel_aic_cpp, orchestration_cpp, dfx_outputs")] = "",
+        program_hint: Annotated[str, Field(description='Optional substring of the output path (e.g. a kernel or program name) to filter on.')] = "",
+        max_results: Annotated[int, Field(description="Maximum results to return (1–1000)", ge=1, le=1000)] = 300,
+    ) -> dict[str, Any]:
+        """Locate generated-code artifacts across the workspace: pass dumps, .pto MLIR, kernel/orchestration C++, dfx outputs.
+
+        Scans each repo's build_output/outputs/build roots (read-only) and
+        classifies what it finds. Combine with the debug/codegen-inspection
+        resource to know which stage each artifact belongs to."""
+        from mcp_hwnative_sys.artifacts import find_generated_artifacts_impl
+
+        return find_generated_artifacts_impl(repo=repo, kind=kind, program_hint=program_hint, max_results=max_results)
+
+    @mcp.tool()
+    def list_skills(
+        repo: Annotated[str, Field(description='Optional repository/plugin name to scope the listing (e.g. "pypto", "simpler", "pypto-user"). Empty lists every repo\'s skills.')] = "",
+    ) -> dict[str, Any]:
+        """List the agent-skill corpus per repo (pypto, pypto-lib, simpler, PTOAS, pto-isa, pypto-* plugins, pypto-tooling)."""
+        from mcp_hwnative_sys.skills import list_skills_impl
+
+        return list_skills_impl(repo)
+
+    @mcp.tool()
+    def find_skill(
+        query: Annotated[str, Field(description='Keyword(s) to match across skill names and descriptions, e.g. "compare codegen", "ir trace", "profile"')],
+        repo: Annotated[str, Field(description='Optional repo to scope the search (e.g. "simpler"). Empty searches all repos.')] = "",
+    ) -> dict[str, Any]:
+        """Find the agent skill that matches a task across all repos' skill corpus."""
+        from mcp_hwnative_sys.skills import find_skill_impl
+
+        return find_skill_impl(query, repo)
 
     @mcp.tool()
     def summarize_profile(

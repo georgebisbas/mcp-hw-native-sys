@@ -141,6 +141,9 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `program_status` | Structured open PRs, blockers, and plan cross-index from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `collective_status` | Collective-comm feature parity status (merged/planned/gap) from the parity matrix in `pypto-3.0-notes/distributed/current_status.md`, with optional `op`/`axis` substring filters. Read-only — never writes to the source doc |
 | `verify_ladder` | Minimal suggested verify tasks for a list of changed file paths (longest-matching-prefix rules) |
+| `find_generated_artifacts` | Locate generated-code artifacts across the workspace: pass dumps, `.pto` MLIR, kernel/orchestration C++, dfx outputs (scans `build_output`/`outputs`/`build` roots, read-only) |
+| `list_skills` | Inventory the agent-skill corpus per repo (pypto, pypto-lib, simpler, PTOAS, pto-isa, pypto-* plugins, pypto-tooling), read live from each SKILL.md |
+| `find_skill` | Match a task description against every repo's skill names/descriptions to find the right workflow (e.g. compare-codegen, generate-ir-trace, dfx-analyze) |
 | `find_entrypoints` | Code entrypoints for a repo and optional sub-area |
 | `trace_in_stack` | Locate a symbol or path in the `pypto → PTOAS → pto-isa → simpler` stack (lightweight: abstraction card or path-prefix stage only) |
 | `trace_contract` | Enriched cross-layer trace: stack location + contract triangle + cross-layer verify tasks + active-PR links |
@@ -164,6 +167,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `ascend/*` | `ascend/hardware`, `ascend/arch_families`, `ascend/memory_hierarchy`, `ascend/cann_mapping`, `ascend/hccl_runtime`, `ascend/platform_decisions`, `ascend/alignment_rules`, `ascend/hccl_container_checklist` | Ascend hardware/platform reference |
 | `flows/*` | `flows/compile_to_device`, `flows/matmul_demo`, `flows/distributed_allreduce`, `flows/dependency_triangle`, `flows/performance` | End-to-end worked examples |
 | `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate) |
+| `debug/*` | `debug/codegen-inspection` | Pipeline-wide map of generated-code inspection: per-stage artifact → flag/API → output path → inspection tool/skill |
 | `notes/*` | see notes topics below | Enriched notes (secondary tier) |
 
 **Doc tiers** (returned by `read_doc`/`route_task`): `canonical` (sibling repo docs — authoritative) > `enriched` (`pypto-3.0-notes` — secondary, check `last_verified`) > `design` (`pypto_top_level_documents` — forward-looking proposals, non-canonical) > `mcp-owned` (`content/` — this server's own decision-tree docs) > `ephemeral` (`pr_plans/`, `pull_requests/` — living/scratch, refused by `read_doc`, use `program_status`/`collective_status` instead).
@@ -193,6 +197,7 @@ Each prompt returns a short markdown playbook naming the exact tool-call sequenc
 | `pass_change` | Pass pipeline additions or modifications |
 | `codegen_pto` | InCore codegen to `.pto` MLIR (AICore path) |
 | `codegen_orch` | Orchestration codegen to PTO2 runtime C++ (AICPU path) |
+| `debug_codegen` | Debug by inspecting generated code across the pipeline: pass dumps, `.pto` MLIR, ptoas dumps, kernel/orchestration C++, dfx artifacts |
 | `distributed` | Distributed ops, collectives, multi-rank |
 | `distributed_collectives` | Composite collectives, ring vs. mesh algorithms |
 | `host_collectives_program` | Host builtin collectives program (barrier, broadcast, reduce_scatter, allgather) |
@@ -228,11 +233,12 @@ Read `hw-native-sys://agent/distributed_work_policy` and `hw-native-sys://notes/
 |------|---------|----------|
 | `config/repos.json` | Workspace root, repo paths, named tasks, `repository_meta` | Hand-maintained |
 | `config/knowledge.json` | Task routes, resources, notes topics | Hand-maintained |
+| `config/skills.json` | Repo → agent-skill directory map (inventory read live from each repo's SKILL.md frontmatter) | Hand-maintained |
 | `config/entrypoints.json` | Per-repo code entrypoints, by area | Hand-maintained |
 | `config/abstractions.json` | Hand-curated compiler/stack concept cards | Hand-maintained — **always wins** over generated cards on name collision |
 | `config/ascend_abstractions.json` | Ascend hardware, arch, HCCL concept cards | Hand-maintained, merged into the same abstraction index as `abstractions.json` |
-| `config/pto_isa_generated.json` | ~140 pto-isa instruction cards (tile-local + comm) | **Generated** by `tools/build_pto_isa_index.py` from `pto-isa/docs/isa/manifest.yaml` + `docs/isa/comm/README.md` |
-| `config/ptoas_generated.json` | ~500 PTOAS IR op cards | **Generated** by `tools/build_ptoas_index.py`, regex-scraped from `PTOOps.td`/`VPTOOps.td`'s `let summary`/`let description` fields |
+| `config/pto_isa_generated.json` | ~150 pto-isa instruction cards (tile-local + comm) | **Generated** by `tools/build_pto_isa_index.py` from `pto-isa/docs/isa/manifest.yaml` + `docs/isa/comm/README.md` |
+| `config/ptoas_generated.json` | ~510 PTOAS IR op cards | **Generated** by `tools/build_ptoas_index.py`, regex-scraped from `PTOOps.td`/`VPTOOps.td`'s `let summary`/`let description` fields |
 | `config/passes_index.json` | Default pipeline pass order, phase, verify tasks | **Generated** by `tools/build_knowledge_index.py` from `pypto/python/pypto/ir/pass_manager.py` — see caveat below |
 | `config/programs.json` | Branch → active program hints (route, verify, blockers) | Hand-maintained |
 | `config/program_status.json` | Structured PR status | **Generated** by `tools/sync_status_to_json.py` from `pypto-3.0-notes/pr_plans/status_prs.md` |
@@ -310,6 +316,9 @@ Balanced profile: fast daily tasks (git, lint) plus heavier tasks (docker, profi
 - "`search_abstractions` for allreduce."
 - "`collective_status` with axis=`Dynamic NR` — what's the parity gap across ops?"
 - "`knowledge_health` — any stale or missing docs, or coverage gaps?"
+- "`route_task` `debug_codegen` — how do I inspect pass dumps / .pto / kernel C++ for this lowering bug?"
+- "`read_doc` `content/debug/codegen-inspection.md` then `find_generated_artifacts` for program `qwen_decode`."
+- "`find_skill` — which workflow diffs generated code between branches?"
 
 ## Prerequisite notes
 
