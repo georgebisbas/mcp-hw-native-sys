@@ -29,6 +29,9 @@ packages = ["mcp_hwnative_sys"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+  "workspace: requires the full hw-native-sys sibling workspace (private repos); skipped in CI via -m 'not workspace'",
+]
 
 [tool.ruff]
 line-length = 120

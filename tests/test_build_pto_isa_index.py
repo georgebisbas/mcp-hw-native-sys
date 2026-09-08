@@ -117,6 +117,7 @@ def test_flat_doc_takes_precedence_over_deep_doc(tmp_path: Path):
     assert cards["TSYNC"]["docs_canonical"] == ["pto-isa/docs/isa/TSYNC.md"]
 
 
+@pytest.mark.workspace
 def test_real_workspace_smoke():
     # Real pto-isa checkout should yield well over 130 instructions
     # (131 manifest entries + ~11 comm ops).

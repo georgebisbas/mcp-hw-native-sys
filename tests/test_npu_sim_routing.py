@@ -73,6 +73,7 @@ def test_run_command_refuses_heavy_when_no_npu(monkeypatch):
         server.run_command(repo="pypto", command="pytest tests/ut -q")
 
 
+@pytest.mark.workspace
 def test_run_command_allows_dockerized_heavy_when_no_npu(monkeypatch):
     # A docker run wrapper is the sanctioned sim-Docker path — must not be refused.
     _force_no_npu()
@@ -92,6 +93,7 @@ def test_run_command_allows_dockerized_heavy_when_no_npu(monkeypatch):
     assert len(captured) == 1
 
 
+@pytest.mark.workspace
 def test_run_command_allows_read_only_when_no_npu(monkeypatch):
     _force_no_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: False)
@@ -107,6 +109,7 @@ def test_run_command_allows_read_only_when_no_npu(monkeypatch):
     assert captured == ["git status -sb"]
 
 
+@pytest.mark.workspace
 def test_run_command_allows_build_when_npu(monkeypatch):
     _force_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: True)
@@ -122,6 +125,7 @@ def test_run_command_allows_build_when_npu(monkeypatch):
     assert captured == ["pytest tests/ut -q"]
 
 
+@pytest.mark.workspace
 def test_run_task_refuses_when_no_npu_and_no_image(monkeypatch):
     _force_no_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: False)
@@ -132,6 +136,7 @@ def test_run_task_refuses_when_no_npu_and_no_image(monkeypatch):
     assert "Refused" in result["stderr"]
 
 
+@pytest.mark.workspace
 def test_run_task_redirects_when_no_npu_and_image_present(monkeypatch):
     _force_no_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: False)

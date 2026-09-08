@@ -27,6 +27,7 @@ def test_build_warns_when_regex_matches_nothing(monkeypatch, tmp_path: Path):
     assert "warning" in result and "0 passes" in result["warning"]
 
 
+@pytest.mark.workspace
 def test_healthy_index_has_no_warning():
     # The real workspace pass_manager.py yields passes and no warning.
     result = passes_index.build_passes_index()
@@ -34,6 +35,7 @@ def test_healthy_index_has_no_warning():
     assert "warning" not in result
 
 
+@pytest.mark.workspace
 def test_pass_count_key_is_pypto_scoped():
     # pass_manager.py is the only pipeline ever scraped (no PTOAS/pto-isa/simpler
     # equivalent exists), so the count must be labeled as pypto-specific rather

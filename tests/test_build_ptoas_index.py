@@ -75,6 +75,7 @@ def test_terse_def_with_no_body_still_captured(tmp_path: Path):
     assert section["tags"] == ["Synchronization Ops"]
 
 
+@pytest.mark.workspace
 def test_real_workspace_smoke():
     # Real PTOAS checkout defines several hundred op mnemonics across both files.
     from mcp_hwnative_sys.paths import workspace_root

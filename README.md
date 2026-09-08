@@ -301,17 +301,25 @@ git config core.hooksPath tools/hooks
 
 ### CI and knowledge freshness
 
-`.github/workflows/ci.yml` runs the same gate (ruff → `verify_knowledge_config.py`
-→ tests) on every push/PR, cloning the sibling repos shallowly so the audit and
-the real-workspace smoke tests see the same tree as local. On a weekly schedule
-(and manually via `workflow_dispatch`) a `freshness` job runs
-`tools/check_fresh.sh`, which regenerates every generated cache and fails when
-the checked-in indexes have drifted from the upstream sources:
+`.github/workflows/ci.yml` runs the lint gate (ruff, pinned to `0.14.8` with an
+explicit rule set in `pyproject.toml`) and the **sandboxed** test subset
+(`pytest -m "not workspace"`) on every push/PR — it needs only this repo. The
+sibling repos (pypto, pypto-3.0-notes, …) are private and cannot be cloned
+anonymously, so the workspace-dependent pieces run **locally** instead:
+
+- the full test suite incl. the `@pytest.mark.workspace` smoke tests
+  (`pytest tests/` from the workspace),
+- the knowledge-config audit (`tools/verify_knowledge_config.py`),
+- the freshness drift guard `tools/check_fresh.sh` — regenerate every
+  generated cache and fail when the checked-in indexes have drifted from the
+  upstream sources (ignores the re-stamped `config/.index_build_time`):
 
 ```bash
-# Local equivalent — fail when the caches are stale (ignores the build-time marker)
 bash tools/check_fresh.sh
 ```
+
+The pre-commit hook (below) runs all three on every local commit, so CI and
+local together cover the full gate.
 
 ### Self-auditing: `knowledge_health`
 

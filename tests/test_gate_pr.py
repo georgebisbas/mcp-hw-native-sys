@@ -344,6 +344,7 @@ class TestStructuredResult:
         )
         assert result["step_count"] == 6
 
+    @pytest.mark.workspace
     def test_dirty_tree_reported_as_error(self, monkeypatch):
         def _mock_git(repo_path, args, timeout_seconds=20):
             cmd_str = " ".join(args)
@@ -385,6 +386,7 @@ class TestStructuredResult:
         assert not result["precondition"]["healthy"]
         assert any("dirty" in e.lower() for e in result["precondition"]["errors"])
 
+    @pytest.mark.workspace
     def test_on_base_branch_reported_as_error(self, monkeypatch):
         def _mock_git(repo_path, args, timeout_seconds=20):
             cmd_str = " ".join(args)

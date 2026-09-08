@@ -4,9 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-  schedule:
-    # Weekly freshness sweep: regenerate caches and fail if they drifted.
-    - cron: "17 3 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -14,16 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Clone sibling repos (shallow)
-        run: |
-          cd "$GITHUB_WORKSPACE/.."
-          for r in pypto PTOAS pto-isa simpler pypto-lib pypto_top_level_documents pypto-skills pytorch-hccl-tests pypto-3.0-notes pypto-tooling pypto-docker pypto-profiling; do
-            [ -d "$r/.git" ] && continue
-            for owner in hw-native-sys georgebisbas huawei-csl; do
-              git clone --depth 1 --quiet "https://github.com/$owner/$r.git" "$r" && break
-            done || echo "::warning::could not clone $r"
-          done
 
       - uses: actions/setup-python@v5
         with:
@@ -37,34 +24,10 @@ jobs:
       - name: Lint
         run: ruff check mcp_hwnative_sys/ tools/ tests/
 
-      - name: Knowledge-config audit
-        run: python tools/verify_knowledge_config.py
-
-      - name: Tests
-        run: python -m pytest tests/
-
-  freshness:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Clone sibling repos (shallow)
-        run: |
-          cd "$GITHUB_WORKSPACE/.."
-          for r in pypto PTOAS pto-isa simpler pypto-lib pypto_top_level_documents pypto-skills pytorch-hccl-tests pypto-3.0-notes pypto-tooling pypto-docker pypto-profiling; do
-            [ -d "$r/.git" ] && continue
-            for owner in hw-native-sys georgebisbas huawei-csl; do
-              git clone --depth 1 --quiet "https://github.com/$owner/$r.git" "$r" && break
-            done || echo "::warning::could not clone $r"
-          done
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install
-        run: pip install --quiet -e . "ruff==0.14.8"
-
-      - name: Knowledge freshness (regenerate caches, fail on drift)
-        run: bash tools/check_fresh.sh
+      # The sibling repos (pypto, pypto-3.0-notes, ...) are private and cannot
+      # be cloned anonymously, so the workspace-dependent audit and the
+      # @pytest.mark.workspace smoke tests only run locally (pre-commit hook +
+      # tools/check_fresh.sh). CI runs the sandboxed subset that needs only
+      # this repo.
+      - name: Tests (sandboxed)
+        run: python -m pytest tests/ -m "not workspace"

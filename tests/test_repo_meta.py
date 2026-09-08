@@ -7,9 +7,12 @@ CLAUDE.md relocated) silently sends the agent to a 404 — this test catches it.
 
 from __future__ import annotations
 
+import pytest
+
 from mcp_hwnative_sys.paths import load_repos_config, workspace_root
 
 
+@pytest.mark.workspace
 def test_registered_repo_meta_paths_exist():
     cfg = load_repos_config()
     meta = cfg.get("repository_meta", {})

@@ -87,6 +87,7 @@ def test_find_skill_plain_markdown_fallback(fake_workspace: Path):
     assert result["matches"][0]["name"] == "add-op"
 
 
+@pytest.mark.workspace
 def test_real_workspace_smoke():
     """Against the real workspace, every configured repo resolves skills."""
     index = skills_mod.build_skills_index()
