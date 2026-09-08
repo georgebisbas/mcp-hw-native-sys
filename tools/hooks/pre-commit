@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Pre-commit gate for mcp-hw-native-sys: ruff + knowledge-config audit + tests.
+# Install once per clone with:  git config core.hooksPath tools/hooks
+# The gate is deliberately small and fast (<10s) — the config drift it blocks
+# ("repair stale refs/task keys" commits) is far more expensive to fix later.
+set -uo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$ROOT"
+
+PY="$ROOT/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+    echo "pre-commit: $PY not found (skipping checks)"
+    exit 0
+fi
+
+echo "pre-commit: lint"
+if command -v ruff >/dev/null 2>&1; then
+    ruff check mcp_hwnative_sys/ tools/ tests/ || { echo "pre-commit: ruff failed"; exit 1; }
+else
+    echo "pre-commit: ruff not on PATH (skipping lint)"
+fi
+
+echo "pre-commit: knowledge-config audit"
+"$PY" tools/verify_knowledge_config.py >/dev/null || {
+    echo "pre-commit: knowledge config has errors (run verify_knowledge_config.py)"; exit 1
+}
+
+echo "pre-commit: tests"
+"$PY" -m pytest tests/ -q -p no:cacheprovider >/dev/null || { echo "pre-commit: tests failed"; exit 1; }
+
+echo "pre-commit: ok"

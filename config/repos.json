@@ -23,7 +23,7 @@
       "agent_rules": ["pto-isa/docs/agent.md"]
     },
     "simpler": {
-      "role": "PTO2 runtime: task graph execution on AICPU and AICore",
+      "role": "simpler runtime: task graph execution on AICPU and AICore",
       "layer": "runtime",
       "outputs": ["orchestration .so", "device execution"],
       "canonical_docs": ["simpler/docs/hierarchical-level-runtime.md", "simpler/docs/task-flow.md"],
@@ -64,6 +64,13 @@
       "canonical_docs": ["pypto-profiling/README.md"],
       "agent_rules": []
     },
+    "pypto-skills": {
+      "role": "Shared agent-skill plugins (pypto-user, pypto-developer) published for the pypto family",
+      "layer": "tooling",
+      "outputs": ["skill plugins"],
+      "canonical_docs": ["pypto-skills/README.md"],
+      "agent_rules": []
+    },
     "pypto-tooling": {
       "role": "Umbrella: agent skills, runbooks, task-submit doc, personal setup glue",
       "layer": "tooling",
@@ -95,6 +102,7 @@
     "mcp-hw-native-sys": "mcp-hw-native-sys",
     "pypto-docker": "pypto-docker",
     "pypto-profiling": "pypto-profiling",
+    "pypto-skills": "pypto-skills",
     "pypto-tooling": "pypto-tooling",
     "pypto_top_level_documents": "pypto_top_level_documents",
     "pytorch-hccl-tests": "pytorch-hccl-tests",

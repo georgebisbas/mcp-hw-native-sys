@@ -30,7 +30,7 @@ _STACK_TRACE_RULES: list[tuple[str, str, str, str, list[str], list[str], list[st
         "pypto/src/codegen/orchestration/",
         "pypto",
         "codegen_orch",
-        "Orchestration codegen → PTO2 runtime C++",
+        "Orchestration codegen → simpler runtime C++",
         ["pypto"],
         ["simpler", "AICPU"],
         [],

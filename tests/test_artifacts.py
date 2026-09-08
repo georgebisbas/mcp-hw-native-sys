@@ -66,6 +66,15 @@ def test_unfiltered_lists_all_classified(fake_workspace: Path):
     assert {"passes_dump", "pto_mlir", "kernel_aic_cpp", "kernel_aiv_cpp", "dfx_outputs"} <= kinds
     # Raw source helper.cpp and data/*.pt are not generated-code artifacts.
     assert not any(r["path"].endswith("helper.cpp") for r in result["results"])
+    # Every artifact carries an ISO-8601 modified timestamp for newest-run picking.
+    assert all(r["modified"] for r in result["results"])
+
+
+def test_modified_timestamp_is_iso8601(fake_workspace: Path):
+    result = artifacts_mod.find_generated_artifacts_impl(kind="kernel_aic_cpp")
+    assert result["count"] == 1
+    modified = result["results"][0]["modified"]
+    assert modified.startswith("20") and "T" in modified and "+00:00" in modified
 
 
 def test_unknown_kind_raises(fake_workspace: Path):

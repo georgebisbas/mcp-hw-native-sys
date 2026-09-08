@@ -94,6 +94,29 @@ def test_missing_doc_page_yields_empty_paths(tmp_path: Path):
     assert cards["TADD"]["docs_canonical"] == ["pto-isa/docs/isa/TADD.md"]
 
 
+def test_deep_tree_doc_is_resolved_case_insensitively(tmp_path: Path):
+    # pto-isa migrated op docs into docs/isa/tile/ops/<family>/<lowername>.md;
+    # a missing flat doc must fall back to the deep lowercase page.
+    root = _make_fixture(tmp_path)
+    deep = root / "pto-isa" / "docs" / "isa" / "tile" / "ops" / "sync-and-config"
+    deep.mkdir(parents=True)
+    (deep / "tsync.md").write_text("# pto.tsync\n", encoding="utf-8")
+    cards = build_pto_isa_cards(root)
+    assert cards["TSYNC"]["docs_canonical"] == [
+        "pto-isa/docs/isa/tile/ops/sync-and-config/tsync.md"
+    ]
+
+
+def test_flat_doc_takes_precedence_over_deep_doc(tmp_path: Path):
+    root = _make_fixture(tmp_path)
+    (root / "pto-isa" / "docs" / "isa" / "TSYNC.md").write_text("# TSYNC\n", encoding="utf-8")
+    deep = root / "pto-isa" / "docs" / "isa" / "tile" / "ops" / "sync-and-config"
+    deep.mkdir(parents=True)
+    (deep / "tsync.md").write_text("# pto.tsync\n", encoding="utf-8")
+    cards = build_pto_isa_cards(root)
+    assert cards["TSYNC"]["docs_canonical"] == ["pto-isa/docs/isa/TSYNC.md"]
+
+
 def test_real_workspace_smoke():
     # Real pto-isa checkout should yield well over 130 instructions
     # (131 manifest entries + ~11 comm ops).

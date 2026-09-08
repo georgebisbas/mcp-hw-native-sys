@@ -11,12 +11,13 @@ This doc is the full reference: setup, every tool/resource/prompt, the config fi
 | `pypto` | Compiler framework: Python DSL → IR → passes → codegen |
 | `PTOAS` | PTO assembler/optimizer: `.pto` MLIR → AICore/AIV kernel C++ |
 | `pto-isa` | Virtual tile ISA: C++ headers, CPU/NPU backends |
-| `simpler` | PTO2 runtime: task graph execution on AICore/AICPU |
+| `simpler` | simpler runtime: task graph execution on AICore/AICPU |
 | `pypto-lib` | Model zoo and golden validation harness |
 | `pypto-3.0-notes` | Enriched planning notes, retrospectives, cross-repo status (secondary tier — not canonical) |
 | `pypto_top_level_documents` | Top-level design/architecture proposals (design tier — non-canonical, forward-looking) |
 | `pytorch-hccl-tests` | OSU-style PyTorch/HCCL bandwidth micro-benchmarks (NPU) |
 | `pypto-tooling` | Umbrella: agent skills, runbooks, task-submit doc |
+| `pypto-skills` | Shared agent-skill plugins (`pypto-user`, `pypto-developer`) |
 | `pypto-docker` | Docker images and build scripts for the pypto stack (this server's sim images) |
 | `pypto-profiling` | Personal collective benchmark harness (pypto vs simpler vs HCCL) |
 | `mcp-hw-native-sys` | This MCP server |
@@ -185,6 +186,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `start_ascend_work` | `focus`: `arch` / `tuning` / `hccl` / `runtime` / `verify` | Ascend hardware architecture, performance tuning, HCCL |
 | `start_npu_verify` | — | Developer-only: hand off to real-NPU container verification (agent must not run this itself — see the prompt body for the exact gate) |
 | `finish_work` | — | Closing loop: verify_ladder → agent_verify_tasks → clang-tidy (if C++ changed) → generate_verify_handoff for the NPU-gated remainder |
+| `debug_codegen_work` | `focus`: `passes` / `pto` / `kernel` / `orch` / `runtime` | Debug a compile/lowering/codegen bug by inspecting generated code at each pipeline stage (route → catalog → find artifacts → inspect → fix → verify) |
 
 Each prompt returns a short markdown playbook naming the exact tool-call sequence for that kind of work.
 
@@ -196,7 +198,7 @@ Each prompt returns a short markdown playbook naming the exact tool-call sequenc
 | `ir_change` | New IR nodes, types, or structural changes |
 | `pass_change` | Pass pipeline additions or modifications |
 | `codegen_pto` | InCore codegen to `.pto` MLIR (AICore path) |
-| `codegen_orch` | Orchestration codegen to PTO2 runtime C++ (AICPU path) |
+| `codegen_orch` | Orchestration codegen to simpler runtime C++ (AICPU path) |
 | `debug_codegen` | Debug by inspecting generated code across the pipeline: pass dumps, `.pto` MLIR, ptoas dumps, kernel/orchestration C++, dfx artifacts |
 | `distributed` | Distributed ops, collectives, multi-rank |
 | `distributed_collectives` | Composite collectives, ring vs. mesh algorithms |
@@ -286,6 +288,16 @@ python tools/sync_collective_status_to_json.py
 ```
 
 **Caveat on `build_knowledge_index.py`**: it only rebuilds `passes_index.json` when re-run explicitly — `load_passes_index()` does not invalidate the on-disk cache on its own (unlike `load_abstractions()`, which is mtime-keyed). The scraper matches `passes.<name>` factory references inside `pass_manager.py`'s `_get_pass_factories` body (the old `("Name", lambda: passes.foo())` PassSpec tuples are gone — the pipeline now runs through a C++ `PassPipeline` but the recipe is still a Python tuple list of factories). If a rebuild returns `pypto_pass_count` as `0` with a warning, upstream moved away from that shape again — inspect the recipe before assuming the scraper is simply stale. **Don't blindly overwrite a healthy checked-in cache with a broken re-scrape** — diff it first; if the rebuild produces materially less data than what's committed, something upstream changed and needs a matching fix in `passes_index.py`, not a cache overwrite.
+
+### Pre-commit gate
+
+`tools/hooks/pre-commit` runs ruff + `tools/verify_knowledge_config.py` + the
+test suite before every commit, so config drift (stale refs, missing skill
+paths, broken routes) never lands. Install once per clone:
+
+```bash
+git config core.hooksPath tools/hooks
+```
 
 ### Self-auditing: `knowledge_health`
 

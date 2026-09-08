@@ -342,7 +342,7 @@
       "resources": ["pypto/codegen"]
     },
     "codegen_orch": {
-      "description": "Orchestration codegen to PTO2 runtime C++ (AICPU path)",
+      "description": "Orchestration codegen to simpler runtime C++ (AICPU path)",
       "read_first_canonical": [
         "pypto/docs/en/dev/codegen/01-orchestration_codegen.md"
       ],

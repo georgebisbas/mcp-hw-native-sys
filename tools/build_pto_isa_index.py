@@ -75,6 +75,30 @@ def _merge_colliding_card(existing: dict, incoming: dict) -> dict:
     return merged
 
 
+def _resolve_op_doc(root: Path, name: str) -> str | None:
+    """Locate an instruction's canonical doc, workspace-relative.
+
+    Flat layout first (``docs/isa/<NAME>.md``), then a case-insensitive match
+    on the instruction's lowercase stem anywhere under ``docs/isa/**`` -- the
+    deep tree (``tile/ops/<family>/<lowername>.md``) pto-isa migrated to. The
+    flat files still exist for every current manifest op, but this fallback
+    keeps the generator working if the flat copies are ever removed.
+    """
+    flat = root / f"pto-isa/docs/isa/{name}.md"
+    if flat.exists():
+        return f"pto-isa/docs/isa/{name}.md"
+    docs_root = root / "pto-isa/docs/isa"
+    if not docs_root.is_dir():
+        return None
+    lower = name.lower()
+    for candidate in sorted(docs_root.rglob("*.md")):
+        if candidate.name == "README.md" or candidate.name.endswith("_zh.md"):
+            continue
+        if candidate.stem.lower() == lower:
+            return str(candidate.relative_to(root))
+    return None
+
+
 def build_pto_isa_cards(root: Path) -> dict[str, dict]:
     cards: dict[str, dict] = {}
 
@@ -82,15 +106,16 @@ def build_pto_isa_cards(root: Path) -> dict[str, dict]:
         name = entry.get("instruction")
         if not name:
             continue
-        doc_rel = f"pto-isa/docs/isa/{name}.md"
-        has_doc = (root / doc_rel).exists()
+        doc_rel = _resolve_op_doc(root, name)
+        has_doc = doc_rel is not None
+        doc_paths = [doc_rel] if doc_rel else []
         cards[name] = {
             "layer": "pto-isa/instr",
             "kind": "isa_instruction",
             "tags": [entry.get("category", "")] if entry.get("category") else [],
             "repos": ["pto-isa"],
-            "paths": [doc_rel] if has_doc else [],
-            "docs_canonical": [doc_rel] if has_doc else [],
+            "paths": doc_paths,
+            "docs_canonical": doc_paths,
             "one_liner": entry.get("summary_en", ""),
             "source": "generated",
             "generated_from": "pto-isa/docs/isa/manifest.yaml",

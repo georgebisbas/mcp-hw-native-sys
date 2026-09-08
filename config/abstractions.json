@@ -389,7 +389,7 @@
     "related": [
       "CodegenBase",
       "IterArgCarryAnalyzer",
-      "PTO2 runtime API"
+      "simpler runtime API"
     ],
     "downstream": [
       "simpler",

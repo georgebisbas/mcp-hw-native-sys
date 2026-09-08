@@ -378,7 +378,7 @@ def list_knowledge_topics_impl() -> dict[str, Any]:
             {"topic": key, "uri": f"hw-native-sys://notes/{key}"}
             for key in sorted(notes_topics)
         ],
-        "prompts": ["start_compiler_work", "start_distributed_work", "start_ascend_work", "start_npu_verify", "finish_work"],
+        "prompts": ["start_compiler_work", "start_distributed_work", "start_ascend_work", "start_npu_verify", "debug_codegen_work", "finish_work"],
     }
 
 
@@ -1073,3 +1073,45 @@ Workflow:
 
 ## Stop when
 - All agent_verify_tasks pass and the NPU-gated remainder is captured in a handoff."""
+
+    @mcp.prompt(title="Debug by inspecting generated code")
+    def debug_codegen_work(focus: str = "passes") -> str:
+        focus_hint = {
+            "passes": "find_generated_artifacts(kind='passes_dump')",
+            "pto": "find_generated_artifacts(kind='pto_mlir')",
+            "kernel": "find_generated_artifacts(kind='kernel_aic_cpp' or 'kernel_aiv_cpp')",
+            "orch": "find_generated_artifacts(kind='orchestration_cpp')",
+            "runtime": "find_generated_artifacts(kind='dfx_outputs')",
+        }.get(focus, "find_generated_artifacts()")
+        return f"""You are debugging a compile / lowering / codegen bug by inspecting generated code at each pipeline stage.
+
+## Workflow — run these tools in order
+
+1. Orient on the stages and the switches that produce each artifact:
+   route_task(task_type="debug_codegen", detail="<symbol or symptom>")
+   then read hw-native-sys://debug/codegen-inspection (per-stage: artifact -> flag/API -> output path -> inspection tool).
+
+2. Locate the real artifacts on disk (read-only):
+   {focus_hint}
+   When several runs exist, pick the entry with the newest `modified` timestamp.
+   If no artifacts exist yet, produce them: pass dumps need dump_passes=True /
+   PassDumpLevel.EXPLICIT; ptoas dumps need dump_ptoas_passes=True; to isolate
+   pypto IR->MLIR from ptoas regressions, recompile with skip_ptoas=True.
+
+3. Inspect the stage you suspect:
+   - read_doc / read_file on the dumped snapshot (pass dumps are Python-IR text,
+     .pto files are MLIR text).
+   - explain_pass / explain_abstraction to pin which pass/backend owns the stage.
+   - For a self-contained HTML lowering trace: find_skill("ir trace") -> generate-ir-trace.
+   - To diff generated code between branches: find_skill("compare codegen") -> compare-codegen.
+
+4. Identify the root cause, fix the DSL/pass/codegen change in the owning repo,
+   then verify: verify_ladder(changed_paths=[...]) and run agent_verify_tasks only.
+
+## Gates
+- Never run developer_only / NPU tasks — hand off via generate_verify_handoff.
+- Push to fork-gbisbas only; never `gh pr create`.
+
+## Stop when
+- You have a causal chain from DSL source down to the failing artifact (see the
+  explaining-problems discipline), not just an error message."""

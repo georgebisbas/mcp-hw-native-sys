@@ -26,8 +26,19 @@ def test_all_prompts_are_registered():
         "start_distributed_work",
         "start_ascend_work",
         "start_npu_verify",
+        "debug_codegen_work",
         "finish_work",
     } <= registered
+
+
+def test_debug_codegen_prompt_sequences_the_inspection_flow():
+    text = _prompt_text("debug_codegen_work", {"focus": "passes"})
+    assert 'route_task(task_type="debug_codegen"' in text
+    assert "debug/codegen-inspection" in text
+    assert "find_generated_artifacts" in text
+    assert "find_skill" in text
+    assert "verify_ladder" in text
+    assert "generate_verify_handoff" in text
 
 
 def test_compiler_prompt_mentions_discovery_tools():

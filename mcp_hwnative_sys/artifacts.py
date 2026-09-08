@@ -12,6 +12,7 @@ Read-only with respect to the sibling repos: never writes, never shells out.
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -101,6 +102,41 @@ def _classify_file(rel_parts: list[str]) -> str | None:
     return None
 
 
+def _modified_iso(path: str) -> str:
+    """ISO-8601 UTC mtime of an artifact path (for picking the newest run)."""
+    try:
+        mtime = os.path.getmtime(path)
+    except OSError:
+        return ""
+    return datetime.fromtimestamp(mtime, tz=timezone.utc).isoformat()
+
+
+def _record(
+    results: list[dict[str, str]],
+    seen: set[tuple[str, str, str]],
+    name: str,
+    kind_name: str,
+    rel: str,
+    abs_path: str,
+    kind_filter: str,
+    hint: str,
+    max_results: int,
+) -> bool:
+    """Record one artifact; returns True when the result cap is reached."""
+    key = (name, kind_name, rel)
+    if key in seen:
+        return False
+    seen.add(key)
+    if kind_filter and kind_name != kind_filter:
+        return False
+    if hint and hint not in rel.lower():
+        return False
+    results.append(
+        {"repo": name, "kind": kind_name, "path": rel, "modified": _modified_iso(abs_path)}
+    )
+    return len(results) >= max_results
+
+
 def find_generated_artifacts_impl(
     repo: str = "",
     kind: str = "",
@@ -140,35 +176,20 @@ def find_generated_artifacts_impl(
                 kind_name = _DIR_KINDS.get(dirname)
                 if not kind_name:
                     continue
-                if kind and kind_name != kind:
-                    continue
-                rel = os.path.relpath(os.path.join(dirpath, dirname), workspace_root())
-                if hint and hint not in rel.lower():
-                    continue
-                key = (name, kind_name, rel)
-                if key not in seen:
-                    seen.add(key)
-                    results.append({"repo": name, "kind": kind_name, "path": rel})
-                    if len(results) >= max_results:
-                        break
+                abs_path = os.path.join(dirpath, dirname)
+                rel = os.path.relpath(abs_path, workspace_root())
+                if _record(results, seen, name, kind_name, rel, abs_path, kind, hint, max_results):
+                    break
             if len(results) >= max_results:
                 break
             for filename in filenames:
-                rel_parts = os.path.relpath(os.path.join(dirpath, filename), workspace_root()).split(os.sep)
+                abs_path = os.path.join(dirpath, filename)
+                rel_parts = os.path.relpath(abs_path, workspace_root()).split(os.sep)
                 kind_name = _classify_file(rel_parts)
                 if not kind_name:
                     continue
                 rel = "/".join(rel_parts)
-                key = (name, kind_name, rel)
-                if key in seen:
-                    continue
-                seen.add(key)
-                if kind and kind_name != kind:
-                    continue
-                if hint and hint not in rel.lower():
-                    continue
-                results.append({"repo": name, "kind": kind_name, "path": rel})
-                if len(results) >= max_results:
+                if _record(results, seen, name, kind_name, rel, abs_path, kind, hint, max_results):
                     truncated = True
                     break
 
