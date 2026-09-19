@@ -970,7 +970,7 @@
       "pypto/python/pypto/language/"
     ],
     "docs_canonical": [
-      "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
+      "pypto-lib/docs/pypto-coding/index.md",
       "pypto/docs/en/user/language/index.md"
     ],
     "docs_enriched": [],
@@ -997,7 +997,7 @@
       "pypto/python/pypto/language/"
     ],
     "docs_canonical": [
-      "pypto-lib/docs/pypto-coding/pypto-coding-style.md"
+      "pypto-lib/docs/pypto-coding/index.md"
     ],
     "docs_enriched": [],
     "rules": [],

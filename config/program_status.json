@@ -1,12 +1,20 @@
 {
-  "last_verified": "2026-09-08 (run `tools/sync_status_prs.sh`)",
+  "last_verified": "2026-09-19 (run `tools/sync_status_prs.sh`)",
   "dashboard": {
-    "open": 7,
-    "merged_all": 61,
+    "open": 12,
+    "merged_all": 65,
     "merged_90d": 51,
-    "closed": 20
+    "closed": 22
   },
   "open_prs": [
+    {
+      "pr": "#323",
+      "title": "fix(tnotify): word-safe packed NotifyOp::Set on a2a3",
+      "branch": "fix-tnotify-set-packed-false-share",
+      "ci": "\u2705",
+      "notes": "[323-tnotify-set-packed-false-share](../pull_requests/323-tnotify-set-packed-false-share.md)",
+      "repo": "pto-isa"
+    },
     {
       "pr": "#2275",
       "title": "[RFC] feat(distributed): ergonomic pld.* collective ...",
@@ -19,7 +27,7 @@
       "pr": "#2606",
       "title": "fix(distributed): the documented multi-core InCore c...",
       "branch": "feat/incore-composite-block-partition",
-      "ci": "\ud83d\udfe1",
+      "ci": "\u2705",
       "notes": "\u2014",
       "repo": "pypto"
     },
@@ -40,20 +48,52 @@
       "repo": "pypto"
     },
     {
+      "pr": "#2703",
+      "title": "feat(distributed): expose InCore async remote put (p...",
+      "branch": "feat/put-async-dsl-op",
+      "ci": "\u2705",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2738",
+      "title": "perf(collectives): flat single-AIV TPUT for all_to_a...",
+      "branch": "feat/all-to-all-v-flat-tput",
+      "ci": "\u274c",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2743",
+      "title": "feat(distributed): add cal_all_to_all_v_blocks launc...",
+      "branch": "feat/all-to-all-v-cal-blocks",
+      "ci": "\u274c",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2792",
+      "title": "refactor(ir): extract LoweringBuilder from lower_com...",
+      "branch": "refactor/split-lower-composite-ops",
+      "ci": "\u2705",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2828",
+      "title": "feat(collectives): pull all_to_all_v counts from eac...",
+      "branch": "feat/a2av-counts-from-sendcounts",
+      "ci": "\u2705",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
       "pr": "#1177",
       "title": "Refactor: extract DSpark split-phase collective wait...",
       "branch": "refactor/split-phase-collective-helpers",
-      "ci": "\ud83d\udfe1",
-      "notes": "\u2014",
-      "repo": "pypto-lib"
-    },
-    {
-      "pr": "#2102",
-      "title": "feat(l3): Max/Min/Prod reduce ops for allreduce/redu...",
-      "branch": "rebase/63-reduce-op-max-min-prod",
       "ci": "\u2705",
       "notes": "\u2014",
-      "repo": "simpler"
+      "repo": "pypto-lib"
     },
     {
       "pr": "#2120",
@@ -91,11 +131,11 @@
     },
     {
       "repo": "pypto",
-      "branch": "feat/incore-collective-staging-tile-cap",
-      "sha": "3be7668f",
-      "plan": "[plan 84](84-pypto-collectives-arbitrary-length-shape.md) task 2",
-      "npu": "\u2014",
-      "blocker": "**DONE 2026-09-08 \u2014 pushed to `fork-gbisbas`, ready for PR (head advanced `206ca943`\u2192`3be7668f`, +3 commits since last sync).** Cherry-picked the 3 non-duplicate commits from the stale `feat/incore-collectives-arbitrary-length` branch (`958ca0fc`, 264 commits behind, whose bottom two commits duplicated task 1/`#2556`) onto current `origin/main` @ `8ffd67fe`; resolved one real conflict (all_to_all_v's stage-shape construction) by hand. **Second bug found while preparing the ST sweep:** the capped stage width wasn't tile-alignment-safe for short, non-8-aligned FP32 sizes (e.g. 17) \u2014 `pto.alloc_tile` rejects an unaligned row byte size. Fixed by flooring to the nearest aligned width (never ceiling \u2014 the stage can't exceed the transfer); sizes <8 elements (e.g. SIZE=1) still have no valid width, a narrower open gap. Also rewrote the three ST files (`test_l3_tensor_{allgather,broadcast,all_to_all}_intrinsic.py`, fixed at SIZE=64 before, never exercising the cap) to parametrize over size and chunk their own stage-in/out loops (a separate, pre-existing test-body gap, unrelated to the pass fix). **Sim-verified end-to-end**: `{17,4097,65537}` \u00d7 all three composites all PASS on `a2a3sim` P=2 \u2014 but only **without `--forked`**; with it, these hang/SIGSEGV via the pre-existing `--forked`+sim fork()-thread-lock issue already in `KNOWN_ISSUES.md` (misdiagnosed mid-session as a novel pto-isa bug before the existing entry was found \u2014 corrected in the final commit). Full `tests/ut` still 11820 passed/0 failed; `test_lower_composite_ops.py` now 140 passed. a2av divisibility deliberately **not** relaxed; `reduce_scatter` chunk loop is a separate slice (B2b), not part of this PR. **Remaining:** a2a3 NPU sweep (user running directly) + opening the upstream PR."
+      "branch": "~~`feat/incore-collective-staging-tile-cap`~~",
+      "sha": "7f6653eb",
+      "plan": "[plan 84](84-pypto-collectives-arbitrary-length-shape.md) task 2 \u00b7 [PR #2690](https://github.com/hw-native-sys/pypto/pull/2690)",
+      "npu": "**passed 2026-09-08**",
+      "blocker": "**MERGED 2026-09-11 as `5112a699` to `main`** (verified via `gh pr view 2690`). Caps InCore allgather/broadcast/all_to_all/all_to_all_v VEC stages to 16 KiB and floors short static widths to 32-byte alignment without exceeding the transfer. Review findings resolved at `7f6653eb`: physical-storage-bit FP4 geometry, overflow-safe row products in stage sizing and TPUT/TGET validation, all four affected STs migrated to `@pl.jit`, EN/zh formulas/comments synchronized, all_to_all_v runtime widths `{17,4097,65537}` with 0/1/MAX_RECV count boundaries, and real runtime-bound broadcast coverage. Verification: original full UT 11820/0; final lowering UT **142 passed**; all configured hooks on nine changed files passed; real a2a3 P=2 **17 passed / 16 expected skips**, P=4 **33 passed**; pre-review full collectives regression **111/111 unique passed**. No same-host main baseline. a2av divisibility and the sub-alignment-width limitation remain deliberate non-goals. Row kept struck-through as history \u2014 task 1/2/3 of plan 84 are now all merged; only task 4's small HOST RS non-Sum residual remains."
     },
     {
       "repo": "pypto",
@@ -111,30 +151,38 @@
       "sha": "bcd6961d",
       "plan": "[plan 85](85-pypto-multicore-host-collectives.md) B6a",
       "npu": "\u2014",
-      "blocker": "**Stacked on the row above.** Collective-agnostic refactor, no behaviour change: `HostCollectiveRule` gains a nullable `validate` hook that removes both `IsOp(call, \"pld.tensor.allreduce\")` special-cases in `EmitPerDeviceBuiltinCalls`; `CheckAllReduceCoreCapacity`\u2192`CheckCollectiveCoreCapacity` (the AIV bound was never allreduce-specific); `AppendCoreNum` helper. **Provable no-op** \u2014 full UT 9181 passed / 13 skipped, identical to the count before the change. Unblocks B6b (reduce family), B6c (push family), B6d (a2av)"
+      "blocker": "**Stacked on the row above.** Collective-agnostic refactor, no behaviour change: `HostCollectiveRule` gains a nullable `validate` hook that removes both `IsOp(call, \"pld.tensor.allreduce\")` special-cases in `EmitPerDeviceBuiltinCalls`; `CheckAllReduceCoreCapacity`\u2192`CheckCollectiveCoreCapacity` (the AIV bound was never allreduce-specific); `AppendCoreNum` helper. **Provable no-op** \u2014 full UT 9181 passed / 13 skipped, identical to the count before the change. Unblocks B6b (reduce family), B6c (push family). B6d (a2av) **superseded 2026-09-11 by [plan 112](112-pypto-alltoallv-dynamic-core-num.md) (K2, RFC #2521, now split into plans 117-120)** \u2014 user chose to follow Yunji's roadmap where the two overlapped"
     },
     {
       "repo": "pypto",
-      "branch": "feat/synthesize-allreduce-shared-signal",
+      "branch": "refactor/split-lower-composite-ops-pr2",
+      "sha": "fdcc14c0",
+      "plan": "[plan 70](70-pypto-split-lower-composite-ops.md) phase 2",
+      "npu": "\u2014",
+      "blocker": "**Stacked on [#2792](https://github.com/hw-native-sys/pypto/pull/2792)** \u2014 open after it merges. Shared collective helpers \u2192 `lower_composite_common.{h,cpp}`; allreduce (mesh+ring) + allgather \u2192 own TUs. Independently green in sim Docker: build, **4319 passed**, clang-tidy, pre-commit"
+    },
+    {
+      "repo": "pypto",
+      "branch": "refactor/split-lower-composite-ops-pr3",
+      "sha": "35e1fc95",
+      "plan": "[plan 70](70-pypto-split-lower-composite-ops.md) phase 3",
+      "npu": "\u2014",
+      "blocker": "**Stacked on phase 2.** Remaining five collectives \u2192 own TUs; en/zh pass doc rewritten. Pass file reaches 626 lines (2845 at start). Independently green: build, **4319 passed**, clang-tidy, pre-commit"
+    },
+    {
+      "repo": "pypto",
+      "branch": "~~`feat/synthesize-allreduce-shared-signal`~~",
       "sha": "ea3d8d67",
-      "plan": "[plan 88](88-pypto-in-loop-allreduce-shared-signal.md) (= plan 83 PR-2)",
-      "npu": "**required**",
-      "blocker": "Shared synthesized signal per `host_orch` to lift the HOST-rail in-loop `pld.tensor.allreduce` restriction (closes [#2310](https://github.com/hw-native-sys/pypto/issues/2310)); **squashed to one commit + force-pushed to `fork-gbisbas`, upstream [PR #2504](https://github.com/hw-native-sys/pypto/pull/2504) opened 2026-08-24**. **Full UT 10266 passed / 14 skipped / 2 xfailed** in sim Docker (2 unrelated Docker-env failures); ST remains NPU-only; NPU gate"
+      "plan": "[plan 88](88-pypto-in-loop-allreduce-shared-signal.md) (= plan 83 PR-2) \u00b7 [PR #2504](https://github.com/hw-native-sys/pypto/pull/2504)",
+      "npu": "\u2014",
+      "blocker": "**MERGED 2026-08-28 as `2b9b9da8` to `main`** (by YunjiQin, all 19 CI checks green, verified via `gh pr view 2504`). Shared synthesized signal per `host_orch` lifting the HOST-rail in-loop `pld.tensor.allreduce` restriction; closed [#2310](https://github.com/hw-native-sys/pypto/issues/2310). Full UT 10266 passed / 14 skipped / 2 xfailed in sim Docker pre-merge; NPU ST P=2/P=4 was still a post-merge verification item as of the 2026-08-28 sync log and has no later completion note in this file. Row kept struck-through as history."
     },
     {
       "repo": "pypto",
       "branch": "[#2632](https://github.com/hw-native-sys/pypto/issues/2632)",
       "sha": "[RFC] Split lower_composite_ops_pass.cpp into per-op...",
       "plan": "2026-09-02",
-      "npu": "[plan 108](108-pypto-tput-async-dsl-op.md)",
-      "blocker": "\u2014"
-    },
-    {
-      "repo": "pypto",
-      "branch": "[#2644](https://github.com/hw-native-sys/pypto/issues/2644)",
-      "sha": "[Bug] --profile l2 --persistent crashes on the 2nd p...",
-      "plan": "2026-09-03",
-      "npu": "[plan 101](101-pypto-persistent-domain-default.md)",
+      "npu": "[plan 70](70-pypto-split-lower-composite-ops.md), [plan 108](108-pypto-tput-async-dsl-op.md)",
       "blocker": "\u2014"
     },
     {
@@ -146,12 +194,28 @@
       "blocker": "[issue2683_rfc_composite_adoption_pypto.md](../issues/issue2683_rfc_composite_adoption_pypto.md)"
     },
     {
+      "repo": "pypto",
+      "branch": "[#2800](https://github.com/hw-native-sys/pypto/issues/2800)",
+      "sha": "window_size calculation doesn't account for cache-li...",
+      "plan": "2026-09-16",
+      "npu": "\u2014",
+      "blocker": "[simpler-window-buffer-cacheline-alignment.md](../issues/simpler-window-buffer-cacheline-alignment.md)"
+    },
+    {
       "repo": "pypto-lib",
       "branch": "[#1173](https://github.com/hw-native-sys/pypto-lib/issues/1173)",
       "sha": "[RFC] What collective composite adoption would mean ...",
       "plan": "2026-09-08",
       "npu": "[plan 90](90-pypto-lib-composite-adoption-tracker.md)",
       "blocker": "[issue1173_rfc_composite_adoption_pypto_lib.md](../issues/issue1173_rfc_composite_adoption_pypto_lib.md)"
+    },
+    {
+      "repo": "simpler",
+      "branch": "[#2273](https://github.com/hw-native-sys/simpler/issues/2273)",
+      "sha": "allocate_domain carves window sub-buffers without ca...",
+      "plan": "2026-09-16",
+      "npu": "\u2014",
+      "blocker": "[simpler-window-buffer-cacheline-alignment.md](../issues/simpler-window-buffer-cacheline-alignment.md)"
     }
   ],
   "blockers": [],
@@ -187,6 +251,12 @@
       "title": "[Host-level reusable barrier signals](83-pypto-host-level-reusable-barrier-signals.md)"
     },
     {
+      "plan": "84",
+      "repo": "pypto",
+      "prs": "[#2690](https://github.com/hw-native-sys/pypto/pull/2690)",
+      "title": "[Collectives arbitrary length & unaligned shape (+ non-Sum/dtypes)](84-pypto-collectives-arbitrary-length-shape.md)"
+    },
+    {
       "plan": "88",
       "repo": "pypto",
       "prs": "[#2310](https://github.com/hw-native-sys/pypto/pull/2310)",
@@ -208,13 +278,25 @@
       "plan": "92",
       "repo": "pypto",
       "prs": "[#2606](https://github.com/hw-native-sys/pypto/pull/2606)",
-      "title": "[InCore composites \u2014 partition across `pl.spmd` blocks](92-pypto-incore-composite-spmd-partitioning.md)"
+      "title": "[InCore composites under `pl.spmd` \u2014 reject unguarded multi-core use](92-pypto-incore-composite-spmd-partitioning.md)"
     },
     {
       "plan": "95",
       "repo": "pypto",
       "prs": "[#2213](https://github.com/hw-native-sys/pypto/pull/2213)",
       "title": "[`allgather_v` / `reduce_scatter_v` \u2014 runtime per-rank counts](95-pypto-allgather-v-reduce-scatter-v.md)"
+    },
+    {
+      "plan": "110",
+      "repo": "pypto",
+      "prs": "[#2521](https://github.com/hw-native-sys/pypto/pull/2521)",
+      "title": "[AllToAllV benchmark harness + pre-change baseline](110-pypto-alltoallv-benchmark-harness.md)"
+    },
+    {
+      "plan": "117",
+      "repo": "pypto",
+      "prs": "[#2743](https://github.com/hw-native-sys/pypto/pull/2743)",
+      "title": "[`CalAllToAllVBlocks(P, L)` pure function (K2 PR 1/4)](117-pypto-alltoallv-calblocks-fn.md)"
     },
     {
       "plan": "77",
@@ -511,22 +593,28 @@
       "title": "[Migrate pypto codegen from `pto.barrier` workarounds to PTOAS v0.50+ explicit fence](67-pypto-ptoas-fence-migration.md)"
     },
     {
+      "plan": "57",
+      "repo": "pypto",
+      "prs": "[#2160](https://github.com/hw-native-sys/pypto/pull/2160)",
+      "title": "[ReduceOp::Max/Min/Prod for allreduce](57-pypto-non-sum-reduce-ops.md)"
+    },
+    {
       "plan": "58",
       "repo": "pypto",
       "prs": "[#2275](https://github.com/hw-native-sys/pypto/pull/2275)",
       "title": "[pl.* ergonomic wrapper DSL API](58-pypto-ergonomic-pl-collective-api.md)"
     },
     {
-      "plan": "63",
-      "repo": "simpler",
-      "prs": "[#2102](https://github.com/hw-native-sys/simpler/pull/2102)",
-      "title": "[ReduceOp::Max/Min/Prod for simpler hand-written kernels](63-simpler-reduce-op-max-min-prod.md)"
-    },
-    {
       "plan": "72",
       "repo": "pypto",
       "prs": "[#2247](https://github.com/hw-native-sys/pypto/pull/2247)",
       "title": "[Property verifier hardening](72-pypto-property-verifier-hardening.md)"
+    },
+    {
+      "plan": "70",
+      "repo": "pypto",
+      "prs": "[#2792](https://github.com/hw-native-sys/pypto/pull/2792)",
+      "title": "[Split LowerCompositeOps](70-pypto-split-lower-composite-ops.md)"
     }
   ]
 }

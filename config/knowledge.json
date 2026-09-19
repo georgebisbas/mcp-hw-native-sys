@@ -63,7 +63,7 @@
     "pypto-lib/overview": {
       "paths": [
         "pypto-lib/README.md",
-        "pypto-lib/docs/pypto-coding/pypto-coding-style.md"
+        "pypto-lib/docs/pypto-coding/index.md"
       ],
       "max_chars": 4000
     },
@@ -450,7 +450,7 @@
     "large_model_inference": {
       "description": "pypto-lib models, golden harness, inference paths",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
+        "pypto-lib/docs/pypto-coding/index.md",
         "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md",
         "pypto-lib/docs/debug-and-tune/debugging.md"
       ],
@@ -520,7 +520,7 @@
     "pypto_lib": {
       "description": "Model zoo, kernels, golden validation harness",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding/pypto-coding-style.md",
+        "pypto-lib/docs/pypto-coding/index.md",
         "pypto-lib/docs/run-and-validate/compile-runtime-workflow.md"
       ],
       "read_first_enriched": [
@@ -537,7 +537,7 @@
     "pypto_lib_building_blocks": {
       "description": "What building blocks / ops / models exist in pypto-lib and whether each is single-device or has distributed (multi-NPU) support",
       "read_first_canonical": [
-        "pypto-lib/docs/pypto-coding/pypto-coding-style.md"
+        "pypto-lib/docs/pypto-coding/index.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/pypto-lib-status/README.md",

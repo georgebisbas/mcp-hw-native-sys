@@ -33,7 +33,7 @@
       "role": "Model zoo and golden validation harness on pypto",
       "layer": "applications",
       "outputs": ["compiled models", "golden test results"],
-      "canonical_docs": ["pypto-lib/docs/pypto-coding/pypto-coding-style.md"],
+      "canonical_docs": ["pypto-lib/docs/pypto-coding/index.md"],
       "agent_rules": ["pypto-lib/.claude/CLAUDE.md"]
     },
     "pypto-3.0-notes": {
