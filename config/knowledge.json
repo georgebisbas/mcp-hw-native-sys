@@ -256,6 +256,8 @@
     "pass_infrastructure": "pypto-3.0-notes/infrastructure/pass_infrastructure.md",
     "codegen_infrastructure": "pypto-3.0-notes/infrastructure/codegen_infrastructure.md",
     "dependency_triangle": "pypto-3.0-notes/architecture/dependency_triangle.md",
+    "runtime_scheduler": "pypto-3.0-notes/architecture/runtime_scheduler.md",
+    "runtime_scheduler_lesson": "pypto-3.0-notes/architecture/runtime_scheduler_lesson.md",
     "notes_simpler": "pypto-3.0-notes/simpler/notes_simpler.md",
     "kernel_orchestration": "pypto-3.0-notes/architecture/kernel_orchestration.md",
     "stack_availability": "pypto-3.0-notes/collectives_benchmarking/stack_availability.md",
@@ -507,6 +509,8 @@
         "simpler/docs/orchestrator.md"
       ],
       "read_first_enriched": [
+        "pypto-3.0-notes/architecture/runtime_scheduler.md",
+        "pypto-3.0-notes/architecture/runtime_scheduler_lesson.md",
         "pypto-3.0-notes/simpler/notes_simpler.md"
       ],
       "rules": [
@@ -515,7 +519,7 @@
       ],
       "entrypoint_areas": ["simpler:orchestrator", "simpler:worker"],
       "verify_tasks": ["pypto-lib:example_hello_sim", "simpler:test_sim"],
-      "resources": ["simpler/overview", "flows/compile_to_device", "ascend/hardware"]
+      "resources": ["simpler/overview", "notes/runtime_scheduler", "notes/runtime_scheduler_lesson", "flows/compile_to_device", "ascend/hardware"]
     },
     "pypto_lib": {
       "description": "Model zoo, kernels, golden validation harness",
