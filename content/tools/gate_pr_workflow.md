@@ -80,4 +80,4 @@ After the script completes successfully, the MCP tool returns `agent_instruction
 
 - `tools/sim_docker_workflow` — sim Docker iteration rules
 - `ascend/hccl_container_checklist` — NPU/container verification checklist
-- `hw-native-sys://agent/distributed_work_policy` — agent guardrails for distributed work
+- `hw-native-sys://agent/distributed_work_policy` — distributed-ST sim known failures, hang traps, and what sim cannot model

@@ -227,7 +227,7 @@ Each prompt returns a short markdown playbook naming the exact tool-call sequenc
 | Sim UT gate | `pypto-docker:host_collectives_ut_sim` |
 | NPU ST (developer) | `pypto:host_collectives_st_npu` |
 
-Read `hw-native-sys://agent/distributed_work_policy` and `hw-native-sys://notes/host_collectives` before resuming fork work in this area.
+Read `hw-native-sys://notes/host_collectives` before resuming fork work in this area, and `hw-native-sys://agent/distributed_work_policy` (sim known failures) before running distributed STs in sim.
 
 ## Configuration files
 

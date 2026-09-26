@@ -1,20 +1,12 @@
 {
-  "last_verified": "2026-09-19 (run `tools/sync_status_prs.sh`)",
+  "last_verified": "2026-09-25 (run `tools/sync_status_prs.sh`)",
   "dashboard": {
-    "open": 12,
-    "merged_all": 65,
-    "merged_90d": 51,
-    "closed": 22
+    "open": 13,
+    "merged_all": 67,
+    "merged_90d": 49,
+    "closed": 26
   },
   "open_prs": [
-    {
-      "pr": "#323",
-      "title": "fix(tnotify): word-safe packed NotifyOp::Set on a2a3",
-      "branch": "fix-tnotify-set-packed-false-share",
-      "ci": "\u2705",
-      "notes": "[323-tnotify-set-packed-false-share](../pull_requests/323-tnotify-set-packed-false-share.md)",
-      "repo": "pto-isa"
-    },
     {
       "pr": "#2275",
       "title": "[RFC] feat(distributed): ergonomic pld.* collective ...",
@@ -56,34 +48,50 @@
       "repo": "pypto"
     },
     {
-      "pr": "#2738",
-      "title": "perf(collectives): flat single-AIV TPUT for all_to_a...",
-      "branch": "feat/all-to-all-v-flat-tput",
-      "ci": "\u274c",
-      "notes": "\u2014",
-      "repo": "pypto"
-    },
-    {
-      "pr": "#2743",
-      "title": "feat(distributed): add cal_all_to_all_v_blocks launc...",
-      "branch": "feat/all-to-all-v-cal-blocks",
-      "ci": "\u274c",
-      "notes": "\u2014",
-      "repo": "pypto"
-    },
-    {
       "pr": "#2792",
       "title": "refactor(ir): extract LoweringBuilder from lower_com...",
       "branch": "refactor/split-lower-composite-ops",
+      "ci": "\u274c",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2900",
+      "title": "feat(collectives): multi-AIV lane-mapped all_to_all_...",
+      "branch": "feat/all-to-all-v-multiaiv-lanes",
+      "ci": "\u2705",
+      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md)",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2901",
+      "title": "fix(jit): generalize @pl.jit metadata dispatch past ...",
+      "branch": "fix/2638-jit-pld-tensor-metadata",
+      "ci": "\u2705",
+      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md)",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2904",
+      "title": "docs(distributed): fix and refresh the existing coll...",
+      "branch": "docs/refresh-collectives-ladder",
+      "ci": "\u274c",
+      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md)",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2905",
+      "title": "docs: document the pl.unroll 1024-iteration trip-cou...",
+      "branch": "docs/unroll-trip-count-cap",
       "ci": "\u2705",
       "notes": "\u2014",
       "repo": "pypto"
     },
     {
-      "pr": "#2828",
-      "title": "feat(collectives): pull all_to_all_v counts from eac...",
-      "branch": "feat/a2av-counts-from-sendcounts",
-      "ci": "\u2705",
+      "pr": "#2908",
+      "title": "test(collectives): cover InCore allgather at a runti...",
+      "branch": "tests/incore-allgather-runtime-width",
+      "ci": "\u274c",
       "notes": "\u2014",
       "repo": "pypto"
     },
@@ -99,7 +107,7 @@
       "pr": "#2120",
       "title": "Add: Worker.detach_persistent_domain public retentio...",
       "branch": "feat/persistent-domain-detach-api",
-      "ci": "\u2705",
+      "ci": "\u274c",
       "notes": "\u2014",
       "repo": "simpler"
     }
@@ -281,10 +289,28 @@
       "title": "[InCore composites under `pl.spmd` \u2014 reject unguarded multi-core use](92-pypto-incore-composite-spmd-partitioning.md)"
     },
     {
+      "plan": "93",
+      "repo": "pypto",
+      "prs": "[#2682](https://github.com/hw-native-sys/pypto/pull/2682)",
+      "title": "[Split-phase InCore composites \u2014 defer the wait](93-pypto-split-phase-composites.md)"
+    },
+    {
       "plan": "95",
       "repo": "pypto",
       "prs": "[#2213](https://github.com/hw-native-sys/pypto/pull/2213)",
       "title": "[`allgather_v` / `reduce_scatter_v` \u2014 runtime per-rank counts](95-pypto-allgather-v-reduce-scatter-v.md)"
+    },
+    {
+      "plan": "122",
+      "repo": "pypto",
+      "prs": "[#2908](https://github.com/hw-native-sys/pypto/pull/2908)",
+      "title": "[InCore `allgather` over a runtime-uniform width \u2014 verify, then close](122-pypto-incore-allgather-runtime-uniform-width.md)"
+    },
+    {
+      "plan": "108",
+      "repo": "pypto",
+      "prs": "[#2703](https://github.com/hw-native-sys/pypto/pull/2703)",
+      "title": "[Expose `TPUT_ASYNC` to the PyPTO DSL \u2014 InCore async remote put](108-pypto-tput-async-dsl-op.md)"
     },
     {
       "plan": "110",
@@ -296,7 +322,13 @@
       "plan": "117",
       "repo": "pypto",
       "prs": "[#2743](https://github.com/hw-native-sys/pypto/pull/2743)",
-      "title": "[`CalAllToAllVBlocks(P, L)` pure function (K2 PR 1/4)](117-pypto-alltoallv-calblocks-fn.md)"
+      "title": "[`CalAllToAllVBlocks(P, L)` pure function (K2 \u2014 **folded into 120**)](117-pypto-alltoallv-calblocks-fn.md)"
+    },
+    {
+      "plan": "113",
+      "repo": "pypto",
+      "prs": "[#2889](https://github.com/hw-native-sys/pypto/pull/2889)",
+      "title": "[Multi-AIV lane mapping + per-lane sync protocol for all_to_all_v](113-pypto-alltoallv-multiaiv-lane-mapping.md)"
     },
     {
       "plan": "77",

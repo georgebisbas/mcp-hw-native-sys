@@ -1055,7 +1055,7 @@ def register_knowledge(mcp: FastMCP) -> None:
 5. verify_ladder(changed_paths=[...]) → run agent_verify_tasks only.
 
 ## Context to read first
-- Host collectives: hw-native-sys://agent/distributed_work_policy and hw-native-sys://notes/host_collectives
+- Host collectives: hw-native-sys://notes/host_collectives; sim known failures / limits: hw-native-sys://agent/distributed_work_policy
 - Collectives parity: hw-native-sys://notes/stack_availability
 
 ## Gates

@@ -1,22 +1,4 @@
 {
-  "absf": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "",
-    "paths": [
-      "PTOAS/include/PTO/IR/VPTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "uncategorized"
-    ]
-  },
   "addptr": {
     "description": "Computes a new pointer by adding an element offset to the base pointer. The offset is in elements (not bytes).",
     "docs_canonical": [],
@@ -104,7 +86,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Scalar pointer load/store"
+      "Pointer/View Ops (for your front-end IR)"
     ]
   },
   "atomic_add": {
@@ -306,12 +288,12 @@
     ]
   },
   "bitcast": {
-    "description": "Returns a tile buffer view with a different element type (dtype) while reusing the same underlying storage as the source. This op is a metadata/config rewrite only (no data movement).",
+    "description": "For tile buffers, returns a view with a different element type while reusing the same underlying storage as the source. For scalar and builtin vector values, reinterprets each value using an equal-width integer or floating-point type without numeric conversion. This operation does not change the underlying bits.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "SSA dtype reinterpretation of a tile buffer view (aliases src storage)",
+    "one_liner": "Bitwise reinterpretation of a value or tile buffer view",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -647,24 +629,6 @@
       "TPUSH/TPOP Pipe Communication Ops"
     ]
   },
-  "convert": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "",
-    "paths": [
-      "PTOAS/include/PTO/IR/VPTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "uncategorized"
-    ]
-  },
   "copy_cbuf_to_bt": {
     "description": "",
     "docs_canonical": [],
@@ -935,6 +899,24 @@
       "uncategorized"
     ]
   },
+  "ctrl_state_guard": {
+    "description": "Wraps a raw MAD consumer with a statically known temporary CTRL requirement. With the entry logical CTRL `E`, `controlled_bits (C)` and `required_bits (R)`, the consumer executes under `A = (E & ~C) | R`; bits outside `C` inherit `E`, and the logical state after the guard is `E` again. The guard only records semantics; hardware `get_ctrl`/`set_ctrl` materialization is decided by the CTRL state optimization pass. This op exists only between MAD semantic expansion and emission validation and must not survive into emission-stage IR.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Guard a temporary CTRL requirement for one consumer region",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
   "dcci": {
     "description": "Lowers to the `llvm.hivm.DCCI*` intrinsic family. The pointer address space selects the intrinsic variant: GM pointers use `DCCI` / `DCCI.DST`; UB pointers use `DCCI.UB` / `DCCI.DST.UB`.",
     "docs_canonical": [],
@@ -990,7 +972,7 @@
     ]
   },
   "declare_local_array": {
-    "description": "Lowers to a plain C++ stack variable like `T a[d1][d2]...;`. The element type is restricted to scalars (integer / float); no nested aggregates. This op does not participate in PTO memory planning. The resulting array's address is determined by the host C++ compiler.",
+    "description": "Lowers to ordinary function-local stack storage, such as a C++ variable `T a[d1][d2]...;` or an equivalent LLVM allocation. The element type is restricted to scalars (integer / float); no nested aggregates. This op does not participate in PTO memory planning.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -1170,42 +1152,6 @@
     ]
   },
   "fma": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "",
-    "paths": [
-      "PTOAS/include/PTO/IR/VPTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "uncategorized"
-    ]
-  },
-  "fmax": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "",
-    "paths": [
-      "PTOAS/include/PTO/IR/VPTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "uncategorized"
-    ]
-  },
-  "fmin": {
     "description": "",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
@@ -1529,6 +1475,24 @@
       "uncategorized"
     ]
   },
+  "get_l2_cache_offset": {
+    "description": "Returns the byte offset configured by the runtime for L2 cache address mapping.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "Get the runtime L2 cache address offset.",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "DMA Ops"
+    ]
+  },
   "get_laneid": {
     "description": "",
     "docs_canonical": [],
@@ -1706,7 +1670,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Scalar pointer load/store"
+      "Pointer/View Ops (for your front-end IR)"
     ]
   },
   "get_tensor_view_stride": {
@@ -1724,7 +1688,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Scalar pointer load/store"
+      "Pointer/View Ops (for your front-end IR)"
     ]
   },
   "get_tid_x": {
@@ -1907,24 +1871,6 @@
       "TPUSH/TPOP Pipe Communication Ops"
     ]
   },
-  "inttoptr": {
-    "description": "Converts an i64 byte address to a global pointer of the requested element type. This is an escape hatch for explicit byte-address arithmetic and cross-element-type pointer reinterpretation. To keep byte-address-derived pointers from escaping into general pointer IR, the result may only be used directly as the pointer operand of `pto.load_scalar` or `pto.store_scalar`.",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Convert an i64 byte address to a global pointer",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Pointer/View Ops (for your front-end IR)"
-    ]
-  },
   "keep": {
     "description": "",
     "docs_canonical": [],
@@ -1985,7 +1931,7 @@
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Load one scalar element from a VPTO pointer-like operand.",
+    "one_liner": "Load one scalar or contiguous vector value from a VPTO pointer-like operand.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2105,24 +2051,6 @@
       "uncategorized"
     ]
   },
-  "load_scalar": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Load a single scalar element from a pointer at offset.",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Scalar pointer load/store"
-    ]
-  },
   "local_array_get": {
     "description": "Lowers to a scalar snapshot initialized from `a[i0][i1]...[iN-1]` in the emitted C++. This preserves SSA value semantics if the array is mutated later. The number of indices must equal the array's rank.",
     "docs_canonical": [],
@@ -2178,12 +2106,12 @@
     ]
   },
   "mad": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2196,12 +2124,12 @@
     ]
   },
   "mad_acc": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2214,12 +2142,12 @@
     ]
   },
   "mad_bias": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2250,12 +2178,12 @@
     ]
   },
   "mad_mx": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2268,12 +2196,12 @@
     ]
   },
   "mad_mx_acc": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2286,12 +2214,12 @@
     ]
   },
   "mad_mx_bias": {
-    "description": "",
+    "description": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Semantic cube matmul. The four optional runtime flag operands (`unit_flag_value`, `acc_init_value`, `disable_gemv_value`, `bias_init_value`) take precedence over the corresponding static semantics encoded by the op kind and attributes: a present operand is packed into the xt immediate at expansion time and overrides the kind-selected cmatrix_init/cmatrix_source bit or the static flag. This is what lets a frontend emit one op for a data-dependent choice (e.g. `mad_acc` plus `acc_init` selecting clear-vs-accumulate at runtime). An operand and the same-named static clause (unit_flag/disable_gemv) are mutually exclusive; runtime-vs-kind overlap (acc_init on `mad`, bias_init on `mad_bias`) is the documented override, not an error.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -2390,7 +2318,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Scalar pointer load/store"
+      "Pointer/View Ops (for your front-end IR)"
     ]
   },
   "mem_bar": {
@@ -2822,7 +2750,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Scalar pointer load/store"
+      "Pointer/View Ops (for your front-end IR)"
     ]
   },
   "pbitcast": {
@@ -3383,24 +3311,6 @@
       "uncategorized"
     ]
   },
-  "ptrtoint": {
-    "description": "Converts a global pointer value to an i64 byte address. Pointer arithmetic such as `pto.addptr` remains explicit until backend lowering.",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Convert a global pointer to a byte address",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Pointer/View Ops (for your front-end IR)"
-    ]
-  },
   "punpack": {
     "description": "",
     "docs_canonical": [],
@@ -3473,7 +3383,7 @@
       "High-Level Synchronization Ops"
     ]
   },
-  "redux_add": {
+  "redux_addf": {
     "description": "",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
@@ -3491,7 +3401,7 @@
       "uncategorized"
     ]
   },
-  "redux_max": {
+  "redux_addi": {
     "description": "",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
@@ -3509,7 +3419,61 @@
       "uncategorized"
     ]
   },
-  "redux_min": {
+  "redux_maxf": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "redux_maxi": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "redux_minf": {
+    "description": "",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "",
+    "paths": [
+      "PTOAS/include/PTO/IR/VPTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "uncategorized"
+    ]
+  },
+  "redux_mini": {
     "description": "",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
@@ -4032,7 +3996,7 @@
     ]
   },
   "set_intra_block": {
-    "description": "Lowers to `__builtin_cce_set_intra_block`.",
+    "description": "Signals the event on the specified pipeline within the block. EmitC uses the public `set_intra_block` interface on A5 and FFTS mode 2 on A2/A3.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -4320,7 +4284,7 @@
     ]
   },
   "set_quant_vector": {
-    "description": "Producer-side vector quantization configuration for fixpipe TPUSH. Binds a vector quant payload (scaling tile) to a logical pipe id. The input tile must have loc=scaling. A5 consumes a direct scaling payload with an element type in the f16/bf16/f32 family; A3 consumes a packed 64-bit integer payload (i64/ui64). This binding persists until overwritten by another set_quant_vector with the same id. Used by vector quant modes: deqf16_vec, req8_vec, qf322b8_pre_vec, qs322bf16_pre_vec.",
+    "description": "Producer-side vector quantization configuration for fixpipe TPUSH. Binds a vector quant payload (scaling tile) to a logical pipe id. The input tile must have loc=scaling and use a packed 64-bit integer payload (i64/ui64/si64), including the packed VDEQF16 format used by pto-isa. SET_QUANT_VECTOR passes each column directly as a hardware control word; floating-point payloads are not converted to this format. This binding persists until overwritten by another set_quant_vector with the same id. Used by vector quant modes: deqf16_vec, req8_vec, qf322b8_pre_vec, qs322bf16_pre_vec.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -4613,7 +4577,7 @@
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Store one scalar element to a VPTO pointer-like operand.",
+    "one_liner": "Store one scalar or contiguous vector value to a VPTO pointer-like operand.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -4623,24 +4587,6 @@
     "source": "generated",
     "tags": [
       "uncategorized"
-    ]
-  },
-  "store_scalar": {
-    "description": "",
-    "docs_canonical": [],
-    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
-    "kind": "ir_op",
-    "layer": "ptoas/ir",
-    "one_liner": "Store a single scalar element to a pointer at offset.",
-    "paths": [
-      "PTOAS/include/PTO/IR/PTOOps.td"
-    ],
-    "repos": [
-      "PTOAS"
-    ],
-    "source": "generated",
-    "tags": [
-      "Scalar pointer load/store"
     ]
   },
   "store_vfsimt_info": {
@@ -5399,6 +5345,24 @@
       "PTO_TOPs(Tilebuffer, DPS)"
     ]
   },
+  "tdeinterleave": {
+    "description": "The two-source form de-interleaves two source tiles with matching valid shapes. The single-source form de-interleaves one source tile into two destination tiles whose valid column count is half the source count.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "TDEINTERLEAVE: De-interleave one or two source tiles into two destination tiles.",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "PTOOps.td  (add TROWSUM TBDPS/tile buffer op)"
+    ]
+  },
   "tdequant": {
     "description": "Converts an integer (int8 or int16) src tile to float32, applying per-row scale and offset parameters held in the scale and offset tiles. Formula: dst[i][j] = (float(src[i][j]) - offset[i][0]) * scale[i][0] The scale and offset tiles are row-vectors: one f32 value per row is broadcast across all columns of that row. DPS form: pto.tdequant ins(%src, %scale, %offset : <src_type>, <scale_type>, <offset_type>) outs(%dst : <dst_type>)",
     "docs_canonical": [],
@@ -5634,12 +5598,12 @@
     ]
   },
   "tgather": {
-    "description": "",
+    "description": "Index and compare forms accept an optional temporary tile. Level1/level2 supply omitted scratch tiles when needed. Level3 requires an explicit tmp for compare forms and A2/A3 index forms. A5 index and mask-pattern forms need no tmp.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Gather/select elements using index+tmp, scalar-compare+tmp, or a mask pattern (tilebuf, DPS)",
+    "one_liner": "Gather/select elements using indices, scalar comparison, or a mask pattern (tilebuf, DPS)",
     "paths": [
       "PTOAS/include/PTO/IR/PTOOps.td"
     ],
@@ -5939,8 +5903,26 @@
       "PTOOps.td  (TPOWS: elementwise tile-scalar power, DPS, tmp scratch optional)"
     ]
   },
+  "tinterleave": {
+    "description": "Interleaves src0 and src1 and splits the result into dst0 and dst1. The operation uses the same valid shape for all four tiles.",
+    "docs_canonical": [],
+    "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
+    "kind": "ir_op",
+    "layer": "ptoas/ir",
+    "one_liner": "TINTERLEAVE: Interleave two source tiles into two destination tiles.",
+    "paths": [
+      "PTOAS/include/PTO/IR/PTOOps.td"
+    ],
+    "repos": [
+      "PTOAS"
+    ],
+    "source": "generated",
+    "tags": [
+      "PTOOps.td  (add TROWSUM TBDPS/tile buffer op)"
+    ]
+  },
   "tload": {
-    "description": "Loads data from a high-dimensional logical partition view into a 2D physical tile buffer. Constraint: The product of partition view sizes must match the product of tile buffer valid dims. DPS form: pto.tload ins(%partition_view) outs(%tile_buf)",
+    "description": "Loads data from a high-dimensional logical partition view into a 2D physical tile buffer. Constraint: The product of partition view sizes must match the product of tile buffer valid dims. DPS form: pto.tload ins(%partition_view) outs(%tile_buf) The optional offset is a byte displacement added to the source address only when cache_policy is l2_bypass. It defaults to zero and does not change the source view's shape, strides, or layout.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",
@@ -7650,12 +7632,12 @@
     ]
   },
   "vcadd": {
-    "description": "",
+    "description": "Full-vector sum reduction for 16/32-bit integers (signed, unsigned, or signless), f16, and f32. Eight-bit integer inputs are unsupported and rejected by the verifier; callers must explicitly convert to a supported type before reducing. A 16-bit integer input produces a 32-bit integer result with the same signedness and half as many lanes. Other supported inputs preserve the vector type.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Full-vector sum reduction for 16/32-bit integers (signed, unsigned, or signless), f16, and f32. Eight-bit integer inputs are unsupported and rejected by the verifier; callers must explicitly convert to a supported type before reducing. A 16-bit integer input produces a 32-bit integer result with the same signedness and half as many lanes. Other supported inputs preserve the vector type.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -7992,12 +7974,12 @@
     ]
   },
   "vexpdif": {
-    "description": "",
+    "description": "`part` selects which 16-bit half of every 32-bit lane feeds the mixed precision subtraction. An `f16` source packs two elements per 32-bit lane, so one instruction consumes only one half of the source storage and must select `\"EVEN\"` or `\"ODD\"` explicitly. An `f32` source is covered by a single instruction that computes the whole vector, and the selection is a hardware contract value that the result does not observe, so `part` may be omitted there.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Fused exp(input - max) for numerically stable softmax",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -8010,12 +7992,12 @@
     ]
   },
   "vgather2": {
-    "description": "",
+    "description": "Masked indexed gather from a UB-backed source. For 8-bit integer sources the result is a 16-bit integer (i8/ui8 -> i16/ui16) produced by zero-extension (one byte per lane, upper 8 bits zero-filled). Sign-extension is not performed.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "Masked indexed gather from a UB-backed source. For 8-bit integer sources the result is a 16-bit integer (i8/ui8 -> i16/ui16) produced by zero-extension (one byte per lane, upper 8 bits zero-filled). Sign-extension is not performed.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -9144,7 +9126,7 @@
     ]
   },
   "wait_intra_block": {
-    "description": "Lowers to `__builtin_cce_wait_intra_block`.",
+    "description": "Waits for the event on the specified pipeline within the block. EmitC uses the public `wait_intra_block` interface on A5 and FFTS mode 2 on A2/A3.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/PTOOps.td",
     "kind": "ir_op",

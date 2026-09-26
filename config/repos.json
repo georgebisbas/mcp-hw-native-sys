@@ -91,6 +91,20 @@
       "outputs": [],
       "canonical_docs": ["pypto_top_level_documents/pypto-runtime-arch-docs/00-index.md"],
       "agent_rules": []
+    },
+    "pypto-tools": {
+      "role": "PyPTO3 VS Code Toolkit: chip swimlane viewer, task dependency graph, per-function perf table over dfx_outputs/deps.json",
+      "layer": "tooling",
+      "outputs": ["VS Code extension package", "docs site source"],
+      "canonical_docs": ["pypto-tools/README.md", "pypto-tools/docs/en/index.md"],
+      "agent_rules": []
+    },
+    "pypto.wiki": {
+      "role": "GitHub wiki clone: weekly project-changes log (human-narrated, not git history)",
+      "layer": "notes",
+      "outputs": [],
+      "canonical_docs": ["pypto.wiki/Home.md", "pypto.wiki/Weekly-Changes.md"],
+      "agent_rules": []
     }
   },
   "repositories": {
@@ -104,6 +118,8 @@
     "pypto-profiling": "pypto-profiling",
     "pypto-skills": "pypto-skills",
     "pypto-tooling": "pypto-tooling",
+    "pypto-tools": "pypto-tools",
+    "pypto.wiki": "pypto.wiki",
     "pypto_top_level_documents": "pypto_top_level_documents",
     "pytorch-hccl-tests": "pytorch-hccl-tests",
     "simpler": "simpler"

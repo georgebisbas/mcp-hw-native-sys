@@ -314,7 +314,7 @@
     ],
     "docs_enriched": [
       "pypto-3.0-notes/memories/host_collectives.md",
-      "pypto-3.0-notes/agent/distributed_work_policy.md"
+      "pypto-3.0-notes/abstractions/pld.tensor_host.allreduce.md"
     ],
     "rules": [],
     "related": [
@@ -1139,7 +1139,7 @@
     ],
     "docs_enriched": [
       "pypto-3.0-notes/memories/host_collectives.md",
-      "pypto-3.0-notes/agent/distributed_work_policy.md",
+      "pypto-3.0-notes/abstractions/pld.tensor_host.allreduce.md",
       "pypto-3.0-notes/abstractions/composite_collectives.md"
     ],
     "rules": [],
