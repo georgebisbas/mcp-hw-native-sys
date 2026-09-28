@@ -1,6 +1,6 @@
 # hw-native-sys MCP server
 
-A local Model Context Protocol (MCP) server for full-stack compiler development across the hw-native-sys workspace. It combines **operations** (git health, code search, running named tasks) with a **knowledge layer** (architecture docs, task routing, an abstraction index, pass pipeline info, cross-repo status) so an agent — or you — can get oriented on `pypto → PTOAS → pto-isa → simpler → pypto-lib` in one or two calls instead of grepping five repos by hand.
+A local Model Context Protocol (MCP) server for full-stack compiler development across the hw-native-sys workspace. It combines **operations** (git health, code search, running named tasks) with a **knowledge layer** (architecture docs, task routing, an abstraction index, pass pipeline info, cross-repo status) so an agent — or you — can get oriented in one or two calls instead of grepping five repos by hand. pypto-lib is the model layer and compiles through pypto. InCore kernels then lower `pypto → PTOAS → pto-isa` and run on simpler; orchestration goes `pypto → simpler` directly.
 
 This doc is the full reference: setup, every tool/resource/prompt, the config files behind them, how the knowledge index is built and kept honest, and how to extend the server yourself.
 
