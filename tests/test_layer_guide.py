@@ -2,9 +2,17 @@
 
 from __future__ import annotations
 
+import pytest
+
 from mcp_hwnative_sys.layer_guide import layer_guide_impl
 
 
+def test_unknown_framework_layer_is_rejected():
+    with pytest.raises(ValueError, match="Unknown framework layer"):
+        layer_guide_impl("not-a-layer")
+
+
+@pytest.mark.workspace
 def test_simpler_guide_includes_scheduler_docs_skills_and_rules():
     guide = layer_guide_impl("simpler")
     blob = " ".join(item["path"] for item in guide["docs"]["canonical"])
@@ -15,6 +23,7 @@ def test_simpler_guide_includes_scheduler_docs_skills_and_rules():
     assert ".claude/rules/ascend.md" in rule_paths
 
 
+@pytest.mark.workspace
 def test_ptoas_guide_includes_rule_files_beyond_claude():
     guide = layer_guide_impl("ptoas")
     rule_paths = [item["path"] for item in guide["rules"]]
@@ -23,6 +32,7 @@ def test_ptoas_guide_includes_rule_files_beyond_claude():
     assert len(rule_paths) > 1
 
 
+@pytest.mark.workspace
 def test_all_covers_five_framework_layers():
     guide = layer_guide_impl("all")
     names = [item["layer"] for item in guide["layers"]]
