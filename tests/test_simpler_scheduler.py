@@ -5,14 +5,14 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from mcp_hwnative_sys.paths import workspace_root
+from mcp_hwnative_sys.scheduler import explain_scheduler_impl
+
 TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
 from build_simpler_scheduler_index import build_scheduler_index  # noqa: E402
-
-from mcp_hwnative_sys.paths import workspace_root
-from mcp_hwnative_sys.scheduler import explain_scheduler_impl
 
 
 def test_index_keeps_hierarchical_and_arch_trees_distinct():

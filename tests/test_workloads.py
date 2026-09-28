@@ -5,13 +5,13 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from mcp_hwnative_sys.paths import workspace_root
+
 TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
 from build_pypto_lib_workloads import build_workloads  # noqa: E402
-
-from mcp_hwnative_sys.paths import workspace_root
 
 
 def test_catalog_includes_models_from_the_index():
