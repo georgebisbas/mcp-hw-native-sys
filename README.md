@@ -19,7 +19,9 @@ This doc is the full reference: setup, every tool/resource/prompt, the config fi
 | `pypto-tooling` | Umbrella: agent skills, runbooks, task-submit doc |
 | `pypto-skills` | Shared agent-skill plugins (`pypto-user`, `pypto-developer`) |
 | `pypto-docker` | Docker images and build scripts for the pypto stack (this server's sim images) |
-| `pypto-profiling` | Personal collective benchmark harness (pypto vs simpler vs HCCL) |
+| `pypto-profiling` | Collective benchmark harness (pypto vs simpler vs HCCL) |
+| `pypto-tools` | VS Code toolkit: chip swimlane viewer, task dependency graph, perf table over dfx outputs |
+| `pypto.wiki` | Wiki clone: weekly project-changes log |
 | `mcp-hw-native-sys` | This MCP server |
 
 ## Setup
@@ -40,8 +42,8 @@ Requires Python ≥ 3.10, the `mcp` package (installed by the command above), an
 The server needs to know where the sibling repos live. In order of precedence:
 
 1. `HW_NATIVE_SYS_ROOT` env var, if set.
-2. `config/repos.json`'s `"workspace_root"` field (checked in as `".."`, i.e. one directory up from `mcp-hw-native-sys/` — this is what makes the server work out of the box for the standard checkout layout).
-3. Fallback: `project_root().parents[1]`.
+2. `config/repos.json`'s `"workspace_root"` field. It is checked in as `".."`, resolved from this repo, so the parent directory that holds the sibling repos. That is the path a normal checkout uses.
+3. Fallback, only when `workspace_root` is empty: `project_root().parents[1]` (the parent of that workspace directory, not the workspace itself).
 
 You generally don't need to set `HW_NATIVE_SYS_ROOT` unless you're running the server from a copy that isn't in its usual place relative to the sibling repos.
 
@@ -249,6 +251,7 @@ Each prompt returns a short markdown playbook naming the exact tool-call sequenc
 | `npu_tuning` | Performance tuning: block_dim, swimlanes, PMU, arch-specific backend handlers |
 | `npu_verify_handoff` | Developer NPU verification handoff — container checkout, HCCL STs, record SHA |
 | `hccl_bandwidth` | PyTorch/HCCL collective + p2p bandwidth benchmarking via `pytorch-hccl-tests` |
+| `dockerfile_sync` | Sync Dockerfile SHA pins to latest `origin/main` for the stack repos |
 
 `route_task` returns **`agent_verify_tasks`** (safe for an agent to run, e.g. sim-Docker UTs) separately from **`developer_verify_tasks`** (NPU/hardware-gated — an agent must never run these; they're for the human developer, typically via `generate_verify_handoff`).
 
@@ -276,7 +279,7 @@ Read `hw-native-sys://notes/host_collectives` before resuming fork work in this 
 | `config/passes_index.json` | Default pipeline pass order, phase, verify tasks | **Generated** by `tools/build_knowledge_index.py` from `pypto/python/pypto/ir/pass_manager.py` — see caveat below |
 | `config/program_status.json` | Structured PR status | **Generated** by `tools/sync_status_to_json.py` from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `config/collective_status.json` | Structured collective-comm parity matrix | **Generated** by `tools/sync_collective_status_to_json.py` from `pypto-3.0-notes/distributed/current_status.md` |
-| `config/simpler_scheduler.json` | L0–L6, the three engines, and concrete scheduler trees | **Generated** by `tools/build_simpler_scheduler_index.py` from `simpler/src` directories named `scheduler` |
+| `config/simpler_scheduler.json` | L0–L6, the three engines, scheduler `.cpp`/`.h` trees, and completion schedulers | **Generated** by `tools/build_simpler_scheduler_index.py` from `simpler/src` (`.venv` is skipped) |
 | `config/pypto_lib_workloads.json` | Model workloads and prefill/decode kernel names | **Generated** by `tools/build_pypto_lib_workloads.py` from `pypto-lib/docs/models/index.md` and `models/` |
 | `content/ascend/*.md` | MCP-owned decision trees (platform, alignment, HCCL) | Hand-maintained |
 
@@ -284,9 +287,9 @@ All generated files are checked into git (so a fresh checkout works without a bu
 
 ### Provenance: curated vs. generated abstraction cards
 
-`load_abstractions()` merges four sources: `pto_isa_generated.json` and `ptoas_generated.json` first (broad, mechanical coverage), then `abstractions.json` and `ascend_abstractions.json` last — so **any hand-curated card always wins outright** on a name collision. `explain_abstraction` reports which one you got via its `source` field (`curated` or `generated`). Generated cards additionally carry `generated_from` (the exact source file scraped) so you can tell where a summary came from.
+`load_abstractions()` merges, in order: `pto_isa_generated.json`, `ptoas_generated.json`, the `cards` objects inside `simpler_scheduler.json` and `pypto_lib_workloads.json`, then `abstractions.json` and `ascend_abstractions.json`. **Any hand-curated card always wins outright** on an exact name collision. `explain_abstraction` reports which one you got via its `source` field (`curated` or `generated`). Generated instruction and op cards additionally carry `generated_from` (the exact source file scraped).
 
-Why this split exists: pto-isa and PTOAS have far more instructions/ops (~150 and ~510 respectively) than hand-curated cards cover (~70 combined). Rather than leave the long tail undocumented, the generators mechanically extract what pto-isa/PTOAS already document about themselves (structured `manifest.yaml` entries, TableGen `let summary` fields) — lower-quality than hand curation, but far better than nothing, and it never silently overrides a hand-written card.
+Why this split exists: pto-isa and PTOAS have far more instructions/ops (about 150 and 510) than the hand-curated cards (about 80 combined). Rather than leave the long tail undocumented, the generators mechanically extract what pto-isa/PTOAS already document about themselves (structured `manifest.yaml` entries, TableGen `let summary` fields) — lower-quality than hand curation, but far better than nothing, and it never silently overrides a hand-written card.
 
 ### Maintaining the knowledge config
 
@@ -357,7 +360,7 @@ anonymously, so the workspace-dependent pieces run **locally** instead:
 bash tools/check_fresh.sh
 ```
 
-The pre-commit hook (below) runs all three on every local commit, so CI and
+The pre-commit hook above runs all three on every local commit, so CI and
 local together cover the full gate.
 
 ### Self-auditing: `knowledge_health`
@@ -368,6 +371,7 @@ Call `knowledge_health` any time you want a health check on the knowledge layer 
 - `stale_enriched` — enriched docs whose `last_verified` (from `pypto-3.0-notes/NOTES_FRESHNESS.md`) is more than 30 days old.
 - `coverage.pto_isa_indexed` / `coverage.ptoas_indexed` — how many generated cards currently exist, so index drift (e.g. after a pto-isa/PTOAS refactor) is visible without re-running the multi-agent audit that originally found this gap.
 - `pypto_pass_count` / `pypto_passes_index_warning` — whether the pass-pipeline scrape is currently healthy (see caveat above). Explicitly scoped to pypto — no other repo's pass pipeline is scraped, so don't read this as a cross-repo figure.
+- `scheduler_implementation_count` / `workload_count` / `catalog_issues` — whether the simpler scheduler index and the pypto-lib workload catalog exist and are non-empty.
 - `ascend_issues`, `last_index_build`, `ascend_route_count` — misc corpus checks.
 
 ## Task profile (operations)
