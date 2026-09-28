@@ -1,0 +1,1173 @@
+{
+  "workloads": [
+    {
+      "name": "deepseek",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/deepseek",
+      "summary": "",
+      "serving": "",
+      "doc": "",
+      "documented": false,
+      "kernels": []
+    },
+    {
+      "name": "deepseek_v4_1_flash",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/deepseek_v4_1_flash",
+      "summary": "DeepSeek V4.1 Flash TP4/DP2/EP8 scaffold with low-bit SWA/C2A/C1A caches, hierarchical indexer, mHC, and MoE",
+      "serving": "Not supported",
+      "doc": "pypto-lib/docs/models/deepseek_v4_1_flash/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "_golden_smoke.py",
+          "phase": "other"
+        },
+        {
+          "name": "attention_common.py",
+          "phase": "other"
+        },
+        {
+          "name": "attention_ops.py",
+          "phase": "other"
+        },
+        {
+          "name": "attention_sp.py",
+          "phase": "other"
+        },
+        {
+          "name": "attention_tp.py",
+          "phase": "other"
+        },
+        {
+          "name": "boundary_fwd.py",
+          "phase": "other"
+        },
+        {
+          "name": "compressor.py",
+          "phase": "other"
+        },
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "conftest.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_attn_c1a_full.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attn_c1a_reindex.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attn_c1a_reuse.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attn_c2a_full.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attn_c2a_reuse.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attn_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_c1a_full.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_c1a_reindex.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_c1a_reuse.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_c2a_full.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_c2a_reuse.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_common.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer_plan.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sp_integration.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "engram.py",
+          "phase": "other"
+        },
+        {
+          "name": "ep_transport.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_routed.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_shared.py",
+          "phase": "other"
+        },
+        {
+          "name": "gate.py",
+          "phase": "other"
+        },
+        {
+          "name": "golden.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_mixes.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_post.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_pre.py",
+          "phase": "other"
+        },
+        {
+          "name": "hierarchical_sparse_indexer.py",
+          "phase": "other"
+        },
+        {
+          "name": "input_pack.py",
+          "phase": "other"
+        },
+        {
+          "name": "lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "metadata.py",
+          "phase": "other"
+        },
+        {
+          "name": "moe.py",
+          "phase": "other"
+        },
+        {
+          "name": "o_proj.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_attn_c1a_full.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attn_c1a_reindex.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attn_c1a_reuse.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attn_c2a_full.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attn_c2a_reuse.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attn_swa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_common.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_full.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_indexer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_reindex.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_reuse.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_sp.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c1a_test_utils.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c2a_full.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_c2a_reuse.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_layer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_swa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "qkv_proj_rope.py",
+          "phase": "other"
+        },
+        {
+          "name": "quantization.py",
+          "phase": "other"
+        },
+        {
+          "name": "rmsnorm.py",
+          "phase": "other"
+        },
+        {
+          "name": "rope_tables.py",
+          "phase": "other"
+        }
+      ]
+    },
+    {
+      "name": "deepseek_v4_flash_dspark",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/deepseek_v4_flash_dspark",
+      "summary": "The same V4-Flash checkpoint at batch 64 per card and S = 8 DSpark speculation, with TP-sharded DSA-CP attention; under development",
+      "serving": "Not supported",
+      "doc": "pypto-lib/docs/models/deepseek_v4_flash_dspark/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_compressor_ratio128.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_compressor_ratio4.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_cp_allgather.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_csa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_fwd.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_fwd_dspark.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer_compressor.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_o_proj.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_prepare.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_csa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "dspark_attention.py",
+          "phase": "other"
+        },
+        {
+          "name": "dspark_context_kv.py",
+          "phase": "other"
+        },
+        {
+          "name": "dspark_drafter.py",
+          "phase": "other"
+        },
+        {
+          "name": "dspark_markov.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_routed.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_shared.py",
+          "phase": "other"
+        },
+        {
+          "name": "gate.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_post.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_pre.py",
+          "phase": "other"
+        },
+        {
+          "name": "lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "lookup_embedding.py",
+          "phase": "other"
+        },
+        {
+          "name": "markov_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "moe.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_compressor_ratio128.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_compressor_ratio4.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_cp_token_allgather.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_csa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_fwd.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_hca.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer_compressor.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_layer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_metadata.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_o_proj.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_sparse_attn.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_swa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "qkv_proj_rope.py",
+          "phase": "other"
+        },
+        {
+          "name": "rmsnorm.py",
+          "phase": "other"
+        },
+        {
+          "name": "rope_interleave.py",
+          "phase": "other"
+        },
+        {
+          "name": "utils.py",
+          "phase": "other"
+        }
+      ]
+    },
+    {
+      "name": "deepseek_v4_flash_mtp",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/deepseek_v4_flash_mtp",
+      "summary": "DeepSeek V4-Flash at MTP = 1, batch 4 per card: operators, layer and MTP compositions, prefill/decode full forwards",
+      "serving": "Supported \u2014 eight-card accuracy job on relevant PRs",
+      "doc": "pypto-lib/docs/models/deepseek_v4_flash_mtp/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_compressor_ratio128.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_compressor_ratio4.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_csa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_fwd.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_fwd_mtp.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer_compressor.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_moe.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_mtp.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_prepare.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_csa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "expert_routed.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_shared.py",
+          "phase": "other"
+        },
+        {
+          "name": "gate.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_post.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_pre.py",
+          "phase": "other"
+        },
+        {
+          "name": "lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "lookup_embedding.py",
+          "phase": "other"
+        },
+        {
+          "name": "mtp_projection.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_compressor_ratio128.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_compressor_ratio4.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_cp_exchange.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_cp_zigzag.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_csa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_fwd.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_hca.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer_compressor.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_layer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_moe.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_mtp.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_sparse_attn.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_swa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "qkv_proj_rope.py",
+          "phase": "other"
+        },
+        {
+          "name": "rmsnorm.py",
+          "phase": "other"
+        },
+        {
+          "name": "rope_interleave.py",
+          "phase": "other"
+        },
+        {
+          "name": "sample.py",
+          "phase": "other"
+        },
+        {
+          "name": "serving_contract.py",
+          "phase": "other"
+        },
+        {
+          "name": "utils.py",
+          "phase": "other"
+        }
+      ]
+    },
+    {
+      "name": "deepseek_v4_pro",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/deepseek_v4_pro",
+      "summary": "Ascend A5 DeepSeek V4-Pro with an optional Flash preset, quantized Hybrid MXFP8-MXFP4",
+      "serving": "Not supported",
+      "doc": "pypto-lib/docs/models/deepseek_v4_pro/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_attention_csa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attention_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_attention_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_compressor_ratio128.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_compressor_ratio4.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_fwd.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_indexer_compressor.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_metadata.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_mtp.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_hca.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn_swa.py",
+          "phase": "decode"
+        },
+        {
+          "name": "expert_routed.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_shared.py",
+          "phase": "other"
+        },
+        {
+          "name": "gate.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_post.py",
+          "phase": "other"
+        },
+        {
+          "name": "hc_pre.py",
+          "phase": "other"
+        },
+        {
+          "name": "indexer_cache_quant.py",
+          "phase": "other"
+        },
+        {
+          "name": "input_pack.py",
+          "phase": "other"
+        },
+        {
+          "name": "kv_quant.py",
+          "phase": "other"
+        },
+        {
+          "name": "lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "moe.py",
+          "phase": "other"
+        },
+        {
+          "name": "mtp_projection.py",
+          "phase": "other"
+        },
+        {
+          "name": "mx_weight_specs.py",
+          "phase": "other"
+        },
+        {
+          "name": "output_projection.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_attention_csa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attention_hca.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_attention_swa.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_compressor_ratio128.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_compressor_ratio4.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_fwd.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_indexer_compressor.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_layer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_mtp.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_sparse_attn.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "qkv_proj_rope.py",
+          "phase": "other"
+        },
+        {
+          "name": "rmsnorm.py",
+          "phase": "other"
+        },
+        {
+          "name": "rope_tables.py",
+          "phase": "other"
+        },
+        {
+          "name": "swiglu_quant.py",
+          "phase": "other"
+        },
+        {
+          "name": "synthetic_token_loop.py",
+          "phase": "other"
+        },
+        {
+          "name": "utils.py",
+          "phase": "other"
+        }
+      ]
+    },
+    {
+      "name": "glm5_3_flash",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/glm5_3_flash",
+      "summary": "GLM-5.3-Flash on a2a3 at TP16/EP16 with W8A8 INT8: the hybrid KDA + NoPE-MLA backbone, the kpool DSA indexer, mHC and MoE. Staging area \u2014 configuration, goldens and kernel ABIs only",
+      "serving": "Not supported",
+      "doc": "pypto-lib/docs/models/glm5_3_flash/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "_golden_smoke.py",
+          "phase": "other"
+        },
+        {
+          "name": "attention_tp.py",
+          "phase": "other"
+        },
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_indexer.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_kda.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_sparse_attn.py",
+          "phase": "decode"
+        },
+        {
+          "name": "dense_mlp.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_routed.py",
+          "phase": "other"
+        },
+        {
+          "name": "expert_shared.py",
+          "phase": "other"
+        },
+        {
+          "name": "gate.py",
+          "phase": "other"
+        },
+        {
+          "name": "golden.py",
+          "phase": "other"
+        },
+        {
+          "name": "indexer_cache.py",
+          "phase": "other"
+        },
+        {
+          "name": "kda_conv.py",
+          "phase": "other"
+        },
+        {
+          "name": "kda_output.py",
+          "phase": "other"
+        },
+        {
+          "name": "kda_projection.py",
+          "phase": "other"
+        },
+        {
+          "name": "lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "lookup_embedding.py",
+          "phase": "other"
+        },
+        {
+          "name": "metadata.py",
+          "phase": "other"
+        },
+        {
+          "name": "mhc.py",
+          "phase": "other"
+        },
+        {
+          "name": "mla_cache.py",
+          "phase": "other"
+        },
+        {
+          "name": "mla_epilog.py",
+          "phase": "other"
+        },
+        {
+          "name": "mla_prolog.py",
+          "phase": "other"
+        },
+        {
+          "name": "mtp_projection.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_indexer.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_kda.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_sparse_attn.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "quantization.py",
+          "phase": "other"
+        },
+        {
+          "name": "rmsnorm.py",
+          "phase": "other"
+        }
+      ]
+    },
+    {
+      "name": "qwen3_14b",
+      "layer": "pypto-lib/workload",
+      "directory": "pypto-lib/models/qwen3_14b",
+      "summary": "Qwen3-14B BF16 prefill and decode with the serving contract, plus A8W8 and TurboQuant variants and the sampling components",
+      "serving": "Supported \u2014 one-card A2/A3 accuracy",
+      "doc": "pypto-lib/docs/models/qwen3_14b/index.md",
+      "documented": true,
+      "kernels": [
+        {
+          "name": "config.py",
+          "phase": "other"
+        },
+        {
+          "name": "constants.py",
+          "phase": "other"
+        },
+        {
+          "name": "contract.py",
+          "phase": "other"
+        },
+        {
+          "name": "decode_fwd.py",
+          "phase": "decode"
+        },
+        {
+          "name": "decode_layer_a8w8.py",
+          "phase": "decode"
+        },
+        {
+          "name": "greedy_sample.py",
+          "phase": "other"
+        },
+        {
+          "name": "paged_attention_cce.py",
+          "phase": "other"
+        },
+        {
+          "name": "paged_attention_pypto.py",
+          "phase": "other"
+        },
+        {
+          "name": "prefill_fwd.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_fwd_a8w8.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "rms_lm_head.py",
+          "phase": "other"
+        },
+        {
+          "name": "rope_qkv_regen.py",
+          "phase": "other"
+        },
+        {
+          "name": "test_paged_attention_cce.py",
+          "phase": "other"
+        },
+        {
+          "name": "test_paged_attention_pypto.py",
+          "phase": "other"
+        },
+        {
+          "name": "topk_select.py",
+          "phase": "other"
+        },
+        {
+          "name": "turboquant_kv.py",
+          "phase": "other"
+        },
+        {
+          "name": "weights.py",
+          "phase": "other"
+        }
+      ]
+    }
+  ],
+  "cards": {
+    "pypto-lib.workload.deepseek": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/deepseek"
+      ],
+      "docs_canonical": [],
+      "one_liner": "deepseek",
+      "source": "generated"
+    },
+    "pypto-lib.workload.deepseek_v4_1_flash": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/deepseek_v4_1_flash"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/deepseek_v4_1_flash/index.md"
+      ],
+      "one_liner": "DeepSeek V4.1 Flash TP4/DP2/EP8 scaffold with low-bit SWA/C2A/C1A caches, hierarchical indexer, mHC, and MoE",
+      "source": "generated"
+    },
+    "pypto-lib.workload.deepseek_v4_flash_dspark": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/deepseek_v4_flash_dspark"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/deepseek_v4_flash_dspark/index.md"
+      ],
+      "one_liner": "The same V4-Flash checkpoint at batch 64 per card and S = 8 DSpark speculation, with TP-sharded DSA-CP attention; under development",
+      "source": "generated"
+    },
+    "pypto-lib.workload.deepseek_v4_flash_mtp": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/deepseek_v4_flash_mtp"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/deepseek_v4_flash_mtp/index.md"
+      ],
+      "one_liner": "DeepSeek V4-Flash at MTP = 1, batch 4 per card: operators, layer and MTP compositions, prefill/decode full forwards",
+      "source": "generated"
+    },
+    "pypto-lib.workload.deepseek_v4_pro": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/deepseek_v4_pro"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/deepseek_v4_pro/index.md"
+      ],
+      "one_liner": "Ascend A5 DeepSeek V4-Pro with an optional Flash preset, quantized Hybrid MXFP8-MXFP4",
+      "source": "generated"
+    },
+    "pypto-lib.workload.glm5_3_flash": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/glm5_3_flash"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/glm5_3_flash/index.md"
+      ],
+      "one_liner": "GLM-5.3-Flash on a2a3 at TP16/EP16 with W8A8 INT8: the hybrid KDA + NoPE-MLA backbone, the kpool DSA indexer, mHC and MoE. Staging area \u2014 configuration, goldens and kernel ABIs only",
+      "source": "generated"
+    },
+    "pypto-lib.workload.qwen3_14b": {
+      "layer": "pypto-lib/workload",
+      "kind": "workload",
+      "repos": [
+        "pypto-lib"
+      ],
+      "paths": [
+        "pypto-lib/models/qwen3_14b"
+      ],
+      "docs_canonical": [
+        "pypto-lib/docs/models/qwen3_14b/index.md"
+      ],
+      "one_liner": "Qwen3-14B BF16 prefill and decode with the serving contract, plus A8W8 and TurboQuant variants and the sampling components",
+      "source": "generated"
+    }
+  }
+}

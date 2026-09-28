@@ -38,6 +38,7 @@ def load_entrypoints() -> dict[str, Any]:
 # of pto-isa instructions and PTOAS ops that nobody has hand-curated yet; any
 # hand-curated card with the same key always wins outright.
 _GENERATED_ABSTRACTION_FILES = ("pto_isa_generated.json", "ptoas_generated.json")
+_CATALOG_CARD_FILES = ("simpler_scheduler.json", "pypto_lib_workloads.json")
 
 # Merged abstractions are cached against the mtimes of every source file so an
 # edit to any of them is picked up without restarting the server.
@@ -49,7 +50,8 @@ def load_abstractions() -> dict[str, Any]:
     base_path = abstractions_config_path()
     ascend_path = ascend_abstractions_config_path()
     generated_paths = [project_root() / "config" / name for name in _GENERATED_ABSTRACTION_FILES]
-    all_paths = [base_path, ascend_path, *generated_paths]
+    catalog_paths = [project_root() / "config" / name for name in _CATALOG_CARD_FILES]
+    all_paths = [base_path, ascend_path, *generated_paths, *catalog_paths]
     key = tuple(p.stat().st_mtime if p.exists() else 0.0 for p in all_paths)
     if _abstractions_cache is not None and _abstractions_cache[0] == key:
         return _abstractions_cache[1]
@@ -58,6 +60,13 @@ def load_abstractions() -> dict[str, Any]:
     for path in generated_paths:
         if path.exists():
             merged.update(load_json_cached(path))
+    for path in catalog_paths:
+        if not path.exists():
+            continue
+        payload = load_json_cached(path)
+        cards = payload.get("cards") if isinstance(payload, dict) else None
+        if isinstance(cards, dict):
+            merged.update(cards)
     merged.update(load_json_cached(base_path))
     if ascend_path.exists():
         merged.update(load_json_cached(ascend_path))
@@ -83,18 +92,37 @@ _ABSTRACTION_ALIASES: dict[str, str] = {
 }
 
 
-def _resolve_abstraction_name(name: str) -> str | None:
+def _fold_abstraction_name(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", name.lower())
+
+
+def _card_layer_matches(card: dict[str, Any], layer: str) -> bool:
+    card_layer = str(card.get("layer", "")).lower()
+    wanted = layer.strip().lower().rstrip("/")
+    if not wanted:
+        return True
+    return card_layer == wanted or card_layer.startswith(wanted + "/")
+
+
+def _abstraction_candidates(name: str, layer: str = "") -> list[str]:
+    """Exact key wins. Otherwise every case-folded match is returned."""
     abstractions = load_abstractions()
-    if name in abstractions:
-        return name
-    lowered = name.lower().replace(" ", "").replace("_", "")
-    key = next((k for k in abstractions if k.lower() == lowered), None)
-    if key:
-        return key
-    alias = _ABSTRACTION_ALIASES.get(lowered)
-    if alias and alias in abstractions:
-        return alias
-    return None
+    if name in abstractions and _card_layer_matches(abstractions[name], layer):
+        return [name]
+    folded = _fold_abstraction_name(name)
+    if not folded:
+        return []
+    matches = [
+        key
+        for key, card in abstractions.items()
+        if _fold_abstraction_name(key) == folded and _card_layer_matches(card, layer)
+    ]
+    if matches:
+        return matches
+    alias = _ABSTRACTION_ALIASES.get(folded)
+    if alias and alias in abstractions and _card_layer_matches(abstractions[alias], layer):
+        return [alias]
+    return []
 
 
 def suggest_similar(query: str, candidates: list[str], limit: int = 5) -> list[str]:
@@ -399,6 +427,7 @@ def route_task_impl(task_type: str, detail: str = "") -> dict[str, Any]:
         "agent_verify_tasks": route.get("agent_verify_tasks", route.get("verify_tasks", [])),
         "developer_verify_tasks": route.get("developer_verify_tasks", []),
         "resources": [f"hw-native-sys://{uri}" for uri in route.get("resources", [])],
+        "suggested_tools": route.get("suggested_tools", []),
         "bootstrap_prompt": _bootstrap_prompt_for_task(task_type),
     }
 
@@ -433,15 +462,29 @@ def list_knowledge_topics_impl() -> dict[str, Any]:
     }
 
 
-def explain_abstraction_impl(name: str) -> dict[str, Any]:
+def explain_abstraction_impl(name: str, layer: str = "") -> dict[str, Any]:
     abstractions = load_abstractions()
-    key = _resolve_abstraction_name(name)
-    if key is None:
+    keys = _abstraction_candidates(name, layer)
+    if not keys:
         suggestions = suggest_similar(name, list(abstractions), limit=5)
         hint = f" Did you mean: {', '.join(suggestions)}." if suggestions else ""
         available = ", ".join(sorted(abstractions)[:25])
         raise ValueError(f"Unknown abstraction '{name}'.{hint} Examples: {available}")
+    if len(keys) > 1:
+        return {
+            "ambiguous": True,
+            "query": name,
+            "candidates": [
+                {
+                    "name": key,
+                    "layer": abstractions[key].get("layer"),
+                    "one_liner": abstractions[key].get("one_liner") or abstractions[key].get("kind", ""),
+                }
+                for key in keys
+            ],
+        }
 
+    key = keys[0]
     card = abstractions[key]
     return {
         "name": key,
@@ -494,6 +537,7 @@ def search_abstractions_impl(
     query: str,
     max_results: int = 20,
     fields: str = "summary",
+    layer: str = "",
 ) -> dict[str, Any]:
     if not query.strip():
         raise ValueError("query cannot be empty")
@@ -506,6 +550,8 @@ def search_abstractions_impl(
     scored: list[tuple[int, int, str, dict[str, Any]]] = []
 
     for name, card in abstractions.items():
+        if not _card_layer_matches(card, layer):
+            continue
         haystack = " ".join(
             [
                 name,
@@ -549,7 +595,16 @@ def search_abstractions_impl(
                 }
             )
 
-    result: dict[str, Any] = {"query": query, "match_count": len(matches), "matches": matches}
+    by_layer: dict[str, list[dict[str, Any]]] = {}
+    for match in matches:
+        by_layer.setdefault(str(match.get("layer") or ""), []).append(match)
+    result: dict[str, Any] = {
+        "query": query,
+        "layer": layer or None,
+        "match_count": len(matches),
+        "matches": matches,
+        "by_layer": by_layer,
+    }
     if not matches:
         result["suggestions"] = suggest_similar(query, list(abstractions), limit=5)
     return result
@@ -667,6 +722,26 @@ def knowledge_health_impl() -> dict[str, Any]:
         gen_path = project_root() / "config" / filename
         coverage[repo_key] = len(load_json_cached(gen_path)) if gen_path.exists() else 0
 
+    catalog_issues: list[str] = []
+    scheduler_implementation_count = 0
+    workload_count = 0
+    scheduler_path = project_root() / "config" / "simpler_scheduler.json"
+    workload_path = project_root() / "config" / "pypto_lib_workloads.json"
+    if not scheduler_path.exists():
+        catalog_issues.append("Missing config/simpler_scheduler.json")
+    else:
+        scheduler_payload = load_json_cached(scheduler_path)
+        scheduler_implementation_count = len(scheduler_payload.get("implementations", []))
+        if scheduler_implementation_count == 0:
+            catalog_issues.append("simpler scheduler implementation count is 0")
+    if not workload_path.exists():
+        catalog_issues.append("Missing config/pypto_lib_workloads.json")
+    else:
+        workload_payload = load_json_cached(workload_path)
+        workload_count = len(workload_payload.get("workloads", []))
+        if workload_count == 0:
+            catalog_issues.append("pypto-lib workload count is 0")
+
     # Skill corpus: how many SKILL.md files the configured dirs currently
     # resolve, and which configured dirs/files are missing on disk.
     skills_issues: list[str] = []
@@ -705,6 +780,9 @@ def knowledge_health_impl() -> dict[str, Any]:
         "pypto_pass_count": len(passes_index.get("passes", [])),
         "pypto_passes_index_warning": passes_index_warning,
         "coverage": coverage,
+        "scheduler_implementation_count": scheduler_implementation_count,
+        "workload_count": workload_count,
+        "catalog_issues": catalog_issues,
         "last_index_build": last_index_build,
     }
 
@@ -836,19 +914,69 @@ def register_knowledge(mcp: FastMCP) -> None:
 
     @mcp.tool()
     def explain_abstraction(
-        name: Annotated[str, Field(description='Abstraction name or alias, e.g. "AIC", "HCCLWindow", "Ascend910B", "cube". Use search_abstractions() to discover names.')],
+        name: Annotated[str, Field(description='Abstraction name or alias, e.g. "AIC", "tmov", "TMOV". Use search_abstractions() to discover names.')],
+        layer: Annotated[str, Field(description='Optional card layer or framework prefix, e.g. "ptoas", "pto-isa/instruction", "simpler/scheduler". Required when the same folded name exists in more than one layer.')] = "",
     ) -> dict[str, Any]:
-        """Explain a stack abstraction: IR/passes/codegen/ISA/runtime or Ascend hardware (AIC, HCCL, etc.)."""
-        return explain_abstraction_impl(name)
+        """Explain a stack abstraction. If the name matches several layers, returns candidates instead of picking one."""
+        return explain_abstraction_impl(name, layer)
 
     @mcp.tool()
     def search_abstractions(
         query: Annotated[str, Field(description="Keyword to search across abstraction names, layers, kinds, tags, and related fields")],
         max_results: Annotated[int, Field(description="Maximum results to return (1–100)", ge=1, le=100)] = 20,
         fields: Annotated[str, Field(description='"summary" returns name+layer+one_liner; "full" adds tags, arch_families, repos')] = "summary",
+        layer: Annotated[str, Field(description='Optional card layer or framework prefix, e.g. "ptoas", "simpler", "pypto/passes". Results stay grouped by layer.')] = "",
     ) -> dict[str, Any]:
-        """Search the abstraction index by keyword. Results are ranked by relevance (exact name > name-contains > tag > layer/kind)."""
-        return search_abstractions_impl(query, max_results, fields)
+        """Search the abstraction index by keyword. Results are ranked by relevance and grouped by layer."""
+        return search_abstractions_impl(query, max_results, fields, layer)
+
+    @mcp.tool()
+    def layer_guide(
+        layer: Annotated[str, Field(description='Framework layer: "pypto", "ptoas", "pto-isa", "simpler", "pypto-lib", or "all".')],
+        topic: Annotated[str, Field(description='Optional path substring to summarize up to 15 docs, e.g. "scheduler" or "models".')] = "",
+    ) -> dict[str, Any]:
+        """Docs, skills, and rules for one framework layer, read live from that repo."""
+        from mcp_hwnative_sys.layer_guide import layer_guide_impl
+
+        return layer_guide_impl(layer, topic)
+
+    @mcp.tool()
+    def explain_scheduler(
+        name: Annotated[str, Field(description='Scheduler level, engine, or implementation, e.g. "L3", "orchestrator", "hierarchical", "a2a3_host_build_graph".')],
+    ) -> dict[str, Any]:
+        """Explain a simpler scheduler level (L0–L6), engine, or concrete implementation tree."""
+        from mcp_hwnative_sys.scheduler import explain_scheduler_impl
+
+        return explain_scheduler_impl(name)
+
+    @mcp.tool()
+    def list_workloads(
+        name: Annotated[str, Field(description='Optional model directory name, e.g. "deepseek_v4_1_flash". Empty lists every pypto-lib workload.')] = "",
+    ) -> dict[str, Any]:
+        """List pypto-lib model workloads, or one model's kernels split into prefill and decode."""
+        from mcp_hwnative_sys.workloads import list_workloads_impl
+
+        return list_workloads_impl(name)
+
+    @mcp.tool()
+    def explain_task_queue() -> dict[str, Any]:
+        """Read-only task-submit queue guide: which hosts require it, how to join, and the failure rules. Does not submit a job."""
+        from mcp_hwnative_sys.task_queue import explain_task_queue_impl
+
+        return explain_task_queue_impl()
+
+    @mcp.tool()
+    def search_tracker(
+        query: Annotated[str, Field(description='GitHub search query, e.g. "TMOV layout" or "is:issue label:bug".')],
+        repo: Annotated[str, Field(description='Comma-separated repos. Default "PTOAS,pto-isa". Also pypto, simpler, pypto-lib, alias ptoas, or all.')] = "PTOAS,pto-isa",
+        kind: Annotated[str, Field(description='"issues", "prs", or "both".')] = "both",
+        state: Annotated[str, Field(description='"open", "closed", "merged", or "all". merged is pull requests only.')] = "open",
+        max_results: Annotated[int, Field(description="Maximum hits (1–50)", ge=1, le=50)] = 20,
+    ) -> dict[str, Any]:
+        """Search open, closed, and merged GitHub issues and PRs. Read-only."""
+        from mcp_hwnative_sys.tracker import search_tracker_impl
+
+        return search_tracker_impl(query, repo, kind, state, max_results)
 
     @mcp.tool()
     def explain_pass(
@@ -1006,6 +1134,8 @@ def register_knowledge(mcp: FastMCP) -> None:
 
 ## Workflow — run these tools in order
 
+0. layer_guide for the framework layer you are touching (pypto, ptoas, pto-isa, simpler, or pypto-lib) so you see that layer's docs, skills, and rules before reading further.
+
 1. Orient (one call):
    bootstrap_session(task_type="{area}", detail="<symbol or feature you are touching>")
    It returns read_plan (docs in priority order), abstraction_seeds, program_hints,
@@ -1096,13 +1226,13 @@ def register_knowledge(mcp: FastMCP) -> None:
         return """You are verifying pypto/simpler changes on real Ascend NPUs (developer gate).
 
 Workflow:
-1. Call ascend_env_check — confirm devices, CANN_HOME, HCCL LD_PRELOAD path
-2. Read hw-native-sys://ascend/hccl_container_checklist
-3. Call generate_verify_handoff with repo, branch, platform, device_ids
-4. Checkout branch, pip install --no-build-isolation -e ".[dev]"
-5. export LD_PRELOAD=${CANN_HOME}/aarch64-linux/lib64/libhccl.so  (test shell only)
-6. Run developer_verify_tasks from route_task(npu_verify_handoff) — NOT agent sim tasks
-7. Record git rev-parse HEAD; do not open upstream PR unless explicitly asked"""
+1. Call explain_task_queue — queue hosts, join, and the task-submit rules. Do not run the job.
+2. Call ascend_env_check — confirm devices, CANN_HOME
+3. Read hw-native-sys://ascend/hccl_container_checklist
+4. Call generate_verify_handoff with repo, branch, platform, device_ids
+5. The developer checks out the branch and runs the handoff's task-submit commands.
+   Put LD_PRELOAD inside --run, never in the client shell. .13 and sim images stay unqueued.
+6. Record git rev-parse HEAD; do not open upstream PR unless explicitly asked"""
 
     @mcp.prompt(title="Finish work — verify and hand off")
     def finish_work() -> str:
@@ -1139,7 +1269,10 @@ Workflow:
 ## Workflow — run these tools in order
 
 1. Orient on the stages and the switches that produce each artifact:
+   layer_guide for the owning framework layer (ptoas, pto-isa, pypto, or simpler)
    route_task(task_type="debug_codegen", detail="<symbol or symptom>")
+   explain_abstraction("<name>", layer="<card layer>") when the same name exists in more than one layer
+   search_tracker("<symptom or op>", repo="<owning repo>", state="merged") then state="open"
    then read hw-native-sys://debug/codegen-inspection (per-stage: artifact -> flag/API -> output path -> inspection tool).
 
 2. Locate the real artifacts on disk (read-only):

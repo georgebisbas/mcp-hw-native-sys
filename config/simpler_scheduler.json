@@ -1,0 +1,471 @@
+{
+  "levels": [
+    {
+      "id": "L0",
+      "name": "core",
+      "scope": "individual compute core (AIC/AIV), hardware-managed"
+    },
+    {
+      "id": "L1",
+      "name": "die",
+      "scope": "chip die / L2 cache, hardware-managed; no Worker sits here"
+    },
+    {
+      "id": "L2",
+      "name": "chip",
+      "scope": "one NPU chip; on-device boundary"
+    },
+    {
+      "id": "L3",
+      "name": "node",
+      "scope": "single host machine"
+    },
+    {
+      "id": "L4",
+      "name": "pod",
+      "scope": "pod of hosts"
+    },
+    {
+      "id": "L5",
+      "name": "supernode",
+      "scope": "super-node"
+    },
+    {
+      "id": "L6",
+      "name": "cluster",
+      "scope": "full cluster"
+    }
+  ],
+  "engines": [
+    {
+      "name": "orchestrator",
+      "one_liner": "Submits slots and infers dependencies; the only READY router is Orchestrator::enqueue_ready.",
+      "paths": [
+        "simpler/src/common/orchestrator/",
+        "simpler/docs/orchestrator.md"
+      ]
+    },
+    {
+      "name": "scheduler",
+      "one_liner": "Single-threaded DAG executor: dispatches READY slots, handles completions, releases downstream dependencies.",
+      "paths": [
+        "simpler/src/common/hierarchical/scheduler.cpp",
+        "simpler/docs/scheduler.md"
+      ]
+    },
+    {
+      "name": "worker",
+      "one_liner": "Endpoint execution for a hierarchical Worker, including the worker-thread pool.",
+      "paths": [
+        "simpler/src/common/worker/",
+        "simpler/docs/worker-manager.md"
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "key": "simpler.scheduler.a2a3_host_build_graph",
+      "kind": "implementation",
+      "path": "simpler/src/a2a3/runtime/host_build_graph/runtime/scheduler/scheduler.cpp",
+      "one_liner": "Scheduler implementation simpler/src/a2a3/runtime/host_build_graph/runtime/scheduler/scheduler.cpp"
+    },
+    {
+      "key": "simpler.scheduler.a2a3_tensormap_and_ringbuffer",
+      "kind": "implementation",
+      "path": "simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp",
+      "one_liner": "Scheduler implementation simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp"
+    },
+    {
+      "key": "simpler.scheduler.a5_host_build_graph",
+      "kind": "implementation",
+      "path": "simpler/src/a5/runtime/host_build_graph/runtime/scheduler/scheduler.cpp",
+      "one_liner": "Scheduler implementation simpler/src/a5/runtime/host_build_graph/runtime/scheduler/scheduler.cpp"
+    },
+    {
+      "key": "simpler.scheduler.a5_tensormap_and_ringbuffer",
+      "kind": "implementation",
+      "path": "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp",
+      "one_liner": "Scheduler implementation simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp"
+    },
+    {
+      "key": "simpler.scheduler.common_hierarchical",
+      "kind": "implementation",
+      "path": "simpler/src/common/hierarchical/scheduler.cpp",
+      "one_liner": "Scheduler implementation simpler/src/common/hierarchical/scheduler.cpp"
+    },
+    {
+      "key": "simpler.scheduler.a2a3_host_build_graph_backend_sdma_sdma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a2a3/runtime/host_build_graph/runtime/backend/sdma/sdma_completion_scheduler.h",
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h"
+    },
+    {
+      "key": "simpler.scheduler.a2a3_tensormap_and_ringbuffer_backend_sdma_sdma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/backend/sdma/sdma_completion_scheduler.h",
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h"
+    },
+    {
+      "key": "simpler.scheduler.a5_host_build_graph_backend_sdma_sdma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a5/runtime/host_build_graph/runtime/backend/sdma/sdma_completion_scheduler.h",
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h"
+    },
+    {
+      "key": "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_rdma_rdma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/rdma/rdma_completion_scheduler.h",
+      "one_liner": "Completion scheduler rdma_completion_scheduler.h"
+    },
+    {
+      "key": "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_sdma_sdma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/sdma/sdma_completion_scheduler.h",
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h"
+    },
+    {
+      "key": "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_urma_urma_completion_scheduler",
+      "kind": "completion",
+      "path": "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/urma/urma_completion_scheduler.h",
+      "one_liner": "Completion scheduler urma_completion_scheduler.h"
+    }
+  ],
+  "docs_canonical": [
+    "simpler/docs/hierarchical-level-runtime.md",
+    "simpler/docs/scheduler.md"
+  ],
+  "cards": {
+    "simpler.scheduler.L0": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L0 core: individual compute core (AIC/AIV), hardware-managed",
+      "source": "generated"
+    },
+    "simpler.scheduler.L1": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L1 die: chip die / L2 cache, hardware-managed; no Worker sits here",
+      "source": "generated"
+    },
+    "simpler.scheduler.L2": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L2 chip: one NPU chip; on-device boundary",
+      "source": "generated"
+    },
+    "simpler.scheduler.L3": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L3 node: single host machine",
+      "source": "generated"
+    },
+    "simpler.scheduler.L4": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L4 pod: pod of hosts",
+      "source": "generated"
+    },
+    "simpler.scheduler.L5": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L5 supernode: super-node",
+      "source": "generated"
+    },
+    "simpler.scheduler.L6": {
+      "layer": "simpler/scheduler",
+      "kind": "level",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md"
+      ],
+      "one_liner": "L6 cluster: full cluster",
+      "source": "generated"
+    },
+    "simpler.scheduler.orchestrator": {
+      "layer": "simpler/scheduler",
+      "kind": "engine",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/common/orchestrator/",
+        "simpler/docs/orchestrator.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Submits slots and infers dependencies; the only READY router is Orchestrator::enqueue_ready.",
+      "source": "generated"
+    },
+    "simpler.scheduler.scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "engine",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/common/hierarchical/scheduler.cpp",
+        "simpler/docs/scheduler.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Single-threaded DAG executor: dispatches READY slots, handles completions, releases downstream dependencies.",
+      "source": "generated"
+    },
+    "simpler.scheduler.worker": {
+      "layer": "simpler/scheduler",
+      "kind": "engine",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/common/worker/",
+        "simpler/docs/worker-manager.md"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Endpoint execution for a hierarchical Worker, including the worker-thread pool.",
+      "source": "generated"
+    },
+    "simpler.scheduler.a2a3_host_build_graph": {
+      "layer": "simpler/scheduler",
+      "kind": "implementation",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a2a3/runtime/host_build_graph/runtime/scheduler/scheduler.cpp"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Scheduler implementation simpler/src/a2a3/runtime/host_build_graph/runtime/scheduler/scheduler.cpp",
+      "source": "generated"
+    },
+    "simpler.scheduler.a2a3_tensormap_and_ringbuffer": {
+      "layer": "simpler/scheduler",
+      "kind": "implementation",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Scheduler implementation simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_host_build_graph": {
+      "layer": "simpler/scheduler",
+      "kind": "implementation",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/host_build_graph/runtime/scheduler/scheduler.cpp"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Scheduler implementation simpler/src/a5/runtime/host_build_graph/runtime/scheduler/scheduler.cpp",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_tensormap_and_ringbuffer": {
+      "layer": "simpler/scheduler",
+      "kind": "implementation",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Scheduler implementation simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/scheduler/scheduler.cpp",
+      "source": "generated"
+    },
+    "simpler.scheduler.common_hierarchical": {
+      "layer": "simpler/scheduler",
+      "kind": "implementation",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/common/hierarchical/scheduler.cpp"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Scheduler implementation simpler/src/common/hierarchical/scheduler.cpp",
+      "source": "generated"
+    },
+    "simpler.scheduler.a2a3_host_build_graph_backend_sdma_sdma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a2a3/runtime/host_build_graph/runtime/backend/sdma/sdma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h",
+      "source": "generated"
+    },
+    "simpler.scheduler.a2a3_tensormap_and_ringbuffer_backend_sdma_sdma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a2a3/runtime/tensormap_and_ringbuffer/runtime/backend/sdma/sdma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_host_build_graph_backend_sdma_sdma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/host_build_graph/runtime/backend/sdma/sdma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_rdma_rdma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/rdma/rdma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler rdma_completion_scheduler.h",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_sdma_sdma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/sdma/sdma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler sdma_completion_scheduler.h",
+      "source": "generated"
+    },
+    "simpler.scheduler.a5_tensormap_and_ringbuffer_backend_urma_urma_completion_scheduler": {
+      "layer": "simpler/scheduler",
+      "kind": "completion",
+      "repos": [
+        "simpler"
+      ],
+      "paths": [
+        "simpler/src/a5/runtime/tensormap_and_ringbuffer/runtime/backend/urma/urma_completion_scheduler.h"
+      ],
+      "docs_canonical": [
+        "simpler/docs/hierarchical-level-runtime.md",
+        "simpler/docs/scheduler.md"
+      ],
+      "one_liner": "Completion scheduler urma_completion_scheduler.h",
+      "source": "generated"
+    }
+  }
+}

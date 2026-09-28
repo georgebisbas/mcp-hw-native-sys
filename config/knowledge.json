@@ -337,7 +337,8 @@
       ],
       "entrypoint_areas": ["pypto:passes"],
       "verify_tasks": ["pypto:unit_tests_fast"],
-      "resources": ["pypto/passes", "agent/invariants"]
+      "resources": ["pypto/passes", "agent/invariants"],
+      "suggested_tools": ["layer_guide"]
     },
     "codegen_pto": {
       "description": "InCore codegen to .pto MLIR (AICore path)",
@@ -352,7 +353,8 @@
       ],
       "entrypoint_areas": ["pypto:codegen_pto"],
       "verify_tasks": ["pypto:codegen_tests"],
-      "resources": ["pypto/codegen"]
+      "resources": ["pypto/codegen"],
+      "suggested_tools": ["layer_guide", "search_tracker"]
     },
     "codegen_orch": {
       "description": "Orchestration codegen to simpler runtime C++ (AICPU path)",
@@ -477,7 +479,8 @@
       ],
       "entrypoint_areas": ["pypto-lib:models", "pypto-lib:golden"],
       "verify_tasks": ["pypto-lib:tests_golden", "pypto-lib:example_hello_sim"],
-      "resources": ["pypto-lib/overview", "pypto-lib/status", "pypto-lib/models", "pypto-lib/building_blocks", "pypto-lib/attention", "flows/compile_to_device"]
+      "resources": ["pypto-lib/overview", "pypto-lib/status", "pypto-lib/models", "pypto-lib/building_blocks", "pypto-lib/attention", "flows/compile_to_device"],
+      "suggested_tools": ["layer_guide", "list_workloads"]
     },
     "ptoas": {
       "description": "PTO assembler and optimizer (.pto to C++)",
@@ -493,7 +496,8 @@
       ],
       "entrypoint_areas": ["PTOAS:cli", "PTOAS:ir"],
       "verify_tasks": ["PTOAS:ir_smoke"],
-      "resources": ["ptoas/overview"]
+      "resources": ["ptoas/overview"],
+      "suggested_tools": ["layer_guide", "search_tracker", "explain_abstraction"]
     },
     "pto_isa": {
       "description": "Virtual tile ISA headers and backends",
@@ -509,7 +513,8 @@
       ],
       "entrypoint_areas": ["pto-isa:headers", "pto-isa:docs"],
       "verify_tasks": ["pto-isa:cpu_smoke"],
-      "resources": ["pto-isa/overview"]
+      "resources": ["pto-isa/overview"],
+      "suggested_tools": ["layer_guide", "search_tracker", "explain_abstraction"]
     },
     "runtime": {
       "description": "simpler task runtime execution on Ascend",
@@ -527,9 +532,10 @@
         "simpler/.claude/rules/ascend.md",
         "simpler/.claude/rules/project-layout.md"
       ],
-      "entrypoint_areas": ["simpler:orchestrator", "simpler:worker"],
+      "entrypoint_areas": ["simpler:orchestrator", "simpler:worker", "simpler:scheduler"],
       "verify_tasks": ["pypto-lib:example_hello_sim", "simpler:test_sim"],
-      "resources": ["simpler/overview", "notes/runtime_scheduler", "notes/runtime_scheduler_lesson", "flows/compile_to_device", "ascend/hardware"]
+      "resources": ["simpler/overview", "notes/runtime_scheduler", "notes/runtime_scheduler_lesson", "flows/compile_to_device", "ascend/hardware"],
+      "suggested_tools": ["layer_guide", "explain_scheduler"]
     },
     "pypto_lib": {
       "description": "Model zoo, kernels, golden validation harness",
@@ -659,7 +665,8 @@
       "verify_tasks": [],
       "agent_verify_tasks": [],
       "developer_verify_tasks": ["pypto:host_collectives_st_npu"],
-      "resources": ["ascend/hccl_container_checklist", "ascend/hccl_runtime", "agent/distributed_work_policy", "tools/sim_docker_workflow"]
+      "resources": ["ascend/hccl_container_checklist", "ascend/hccl_runtime", "agent/distributed_work_policy", "tools/sim_docker_workflow"],
+      "suggested_tools": ["explain_task_queue", "generate_verify_handoff"]
     },
     "hccl_bandwidth": {
       "description": "PyTorch/HCCL collective + p2p bandwidth benchmarking on Ascend NPU (osu bibw/bw/mbw_mr/allreduce) via the pytorch-hccl-tests image",

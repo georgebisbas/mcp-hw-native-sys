@@ -24,14 +24,16 @@ This doc is the full reference: setup, every tool/resource/prompt, the config fi
 
 ## Setup
 
+From a checkout of this repo, next to the sibling stack repos:
+
 ```bash
-cd /home/georgios/workspace/hw-native-sys/mcp-hw-native-sys
+cd mcp-hw-native-sys
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 ```
 
-Requires Python ≥3.10, the `mcp` package (installed via the above), and `rg` (ripgrep) on `PATH` for `search_code`.
+Requires Python ≥ 3.10, the `mcp` package (installed by the command above), and `rg` (ripgrep) on `PATH` for `search_code`. `search_tracker` also needs the GitHub CLI (`gh`) logged in to an account that can read the `hw-native-sys` org. The server does not pick a model. Cursor, VS Code, Claude Code, and Claude Desktop each choose Claude, GPT, Gemini, Grok, or whatever else that client offers; the tools and prompts are the same.
 
 ### Workspace root resolution
 
@@ -47,40 +49,65 @@ You generally don't need to set `HW_NATIVE_SYS_ROOT` unless you're running the s
 
 ```bash
 source .venv/bin/activate
-export HW_NATIVE_SYS_ROOT=/home/georgios/workspace/hw-native-sys   # optional, see above
 hw-native-sys-mcp
 ```
 
-### Claude Code integration
+`HW_NATIVE_SYS_ROOT` is optional. Set it only when this repo is not checked out as `mcp-hw-native-sys/` inside the workspace that holds the sibling repos.
 
-`pypto-tooling/.mcp.json` (the umbrella repo) already registers this server under the name `hw-native-sys`, pointing at this repo's `.venv`:
+### Clients
+
+The process is a stdio MCP server. The command is `.venv/bin/hw-native-sys-mcp`, relative to this repo. `${workspaceFolder}` below is the directory that contains both this repo and its siblings.
+
+**Cursor.** Project file `.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "hw-native-sys": {
-      "command": "/home/georgios/workspace/hw-native-sys/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
+    "hw-native-sys-mcp": {
+      "command": "${workspaceFolder}/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
     }
   }
 }
 ```
 
-Any Claude Code session started with `pypto-tooling` or `mcp-hw-native-sys` (or a parent directory) as the working directory picks this up automatically — tools appear as `mcp__hw-native-sys__<tool_name>`. No env var needed since `config/repos.json`'s relative `workspace_root` resolves correctly from the checked-in `.venv` location.
+After the command changes, enable the server once under Customize → MCPs. Prompts then show up in chat as `/hw-native-sys-mcp/start_compiler_work`, `/hw-native-sys-mcp/start_ascend_work`, `/hw-native-sys-mcp/start_distributed_work`, `/hw-native-sys-mcp/start_npu_verify`, `/hw-native-sys-mcp/debug_codegen_work`, and `/hw-native-sys-mcp/finish_work`.
 
-### Cursor / VS Code MCP integration
+**VS Code.** Workspace file `.vscode/mcp.json`:
 
-Register a stdio MCP server manually:
+```json
+{
+  "servers": {
+    "hw-native-sys": {
+      "type": "stdio",
+      "command": "${workspaceFolder}/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
+    }
+  }
+}
+```
 
-- **command:** `/home/georgios/workspace/hw-native-sys/mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp`
-- **env:** `HW_NATIVE_SYS_ROOT=/home/georgios/workspace/hw-native-sys` (optional, see workspace root resolution above)
+**Claude Code.** `.mcp.json` in the workspace root:
+
+```json
+{
+  "mcpServers": {
+    "hw-native-sys": {
+      "command": "mcp-hw-native-sys/.venv/bin/hw-native-sys-mcp"
+    }
+  }
+}
+```
+
+Tools appear as `mcp__hw-native-sys__<tool_name>`.
+
+**Claude Desktop.** Add a stdio server whose command is the absolute path to `.venv/bin/hw-native-sys-mcp` in your checkout. Desktop configs do not expand `${workspaceFolder}`.
 
 ## Recommended daily workflow
 
 1. Call the **`start_compiler_work`** prompt (or `start_distributed_work` / `start_ascend_work` / `start_npu_verify` depending on the task) — this gives you the exact next steps.
 2. Call **`bootstrap_session(task_type=...)`** — one call returns route metadata (`read_plan`), repo health, and active-program hints together.
 3. Follow `read_plan`: read canonical docs first, enriched docs second. Use **`read_doc(path, section=...)`** to pull a single markdown section out of a large note instead of the whole file.
-4. Use **`explain_pass`** / **`explain_abstraction`** / **`search_abstractions`** / **`trace_contract`** / **`trace_in_stack`** to pin down stack concepts before writing code.
-5. Call **`program_status`** for open PRs/blockers, and **`collective_status`** if the work touches collective communication ops.
+4. Call **`layer_guide(layer)`** for the framework layer you are in (`pypto`, `ptoas`, `pto-isa`, `simpler`, `pypto-lib`). It returns that repo's docs, skills, and rules. Use **`explain_pass`** / **`explain_abstraction(name, layer=...)`** / **`search_abstractions`** / **`trace_contract`** / **`trace_in_stack`** to pin down stack concepts before writing code. Pass `layer` when the same name exists in two layers (`tmov` in PTOAS vs `TMOV` in pto-isa).
+5. Call **`program_status`** for the local plan dashboard, and **`search_tracker`** for live open and merged GitHub issues and PRs. Call **`collective_status`** if the work touches collective communication ops.
 6. Implement.
 7. Run **`verify_ladder(changed_paths)`** to get the minimal verify set: `suggested_tasks` (pytest) plus `static_checks` — when a changed path is a C/C++ file in a C++ repo, `static_checks` is `["clang-tidy"]` and **clang-tidy on the changed files is required before committing** (see the `tools/clang_tidy_workflow` resource for the compile-db prerequisite and per-repo commands).
 8. Run `agent_verify_tasks` via **`run_task`**. Never run `developer_verify_tasks` (NPU/hardware-gated) yourself — those are for the human developer.
@@ -136,8 +163,13 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `route_task` | Read-first docs (canonical + enriched), rules, entrypoints, matching skills, and verify tasks for a `task_type` |
 | `list_knowledge_topics` | Enumerate all task routes, MCP resources, notes topics, and bootstrap prompts in one call |
 | `read_doc` | Read a workspace doc with tier labeling (`canonical`/`enriched`/`design`/`mcp-owned`); optional `section` extracts one markdown heading |
-| `explain_abstraction` | Concept card for an IR node, pass, codegen stage, ISA instruction, PTOAS op, or Ascend hardware concept. Reports `source: curated` or `source: generated` (see Provenance below); on a miss suggests near-name cards |
-| `search_abstractions` | Keyword search across the full abstraction index (name, layer, kind, tags, `one_liner`, related/downstream); ranked by relevance. Multi-word queries match snake_case names; on 0 hits returns `suggestions` ("did you mean") |
+| `layer_guide` | Docs, skills, and rules for one framework layer (`pypto`, `ptoas`, `pto-isa`, `simpler`, `pypto-lib`, or `all`). Optional `topic` summarizes up to 15 matching docs. Full pages stay on `read_doc` |
+| `explain_abstraction` | Concept card for an IR node, pass, codegen stage, ISA instruction, PTOAS op, or Ascend hardware concept. Optional `layer` selects one card when the folded name exists in more than one layer. Reports `source: curated` or `source: generated` |
+| `search_abstractions` | Keyword search across the abstraction index. Optional `layer` keeps the search inside one card layer or framework prefix. Results include `by_layer` |
+| `explain_scheduler` | simpler scheduler level (`L0`–`L6`), engine (orchestrator / scheduler / worker), or a concrete implementation tree |
+| `list_workloads` | pypto-lib model catalog from `docs/models/index.md`. A name returns that model's prefill/decode kernel filenames |
+| `explain_task_queue` | Read-only `task-submit` guide: which hosts require the queue, how to join a container, and the failure rules. Does not submit a job. See `pypto-docker/TASK_QUEUE.md` |
+| `search_tracker` | Read-only GitHub search of issues and PRs (`open`, `closed`, `merged`). Default repos are PTOAS and pto-isa. Also accepts pypto, simpler, pypto-lib, or `all` of that allowlist |
 | `explain_pass` | Pass-pipeline card: order, phase, neighbors, verify tasks (from the `Default` pypto pipeline); on a miss suggests near-name passes |
 | `program_status` | Structured open PRs, blockers, and plan cross-index from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `collective_status` | Collective-comm feature parity status (merged/planned/gap) from the parity matrix in `pypto-3.0-notes/distributed/current_status.md`, with optional `op`/`axis` substring filters. Read-only — never writes to the source doc |
@@ -150,7 +182,7 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `trace_contract` | Enriched cross-layer trace: stack location + contract triangle + cross-layer verify tasks + active-PR links |
 | `knowledge_health` | Self-audit: missing paths, stale enriched docs (>30 days since `last_verified`), Ascend corpus checks, pto-isa/PTOAS index **coverage**, pass-index build status |
 | `ascend_env_check` | Read-only NPU/CANN/HCCL environment diagnosis (devices, `LD_PRELOAD`, Docker hints) |
-| `generate_verify_handoff` | Generate a markdown handoff for a human developer to run NPU/hardware verification in a container |
+| `generate_verify_handoff` | Markdown handoff for a human to run NPU verification. On queue hosts the commands are wrapped in `task-submit --device auto` with `$TASK_DEVICE` inside `--run`. `LD_PRELOAD` is not exported in the client shell |
 | `summarize_profile` | Summarize a `pypto-profiling/` campaign directory (`results.json`, anomalies) |
 
 ## MCP resources
@@ -244,6 +276,8 @@ Read `hw-native-sys://notes/host_collectives` before resuming fork work in this 
 | `config/passes_index.json` | Default pipeline pass order, phase, verify tasks | **Generated** by `tools/build_knowledge_index.py` from `pypto/python/pypto/ir/pass_manager.py` — see caveat below |
 | `config/program_status.json` | Structured PR status | **Generated** by `tools/sync_status_to_json.py` from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `config/collective_status.json` | Structured collective-comm parity matrix | **Generated** by `tools/sync_collective_status_to_json.py` from `pypto-3.0-notes/distributed/current_status.md` |
+| `config/simpler_scheduler.json` | L0–L6, the three engines, and concrete scheduler trees | **Generated** by `tools/build_simpler_scheduler_index.py` from `simpler/src` directories named `scheduler` |
+| `config/pypto_lib_workloads.json` | Model workloads and prefill/decode kernel names | **Generated** by `tools/build_pypto_lib_workloads.py` from `pypto-lib/docs/models/index.md` and `models/` |
 | `content/ascend/*.md` | MCP-owned decision trees (platform, alignment, HCCL) | Hand-maintained |
 
 All generated files are checked into git (so a fresh checkout works without a build step) but are meant to be periodically regenerated — see below. None of the generator scripts ever write to the sibling repos or to `pypto-3.0-notes`; they only read from them.
@@ -284,6 +318,12 @@ python tools/sync_status_to_json.py
 
 # Sync current_status.md's parity matrix -> collective_status.json
 python tools/sync_collective_status_to_json.py
+
+# Rebuild simpler_scheduler.json from scheduler directories plus the L0-L6 table
+python tools/build_simpler_scheduler_index.py
+
+# Rebuild pypto_lib_workloads.json from the model index and models/ directories
+python tools/build_pypto_lib_workloads.py
 ```
 
 **Caveat on `build_knowledge_index.py`**: it only rebuilds `passes_index.json` when re-run explicitly — `load_passes_index()` does not invalidate the on-disk cache on its own (unlike `load_abstractions()`, which is mtime-keyed). The scraper matches `passes.<name>` factory references inside `pass_manager.py`'s `_get_pass_factories` body (the old `("Name", lambda: passes.foo())` PassSpec tuples are gone — the pipeline now runs through a C++ `PassPipeline` but the recipe is still a Python tuple list of factories). If a rebuild returns `pypto_pass_count` as `0` with a warning, upstream moved away from that shape again — inspect the recipe before assuming the scraper is simply stale. **Don't blindly overwrite a healthy checked-in cache with a broken re-scrape** — diff it first; if the rebuild produces materially less data than what's committed, something upstream changed and needs a matching fix in `passes_index.py`, not a cache overwrite.
@@ -334,6 +374,14 @@ Call `knowledge_health` any time you want a health check on the knowledge layer 
 
 Balanced profile: fast daily tasks (git, lint) plus heavier tasks (docker, profiling, hardware tests). Warnings are surfaced by `list_tasks`, `explain_task`, and `run_task`. Destructive patterns (`git reset --hard`, `git clean -fdx`, `rm -rf /`, `rm -rf ~`) are blocked at the `run_command`/`run_task` layer regardless of which repo task config requests them.
 
+## Walkthroughs
+
+**Developer, lowering bug.** Call `layer_guide("ptoas")` for that layer's docs, skills, and rules. Then `explain_abstraction("tmov", layer="ptoas")` and `explain_abstraction("TMOV", layer="pto-isa")` so the assembler op and the ISA instruction stay separate. If the failure is in the runtime, call `explain_scheduler("L3")` or `explain_scheduler("hierarchical")`. Then `search_tracker("tmov", repo="PTOAS", state="merged")` and the same query with `state="open"`.
+
+**User, a model.** Call `list_workloads("deepseek_v4_1_flash")` for the summary, serving support, and prefill/decode filenames. Then `layer_guide("pypto-lib")` for that layer's docs and rules. Read a page with `read_doc`.
+
+**NPU queue.** Call `explain_task_queue` before any hardware handoff. Queue hosts are `192.168.150.11` and `.12`. Host `.13` and sim images are not queued. The handoff from `generate_verify_handoff` wraps developer commands as `task-submit --device auto --device-num N --max-time 3600 --timeout 0 --run '… $TASK_DEVICE'`. Put `LD_PRELOAD` inside `--run`. The full recipe is `pypto-docker/TASK_QUEUE.md`. The agent does not submit the job.
+
 ## Example agent prompts
 
 - "Invoke `start_compiler_work` with area=`codegen_orch` and follow the bootstrap."
@@ -352,6 +400,11 @@ Balanced profile: fast daily tasks (git, lint) plus heavier tasks (docker, profi
 - "`route_task` `debug_codegen` — how do I inspect pass dumps / .pto / kernel C++ for this lowering bug?"
 - "`read_doc` `content/debug/codegen-inspection.md` then `find_generated_artifacts` for program `qwen_decode`."
 - "`find_skill` — which workflow diffs generated code between branches?"
+- "`layer_guide` ptoas — which rules and skills apply before I edit an op?"
+- "`explain_scheduler` hierarchical — which queue does a SUB task use?"
+- "`list_workloads` deepseek_v4_1_flash — which files are prefill?"
+- "`search_tracker` TMOV state=merged repo=PTOAS,pto-isa — was this already fixed?"
+- "`explain_task_queue` — does this host require task-submit?"
 
 ## Prerequisite notes
 

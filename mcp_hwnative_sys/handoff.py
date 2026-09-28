@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from mcp_hwnative_sys.knowledge import route_task_impl
 from mcp_hwnative_sys.paths import load_repos_config
+
+_HCCL_HINTS = ("distributed", "hccl", "collective", "allreduce", "allgather", "alltoall")
 
 
 def _task_metadata(repo: str, task_key: str) -> dict[str, Any]:
@@ -17,6 +20,25 @@ def _task_metadata(repo: str, task_key: str) -> dict[str, Any]:
     if not isinstance(raw, dict):
         return {"command": raw if isinstance(raw, str) else ""}
     return raw
+
+
+def wrap_task_submit(command: str, device_ids: str) -> str:
+    """Wrap a developer command in task-submit. LD_PRELOAD stays inside --run."""
+    device_num = len([part for part in device_ids.split(",") if part.strip()]) or 1
+    inner = command.strip()
+    needs_hccl = any(hint in inner.lower() for hint in _HCCL_HINTS)
+    if needs_hccl and "LD_PRELOAD" not in inner:
+        inner = "LD_PRELOAD=$CANN_HOME/aarch64-linux/lib64/libhccl.so " + inner
+    if "$TASK_DEVICE" not in inner:
+        if re.search(r"--device(?:=|\s)", inner):
+            inner = re.sub(r"--device(?:=|\s+)\S+", "--device=$TASK_DEVICE", inner)
+        else:
+            inner = inner + " --device=$TASK_DEVICE"
+    safe = inner.replace("'", "'\"'\"'")
+    return (
+        "task-submit --device auto "
+        f"--device-num {device_num} --max-time 3600 --timeout 0 --run '{safe}'"
+    )
 
 
 def generate_verify_handoff_impl(
@@ -52,8 +74,9 @@ def generate_verify_handoff_impl(
         req = meta.get("requires")
         if req:
             notes.append(f"requires: {req}")
+        wrapped = wrap_task_submit(cmd, device_ids) if cmd else ""
         task_sections.append(
-            f"### `{task_repo}:{task_name}`\n\n```bash\n{cmd}\n```\n"
+            f"### `{task_repo}:{task_name}`\n\n```bash\n{wrapped or cmd}\n```\n"
             + ("\n".join(f"- {n}" for n in notes) if notes else "")
         )
 
@@ -68,12 +91,9 @@ def generate_verify_handoff_impl(
 
 ## 1. Environment
 
-Run MCP `ascend_env_check` first. For HCCL multi-rank inside Docker see `hw-native-sys://ascend/hccl_container_checklist`.
+Run MCP `explain_task_queue` and `ascend_env_check` first. For HCCL multi-rank inside Docker see `hw-native-sys://ascend/hccl_container_checklist`.
 
-```bash
-# NPU hosts are aarch64; on an x86 CANN install drop the aarch64-linux/ segment.
-export LD_PRELOAD=${{CANN_HOME}}/aarch64-linux/lib64/libhccl.so   # shell only, before pytest
-```
+Queue hosts `192.168.150.11` and `192.168.150.12` require `task-submit`. Host `.13` and `:sim` images stay unqueued. Do not set the HCCL preload in the client shell; it belongs inside `--run`. See `pypto-docker/TASK_QUEUE.md`.
 
 ## 2. Checkout and build
 
@@ -89,11 +109,13 @@ git rev-parse HEAD
 
 {chr(10).join(task_sections) if task_sections else "_No developer_verify_tasks configured for this route._"}
 
-Example distributed ST override:
+Example distributed ST on a queue host:
 
 ```bash
-pytest tests/st/distributed/collectives/ -v --platform={platform} --device="{device_ids}"
+{wrap_task_submit(f"pytest tests/st/distributed/collectives/ -v --platform={platform} --device={device_ids}", device_ids)}
 ```
+
+On `.13` or a sim image, drop the `task-submit` wrapper and pass the real device ids.
 
 ## 4. Handoff back
 

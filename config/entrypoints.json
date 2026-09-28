@@ -87,7 +87,12 @@
     ],
     "scheduler": [
       "docs/scheduler.md",
-      "src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/"
+      "docs/hierarchical-level-runtime.md",
+      "src/common/hierarchical/scheduler.cpp",
+      "src/a2a3/runtime/host_build_graph/runtime/scheduler/",
+      "src/a2a3/runtime/tensormap_and_ringbuffer/runtime/scheduler/",
+      "src/a5/runtime/host_build_graph/runtime/scheduler/",
+      "src/a5/runtime/tensormap_and_ringbuffer/runtime/scheduler/"
     ],
     "setup": [
       "simpler_setup/"
