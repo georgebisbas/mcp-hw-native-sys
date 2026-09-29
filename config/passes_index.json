@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "generated_from": "pypto/python/pypto/ir/pass_manager.py",
   "strategy": "Default",
-  "pypto_pass_count": 53,
+  "pypto_pass_count": 54,
   "passes": [
     {
       "name": "inline_functions",
@@ -374,16 +374,16 @@
       ]
     },
     {
-      "name": "derive_call_directions",
+      "name": "legalize_spmd_launches",
       "order": 42,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [
-        "pypto:codegen_tests"
+        "pypto:unit_tests_fast"
       ]
     },
     {
-      "name": "auto_derive_task_dependencies",
+      "name": "derive_call_directions",
       "order": 43,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
@@ -392,16 +392,16 @@
       ]
     },
     {
-      "name": "expand_manual_phase_fence",
+      "name": "auto_derive_task_dependencies",
       "order": 44,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [
-        "pypto:unit_tests_fast"
+        "pypto:codegen_tests"
       ]
     },
     {
-      "name": "synthesize_allreduce_signals",
+      "name": "expand_manual_phase_fence",
       "order": 45,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
@@ -410,16 +410,16 @@
       ]
     },
     {
-      "name": "materialize_comm_domain_scopes",
+      "name": "synthesize_allreduce_signals",
       "order": 46,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [
-        "pypto:system_tests_sim"
+        "pypto:unit_tests_fast"
       ]
     },
     {
-      "name": "lower_host_tensor_collectives",
+      "name": "materialize_comm_domain_scopes",
       "order": 47,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
@@ -428,16 +428,16 @@
       ]
     },
     {
-      "name": "materialize_dist_tensor_ctx",
+      "name": "lower_host_tensor_collectives",
       "order": 48,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [
-        "pypto:unit_tests_fast"
+        "pypto:system_tests_sim"
       ]
     },
     {
-      "name": "legalize_graph_boundary",
+      "name": "materialize_dist_tensor_ctx",
       "order": 49,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
@@ -446,8 +446,17 @@
       ]
     },
     {
-      "name": "materialize_runtime_scopes",
+      "name": "legalize_graph_boundary",
       "order": 50,
+      "phase": "6_codegen_finalization",
+      "strategy": "Default",
+      "verify_tasks": [
+        "pypto:unit_tests_fast"
+      ]
+    },
+    {
+      "name": "materialize_runtime_scopes",
+      "order": 51,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [
@@ -456,15 +465,6 @@
     },
     {
       "name": "classify_iter_arg_carry",
-      "order": 51,
-      "phase": "6_codegen_finalization",
-      "strategy": "Default",
-      "verify_tasks": [
-        "pypto:unit_tests_fast"
-      ]
-    },
-    {
-      "name": "insert_comm_fence",
       "order": 52,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
@@ -473,8 +473,17 @@
       ]
     },
     {
-      "name": "materialize_valid_shape_symbols",
+      "name": "insert_comm_fence",
       "order": 53,
+      "phase": "6_codegen_finalization",
+      "strategy": "Default",
+      "verify_tasks": [
+        "pypto:unit_tests_fast"
+      ]
+    },
+    {
+      "name": "materialize_valid_shape_symbols",
+      "order": 54,
       "phase": "6_codegen_finalization",
       "strategy": "Default",
       "verify_tasks": [

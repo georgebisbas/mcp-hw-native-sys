@@ -375,8 +375,8 @@
       "description": "N6 distributed ops, collectives, multi-rank",
       "read_first_canonical": [
         "pypto/docs/en/dev/distributed_ops.md",
-        "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md",
-        "pypto/docs/en/dev/passes/46-lower_host_tensor_collectives.md"
+        "pypto/docs/en/dev/passes/46-materialize_comm_domain_scopes.md",
+        "pypto/docs/en/dev/passes/47-lower_host_tensor_collectives.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/abstractions/composite_collectives.md",
@@ -412,8 +412,8 @@
       "description": "Host builtin collectives program (plan 33): barrier, broadcast, reduce_scatter, allgather on #1798 rail",
       "read_first_canonical": [
         "pypto/docs/en/dev/distributed_ops.md",
-        "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md",
-        "pypto/docs/en/dev/passes/46-lower_host_tensor_collectives.md"
+        "pypto/docs/en/dev/passes/46-materialize_comm_domain_scopes.md",
+        "pypto/docs/en/dev/passes/47-lower_host_tensor_collectives.md"
       ],
       "read_first_enriched": [
         "pypto-3.0-notes/memories/host_collectives.md",

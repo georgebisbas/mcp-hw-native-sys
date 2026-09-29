@@ -41,7 +41,7 @@
       "name": "orchestrator",
       "one_liner": "Submits slots and infers dependencies; the only READY router is Orchestrator::enqueue_ready.",
       "paths": [
-        "simpler/src/common/orchestrator/",
+        "simpler/src/common/hierarchical/orchestrator.cpp",
         "simpler/docs/orchestrator.md"
       ]
     },
@@ -247,7 +247,7 @@
         "simpler"
       ],
       "paths": [
-        "simpler/src/common/orchestrator/",
+        "simpler/src/common/hierarchical/orchestrator.cpp",
         "simpler/docs/orchestrator.md"
       ],
       "docs_canonical": [

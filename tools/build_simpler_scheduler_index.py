@@ -42,7 +42,7 @@ _ENGINES = [
     {
         "name": "orchestrator",
         "one_liner": "Submits slots and infers dependencies; the only READY router is Orchestrator::enqueue_ready.",
-        "paths": ["simpler/src/common/orchestrator/", "simpler/docs/orchestrator.md"],
+        "paths": ["simpler/src/common/hierarchical/orchestrator.cpp", "simpler/docs/orchestrator.md"],
     },
     {
         "name": "scheduler",
@@ -68,7 +68,9 @@ def _slug(rel: str) -> str:
     return f"simpler.scheduler.{slug}"
 
 
-_SKIP_PARTS = {".git", ".venv", "node_modules", "__pycache__", "site-packages"}
+# `.claude` holds per-agent worktrees: full repo copies whose scheduler sources
+# are duplicates of the canonical ones and disappear when the worktree does.
+_SKIP_PARTS = {".git", ".claude", ".venv", "node_modules", "__pycache__", "site-packages"}
 
 
 def _skipped(path: Path) -> bool:

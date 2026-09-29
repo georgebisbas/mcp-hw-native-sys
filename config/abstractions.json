@@ -225,7 +225,7 @@
       "pypto/include/pypto/ir/stmt.h"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md"
+      "pypto/docs/en/dev/passes/46-materialize_comm_domain_scopes.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/distributed/pypto-3.0-distributed_support.md"
@@ -310,7 +310,7 @@
       "pypto/src/ir/transforms/lower_host_tensor_collectives_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/46-lower_host_tensor_collectives.md"
+      "pypto/docs/en/dev/passes/47-lower_host_tensor_collectives.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/memories/host_collectives.md",
@@ -1076,7 +1076,7 @@
       "pypto/src/ir/transforms/auto_derive_task_dependencies_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/42-auto_derive_task_dependencies.md"
+      "pypto/docs/en/dev/passes/43-auto_derive_task_dependencies.md"
     ],
     "docs_enriched": [],
     "rules": [
@@ -1210,7 +1210,7 @@
   "ConvertToSSA": {
     "layer": "pypto/passes",
     "kind": "pass",
-    "one_liner": "Pass 3: Convert IR to SSA form \u2014 single-definition variables, dominance-based phi placement",
+    "one_liner": "Pass 4: Convert IR to SSA form \u2014 single-definition variables, dominance-based phi placement",
     "repos": [
       "pypto"
     ],
@@ -1241,7 +1241,7 @@
   "InitMemRef": {
     "layer": "pypto/passes",
     "kind": "pass",
-    "one_liner": "Pass 29: Initialize MemRef allocations \u2014 hoist tile.alloc to function-body head",
+    "one_liner": "Pass 35: Initialize MemRef allocations \u2014 hoist tile.alloc to function-body head",
     "repos": [
       "pypto"
     ],
@@ -1271,7 +1271,7 @@
   "MemoryReuse": {
     "layer": "pypto/passes",
     "kind": "pass",
-    "one_liner": "Pass 30: Global largest-first packing for tile buffer reuse (#1805)",
+    "one_liner": "Pass 37: Global largest-first packing for tile buffer reuse (#1805)",
     "repos": [
       "pypto"
     ],
@@ -1330,7 +1330,7 @@
   "MaterializeCommDomainScopes": {
     "layer": "pypto/passes",
     "kind": "pass",
-    "one_liner": "Pass 37: Trace alloc\u2192window\u2192dispatch chain, wrap in CommDomainScopeStmt",
+    "one_liner": "Pass 46: Trace alloc\u2192window\u2192dispatch chain, wrap in CommDomainScopeStmt",
     "repos": [
       "pypto"
     ],
@@ -1338,7 +1338,7 @@
       "pypto/src/ir/transforms/materialize_comm_domain_scopes_pass.cpp"
     ],
     "docs_canonical": [
-      "pypto/docs/en/dev/passes/45-materialize_comm_domain_scopes.md"
+      "pypto/docs/en/dev/passes/46-materialize_comm_domain_scopes.md"
     ],
     "docs_enriched": [
       "pypto-3.0-notes/infrastructure/pass_infrastructure.md",

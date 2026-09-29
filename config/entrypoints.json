@@ -75,7 +75,7 @@
   "simpler": {
     "orchestrator": [
       "docs/orchestrator.md",
-      "src/common/orchestrator/"
+      "src/common/hierarchical/orchestrator.cpp"
     ],
     "worker": [
       "src/common/worker/",

@@ -1,7 +1,7 @@
 {
-  "last_verified": "2026-09-25 (run `tools/sync_status_prs.sh`)",
+  "last_verified": "2026-09-28 (run `tools/sync_status_prs.sh`)",
   "dashboard": {
-    "open": 13,
+    "open": 16,
     "merged_all": 67,
     "merged_90d": 49,
     "closed": 26
@@ -68,7 +68,7 @@
       "title": "fix(jit): generalize @pl.jit metadata dispatch past ...",
       "branch": "fix/2638-jit-pld-tensor-metadata",
       "ci": "\u2705",
-      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md)",
+      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md), [migrate-l3-host-collectives-to-pl-jit](../pull_requests/migrate-l3-host-collectives-to-pl-jit.md)",
       "repo": "pypto"
     },
     {
@@ -92,6 +92,30 @@
       "title": "test(collectives): cover InCore allgather at a runti...",
       "branch": "tests/incore-allgather-runtime-width",
       "ci": "\u274c",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2917",
+      "title": "fix(passes): fold provably-false init_cond predicate...",
+      "branch": "fix/fold-dead-init-cond-after-replication",
+      "ci": "\u274c",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2922",
+      "title": "feat(passes): rotate slots by the iteration counter,...",
+      "branch": "feat/slots-general-rotation",
+      "ci": "\u2705",
+      "notes": "\u2014",
+      "repo": "pypto"
+    },
+    {
+      "pr": "#2939",
+      "title": "feat(distributed): chunk the InCore reduce_scatter l...",
+      "branch": "feat/incore-reduce-scatter-chunking",
+      "ci": "\ud83d\udfe1",
       "notes": "\u2014",
       "repo": "pypto"
     },
@@ -131,6 +155,22 @@
     },
     {
       "repo": "pypto",
+      "branch": "feat/bidirectional-ring-allreduce-composite",
+      "sha": "a6770185d",
+      "plan": "[plan 52](52-pypto-bidirectional-ring-allreduce-composite.md)",
+      "npu": "\u2014",
+      "blocker": "**Unattended since 2026-07-31 \u2014 two months, no PR.** `mode=\"bidirectional_ring\"` dispatches to ring lowering and is functionally correct for all P (verified P=2 in sim); the *true* dual CCW+CW schedule deadlocked in sim and was deferred to a follow-up. So the branch ships the pragmatic first step, not the performance work. **Needs a decision, not just a row:** open it as the first step, or hold it until the dual-ring schedule lands. Note the plan's own Status line named `\u2026-composite-v2`, which was never created (fixed 2026-09-28)."
+    },
+    {
+      "repo": "pypto",
+      "branch": "perf/auto-core-num-host-collectives",
+      "sha": "ca1743c1",
+      "plan": "[plan 100](100-pypto-auto-core-num-host-collectives.md) Phase A",
+      "npu": "\u2014",
+      "blocker": "**Rebase required before any PR \u2014 2 ahead / 99 behind `main`.** Phase A (auto/default `core_num` for HOST mesh allreduce) implemented and pushed; the rebase surfaced and fixed two pre-commit gaps, full UT 13100 passed afterwards. Phase B (extend the default to sibling host collectives) is blocked on B6b/B6c."
+    },
+    {
+      "repo": "pypto",
       "branch": "~~`feat/incore-reduce-scatter-reduce-ops`~~",
       "sha": "684ee93e",
       "plan": "[plan 84](84-pypto-collectives-arbitrary-length-shape.md) task 1",
@@ -164,18 +204,18 @@
     {
       "repo": "pypto",
       "branch": "refactor/split-lower-composite-ops-pr2",
-      "sha": "fdcc14c0",
+      "sha": "db2b5ee08",
       "plan": "[plan 70](70-pypto-split-lower-composite-ops.md) phase 2",
       "npu": "\u2014",
-      "blocker": "**Stacked on [#2792](https://github.com/hw-native-sys/pypto/pull/2792)** \u2014 open after it merges. Shared collective helpers \u2192 `lower_composite_common.{h,cpp}`; allreduce (mesh+ring) + allgather \u2192 own TUs. Independently green in sim Docker: build, **4319 passed**, clang-tidy, pre-commit"
+      "blocker": "**Stacked on [#2792](https://github.com/hw-native-sys/pypto/pull/2792)** \u2014 open after it merges. Shared collective helpers \u2192 `lower_composite_common.{h,cpp}`; allreduce (mesh+ring) + allgather \u2192 own TUs. **Restacked 2026-09-28** onto `main` `b66eb92a6` (was `fdcc14c0`, stacked on the pre-doc-update phase-1 `537d3203`); the pass file keeps `type_inference.h` because upstream's newer `tile.select` rule needs it. Green in sim Docker after the restack: build clean, full `tests/ut/` **15486 passed / 19 skipped / 1 xfailed / 0 failed**"
     },
     {
       "repo": "pypto",
       "branch": "refactor/split-lower-composite-ops-pr3",
-      "sha": "35e1fc95",
+      "sha": "133ce7738",
       "plan": "[plan 70](70-pypto-split-lower-composite-ops.md) phase 3",
       "npu": "\u2014",
-      "blocker": "**Stacked on phase 2.** Remaining five collectives \u2192 own TUs; en/zh pass doc rewritten. Pass file reaches 626 lines (2845 at start). Independently green: build, **4319 passed**, clang-tidy, pre-commit"
+      "blocker": "**Stacked on phase 2.** Remaining five collectives \u2192 own TUs; en/zh pass doc rewritten. Pass file reaches 626 lines (2845 at start). **Restacked 2026-09-28** (was `35e1fc95`): conflicts in the pass-file rule deletions and in both pass-doc sections, upstream's K2 `core_num` rework (#2889) ported into the moved `LowerTensorAllToAllVRule`, stale `pto.load_scalar` comment corrected to `pto.load`, `tile_conversion_utils.h` retained in the pass file. Green in sim Docker after the restack: build clean, full `tests/ut/` **15486 passed / 19 skipped / 1 xfailed / 0 failed**"
     },
     {
       "repo": "pypto",
@@ -226,7 +266,12 @@
       "blocker": "[simpler-window-buffer-cacheline-alignment.md](../issues/simpler-window-buffer-cacheline-alignment.md)"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "branch": "perf/auto-core-num-host-collectives",
+      "blocker": "**Rebase required before any PR \u2014 2 ahead / 99 behind `main`.** Phase A (auto/default `core_num` for HOST mesh allreduce) implemented and pushed; the rebase surfaced and fixed two pre-commit gaps, full UT 13100 passed afterwards. Phase B (extend the default to sibling host collectives) is blocked on B6b/B6c."
+    }
+  ],
   "plan_cross_index": [
     {
       "plan": "01",
@@ -305,6 +350,12 @@
       "repo": "pypto",
       "prs": "[#2908](https://github.com/hw-native-sys/pypto/pull/2908)",
       "title": "[InCore `allgather` over a runtime-uniform width \u2014 verify, then close](122-pypto-incore-allgather-runtime-uniform-width.md)"
+    },
+    {
+      "plan": "123",
+      "repo": "pypto",
+      "prs": "[#2939](https://github.com/hw-native-sys/pypto/pull/2939)",
+      "title": "[Chunk the InCore `reduce_scatter` lowering + runtime `SIZE`](123-pypto-incore-reduce-scatter-chunking.md)"
     },
     {
       "plan": "108",
