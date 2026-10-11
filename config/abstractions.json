@@ -656,14 +656,12 @@
       "pto-isa"
     ],
     "paths": [
-      "pto-isa/docs/isa/comm/TPUT.md"
+      "pto-isa/docs/isa/comm/"
     ],
     "docs_canonical": [
       "pto-isa/docs/isa/comm/"
     ],
-    "docs_enriched": [
-      "pypto-3.0-notes/abstractions/TPUT.md"
-    ],
+    "docs_enriched": [],
     "rules": [],
     "related": [
       "TPOP",
@@ -689,9 +687,7 @@
     "docs_canonical": [
       "pto-isa/docs/isa/comm/"
     ],
-    "docs_enriched": [
-      "pypto-3.0-notes/abstractions/TPUT.md"
-    ],
+    "docs_enriched": [],
     "rules": [],
     "related": [
       "TPUSH",

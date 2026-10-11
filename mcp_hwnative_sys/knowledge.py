@@ -491,6 +491,8 @@ def explain_abstraction_impl(name: str, layer: str = "") -> dict[str, Any]:
         "source": card.get("source", "curated"),
         "layer": card.get("layer"),
         "kind": card.get("kind"),
+        "one_liner": card.get("one_liner", ""),
+        "description": card.get("description", ""),
         "tags": card.get("tags", []),
         "arch_families": card.get("arch_families", []),
         "repos": card.get("repos", []),
