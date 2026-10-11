@@ -86,7 +86,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer/View Ops (for your front-end IR)"
+      "PartitionViewOp"
     ]
   },
   "atomic_add": {
@@ -104,7 +104,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "atomic_and": {
@@ -122,7 +122,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "atomic_cas": {
@@ -140,7 +140,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicCasLikeOp family"
     ]
   },
   "atomic_exch": {
@@ -158,7 +158,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "atomic_max": {
@@ -176,7 +176,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicExtremumOp family"
     ]
   },
   "atomic_min": {
@@ -194,7 +194,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicExtremumOp family"
     ]
   },
   "atomic_or": {
@@ -212,7 +212,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "atomic_sub": {
@@ -230,7 +230,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "atomic_xor": {
@@ -248,7 +248,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_AtomicBinaryOp family"
     ]
   },
   "barrier": {
@@ -302,7 +302,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Multi-buffer tile allocation and slot selection"
+      "SSA TileBuf Config Ops (aliasing views)"
     ]
   },
   "castptr": {
@@ -338,7 +338,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryFloatScalarOp family"
     ]
   },
   "chistv2": {
@@ -356,7 +356,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_HistogramOp family"
     ]
   },
   "cmo.cacheinvalid": {
@@ -644,7 +644,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_cbuf_to_fbuf": {
@@ -662,7 +662,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_cbuf_to_ubuf": {
@@ -680,7 +680,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_gm_to_cbuf": {
@@ -698,7 +698,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_gm_to_cbuf_multi_dn2nz": {
@@ -716,7 +716,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_gm_to_cbuf_multi_nd2nz": {
@@ -734,7 +734,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_gm_to_ubuf": {
@@ -752,7 +752,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_matrix_cc_to_cbuf": {
@@ -770,7 +770,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_matrix_cc_to_gm": {
@@ -788,7 +788,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_matrix_cc_to_ub": {
@@ -806,7 +806,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_ubuf_to_cbuf": {
@@ -824,7 +824,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_ubuf_to_gm": {
@@ -842,7 +842,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "copy_ubuf_to_ubuf": {
@@ -860,7 +860,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "cos": {
@@ -878,7 +878,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryF32ScalarOp family"
     ]
   },
   "create_cbuf_matrix": {
@@ -896,7 +896,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "ctrl_state_guard": {
@@ -914,7 +914,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "dcci": {
@@ -932,7 +932,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "declare_eventid_array": {
@@ -1040,7 +1040,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_HistogramOp family"
     ]
   },
   "dsb": {
@@ -1058,7 +1058,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "eventid_array_get": {
@@ -1112,7 +1112,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryF16F32ScalarOp family"
     ]
   },
   "fence.barrier_all": {
@@ -1148,7 +1148,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryFloatScalarOp family"
     ]
   },
   "fma": {
@@ -1166,7 +1166,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ScalarOp family"
     ]
   },
   "fusion_region": {
@@ -1202,7 +1202,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_dim_y": {
@@ -1220,7 +1220,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_dim_z": {
@@ -1238,7 +1238,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_idx": {
@@ -1256,7 +1256,7 @@
     ],
     "source": "generated",
     "tags": [
-      "DMA Ops"
+      "System/Runtime Query Ops"
     ]
   },
   "get_block_idx_x": {
@@ -1274,7 +1274,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_idx_y": {
@@ -1292,7 +1292,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_idx_z": {
@@ -1310,7 +1310,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_block_num": {
@@ -1328,7 +1328,7 @@
     ],
     "source": "generated",
     "tags": [
-      "DMA Ops"
+      "System/Runtime Query Ops"
     ]
   },
   "get_buf": {
@@ -1382,7 +1382,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_clock64": {
@@ -1400,7 +1400,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI64PureOp family"
     ]
   },
   "get_ctrl": {
@@ -1418,7 +1418,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "get_grid_dim_x": {
@@ -1436,7 +1436,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_grid_dim_y": {
@@ -1454,7 +1454,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_grid_dim_z": {
@@ -1472,7 +1472,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_l2_cache_offset": {
@@ -1490,7 +1490,7 @@
     ],
     "source": "generated",
     "tags": [
-      "DMA Ops"
+      "System/Runtime Query Ops"
     ]
   },
   "get_laneid": {
@@ -1508,7 +1508,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_lanemask_eq": {
@@ -1526,7 +1526,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_lanemask_ge": {
@@ -1544,7 +1544,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_lanemask_gt": {
@@ -1562,7 +1562,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_lanemask_le": {
@@ -1580,7 +1580,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_lanemask_lt": {
@@ -1598,7 +1598,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32PureOp family"
     ]
   },
   "get_prefetch_async_session": {
@@ -1634,7 +1634,7 @@
     ],
     "source": "generated",
     "tags": [
-      "DMA Ops"
+      "System/Runtime Query Ops"
     ]
   },
   "get_subblock_num": {
@@ -1652,7 +1652,7 @@
     ],
     "source": "generated",
     "tags": [
-      "DMA Ops"
+      "System/Runtime Query Ops"
     ]
   },
   "get_tensor_view_dim": {
@@ -1670,7 +1670,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer/View Ops (for your front-end IR)"
+      "PartitionViewOp"
     ]
   },
   "get_tensor_view_stride": {
@@ -1688,7 +1688,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer/View Ops (for your front-end IR)"
+      "PartitionViewOp"
     ]
   },
   "get_tid_x": {
@@ -1706,7 +1706,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_tid_y": {
@@ -1724,7 +1724,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_tid_z": {
@@ -1742,7 +1742,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_validshape": {
@@ -1778,7 +1778,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_DirectSimtNullaryI32RangedPureOp family"
     ]
   },
   "get_vms4_sr": {
@@ -1796,7 +1796,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "import_reserved_buffer": {
@@ -1832,7 +1832,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "initialize_l2g2l_pipe": {
@@ -1886,7 +1886,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "ld_dev": {
@@ -1904,7 +1904,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MicroOp family"
     ]
   },
   "ldg": {
@@ -1922,7 +1922,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "load": {
@@ -1940,7 +1940,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ScalarOp family"
     ]
   },
   "load_cbuf_to_ca": {
@@ -1958,7 +1958,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "load_cbuf_to_ca_mx": {
@@ -1976,7 +1976,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "load_cbuf_to_ca_s4": {
@@ -1994,7 +1994,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "load_cbuf_to_cb": {
@@ -2012,7 +2012,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "load_cbuf_to_cb_mx": {
@@ -2030,7 +2030,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "load_cbuf_to_cb_s4": {
@@ -2048,7 +2048,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "local_array_get": {
@@ -2102,7 +2102,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryF16F32ScalarOp family"
     ]
   },
   "mad": {
@@ -2120,7 +2120,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_acc": {
@@ -2138,7 +2138,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_bias": {
@@ -2156,7 +2156,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_bias_raw": {
@@ -2174,7 +2174,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_mx": {
@@ -2192,7 +2192,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_mx_acc": {
@@ -2210,7 +2210,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_mx_bias": {
@@ -2228,7 +2228,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_mx_bias_raw": {
@@ -2246,7 +2246,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_mx_raw": {
@@ -2264,7 +2264,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "mad_raw": {
@@ -2282,7 +2282,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_CubeMicroOp family"
     ]
   },
   "make_prefetch_async_context": {
@@ -2336,7 +2336,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MicroOp family"
     ]
   },
   "mgather": {
@@ -2390,7 +2390,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_gm_l1_frac": {
@@ -2408,7 +2408,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_gm_ub": {
@@ -2426,7 +2426,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l0c_gm": {
@@ -2444,7 +2444,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l0c_l1": {
@@ -2462,7 +2462,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l0c_ub": {
@@ -2480,7 +2480,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_bt": {
@@ -2498,7 +2498,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_fb": {
@@ -2516,7 +2516,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_l0a": {
@@ -2534,7 +2534,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_l0a_mx": {
@@ -2552,7 +2552,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_l0b": {
@@ -2570,7 +2570,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_l0b_mx": {
@@ -2588,7 +2588,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_l1_ub": {
@@ -2606,7 +2606,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_ub_gm": {
@@ -2624,7 +2624,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_ub_l1": {
@@ -2642,7 +2642,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mte_ub_ub": {
@@ -2660,7 +2660,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MteOp family"
     ]
   },
   "mul_i32toi64": {
@@ -2678,7 +2678,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "mulhi": {
@@ -2696,7 +2696,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "multi_tile_get": {
@@ -2732,7 +2732,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "partition_view": {
@@ -2750,7 +2750,7 @@
     ],
     "source": "generated",
     "tags": [
-      "Pointer/View Ops (for your front-end IR)"
+      "PartitionViewOp"
     ]
   },
   "pbitcast": {
@@ -2768,7 +2768,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MaskUnaryOp family"
     ]
   },
   "pdintlv_b16": {
@@ -2786,7 +2786,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pdintlv_b32": {
@@ -2804,7 +2804,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pdintlv_b8": {
@@ -2822,7 +2822,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pge_b16": {
@@ -2840,7 +2840,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pge_b32": {
@@ -2858,7 +2858,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pge_b8": {
@@ -2876,7 +2876,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pintlv_b16": {
@@ -2894,7 +2894,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pintlv_b32": {
@@ -2912,7 +2912,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pintlv_b8": {
@@ -2930,7 +2930,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_PredicatePairReorderOp family"
     ]
   },
   "pldi": {
@@ -2948,7 +2948,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "plds": {
@@ -2966,7 +2966,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "plt_b16": {
@@ -2984,7 +2984,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "plt_b32": {
@@ -3002,7 +3002,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "plt_b8": {
@@ -3020,7 +3020,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pltm_b16": {
@@ -3038,7 +3038,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pltm_b32": {
@@ -3056,7 +3056,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pltm_b8": {
@@ -3074,7 +3074,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pnot": {
@@ -3092,7 +3092,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "por": {
@@ -3110,7 +3110,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pow": {
@@ -3128,7 +3128,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryF16F32ScalarOp family"
     ]
   },
   "ppack": {
@@ -3146,7 +3146,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MaskUnaryOp family"
     ]
   },
   "print": {
@@ -3182,7 +3182,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "psel": {
@@ -3200,7 +3200,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pset_b16": {
@@ -3218,7 +3218,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pset_b32": {
@@ -3236,7 +3236,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pset_b8": {
@@ -3254,7 +3254,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "psti": {
@@ -3272,7 +3272,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "psts": {
@@ -3290,7 +3290,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "pstu": {
@@ -3308,7 +3308,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "punpack": {
@@ -3326,7 +3326,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MaskUnaryOp family"
     ]
   },
   "pxor": {
@@ -3344,7 +3344,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "raw_fill_l1": {
@@ -3362,7 +3362,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MicroOp family"
     ]
   },
   "record_event": {
@@ -3398,7 +3398,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxFloatOp family"
     ]
   },
   "redux_addi": {
@@ -3416,7 +3416,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxIntegerOp family"
     ]
   },
   "redux_maxf": {
@@ -3434,7 +3434,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxFloatOp family"
     ]
   },
   "redux_maxi": {
@@ -3452,7 +3452,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxSignedIntegerOp family"
     ]
   },
   "redux_minf": {
@@ -3470,7 +3470,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxFloatOp family"
     ]
   },
   "redux_mini": {
@@ -3488,7 +3488,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ReduxSignedIntegerOp family"
     ]
   },
   "reserve_buffer": {
@@ -3524,7 +3524,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "rint": {
@@ -3542,7 +3542,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryFloatScalarOp family"
     ]
   },
   "rls_buf": {
@@ -3596,7 +3596,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryFloatScalarOp family"
     ]
   },
   "sbitset0": {
@@ -3614,7 +3614,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64PureOp family"
     ]
   },
   "sbitset1": {
@@ -3632,7 +3632,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64PureOp family"
     ]
   },
   "section.cube": {
@@ -3704,7 +3704,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_bf16": {
@@ -3722,7 +3722,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_f16": {
@@ -3740,7 +3740,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_f32": {
@@ -3758,7 +3758,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_max": {
@@ -3776,7 +3776,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_min": {
@@ -3794,7 +3794,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_none": {
@@ -3812,7 +3812,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_s16": {
@@ -3830,7 +3830,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_s32": {
@@ -3848,7 +3848,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_atomic_s8": {
@@ -3866,7 +3866,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_NullaryConfigOp family"
     ]
   },
   "set_channel_para": {
@@ -3884,7 +3884,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_cross_block": {
@@ -3938,7 +3938,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_flag": {
@@ -3992,7 +3992,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_intra_block": {
@@ -4028,7 +4028,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_loop1_stride_outtoub": {
@@ -4046,7 +4046,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop1_stride_ubtoout": {
@@ -4064,7 +4064,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop2_stride_outtol1": {
@@ -4082,7 +4082,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_loop2_stride_outtoub": {
@@ -4100,7 +4100,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop2_stride_ubtoout": {
@@ -4118,7 +4118,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop3_para": {
@@ -4136,7 +4136,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop_size_outtol1": {
@@ -4154,7 +4154,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_loop_size_outtoub": {
@@ -4172,7 +4172,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_loop_size_ubtoout": {
@@ -4190,7 +4190,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryI64ConfigOp family"
     ]
   },
   "set_mov_pad_val": {
@@ -4208,7 +4208,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "set_mte2_nz_para": {
@@ -4226,7 +4226,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_pad_val_outtol1": {
@@ -4244,7 +4244,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_quant_pre": {
@@ -4262,7 +4262,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_quant_scalar": {
@@ -4316,7 +4316,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_store_atomic_cfg": {
@@ -4334,7 +4334,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryI64ConfigOp family"
     ]
   },
   "set_validshape": {
@@ -4370,7 +4370,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "shuffle_down": {
@@ -4388,7 +4388,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "shuffle_idx": {
@@ -4406,7 +4406,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "shuffle_up": {
@@ -4424,7 +4424,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "simt_launch": {
@@ -4442,7 +4442,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "sin": {
@@ -4460,7 +4460,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryF32ScalarOp family"
     ]
   },
   "sprclr": {
@@ -4478,7 +4478,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "sprsti": {
@@ -4496,7 +4496,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "sprsts": {
@@ -4514,7 +4514,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "sqrt": {
@@ -4532,7 +4532,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ScalarOp family"
     ]
   },
   "st_dev": {
@@ -4550,7 +4550,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_MicroOp family"
     ]
   },
   "stg": {
@@ -4568,7 +4568,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "store": {
@@ -4586,7 +4586,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ScalarOp family"
     ]
   },
   "store_vfsimt_info": {
@@ -4604,7 +4604,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "strict_vecscope": {
@@ -4622,7 +4622,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "struct_get": {
@@ -4748,7 +4748,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "tabs": {
@@ -5432,7 +5432,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "texp": {
@@ -5810,7 +5810,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "threadfence_block": {
@@ -5828,7 +5828,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "tile_buf_addr": {
@@ -5846,7 +5846,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "tile_valid_cols": {
@@ -7430,7 +7430,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vabs": {
@@ -7448,7 +7448,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vadd": {
@@ -7466,7 +7466,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vaddc": {
@@ -7484,7 +7484,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vaddcs": {
@@ -7502,7 +7502,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vaddreluconv": {
@@ -7520,7 +7520,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vadds": {
@@ -7538,7 +7538,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vand": {
@@ -7556,7 +7556,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vaxpy": {
@@ -7574,7 +7574,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vbitcast": {
@@ -7592,7 +7592,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vbitsort": {
@@ -7610,7 +7610,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vbr": {
@@ -7628,7 +7628,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vcadd": {
@@ -7646,7 +7646,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcbmax": {
@@ -7664,7 +7664,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ExtremaPredicateOp family"
     ]
   },
   "vcbmin": {
@@ -7682,7 +7682,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_ExtremaPredicateOp family"
     ]
   },
   "vcgadd": {
@@ -7700,7 +7700,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcgmax": {
@@ -7718,7 +7718,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcgmin": {
@@ -7736,7 +7736,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vci": {
@@ -7754,7 +7754,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vcmax": {
@@ -7772,7 +7772,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcmin": {
@@ -7790,7 +7790,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcmp": {
@@ -7808,7 +7808,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vcmps": {
@@ -7826,7 +7826,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vcpadd": {
@@ -7844,7 +7844,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vcvt": {
@@ -7862,7 +7862,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vdintlv": {
@@ -7880,7 +7880,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vdintlvv2": {
@@ -7898,7 +7898,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vdiv": {
@@ -7916,7 +7916,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vdup": {
@@ -7934,7 +7934,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vecscope": {
@@ -7952,7 +7952,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_Op family"
     ]
   },
   "vexp": {
@@ -7970,7 +7970,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vexpdif": {
@@ -7988,7 +7988,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vgather2": {
@@ -8006,7 +8006,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vgather2_bc": {
@@ -8024,7 +8024,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vgatherb": {
@@ -8042,7 +8042,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vintlv": {
@@ -8060,7 +8060,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vintlvv2": {
@@ -8078,7 +8078,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vldas": {
@@ -8096,7 +8096,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vlds": {
@@ -8114,7 +8114,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vldsx2": {
@@ -8132,7 +8132,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vldus": {
@@ -8150,7 +8150,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vln": {
@@ -8168,7 +8168,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vlrelu": {
@@ -8186,7 +8186,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vmadd": {
@@ -8204,7 +8204,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_TernaryVecOp family"
     ]
   },
   "vmax": {
@@ -8222,7 +8222,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vmaxs": {
@@ -8240,7 +8240,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vmin": {
@@ -8258,7 +8258,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vmins": {
@@ -8276,7 +8276,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vmrgsort4": {
@@ -8294,7 +8294,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vmul": {
@@ -8312,7 +8312,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vmula": {
@@ -8330,7 +8330,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vmulconv": {
@@ -8348,7 +8348,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vmull": {
@@ -8366,7 +8366,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vmuls": {
@@ -8384,7 +8384,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vmulscvt": {
@@ -8402,7 +8402,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vneg": {
@@ -8420,7 +8420,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vnot": {
@@ -8438,7 +8438,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vor": {
@@ -8456,7 +8456,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vote_all": {
@@ -8474,7 +8474,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "vote_any": {
@@ -8492,7 +8492,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "vote_ballot": {
@@ -8510,7 +8510,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "vote_uni": {
@@ -8528,7 +8528,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_SimtOp family"
     ]
   },
   "vpack": {
@@ -8546,7 +8546,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vprelu": {
@@ -8564,7 +8564,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecMaskedOp family"
     ]
   },
   "vrelu": {
@@ -8582,7 +8582,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vscatter": {
@@ -8600,7 +8600,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsel": {
@@ -8618,7 +8618,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vselr": {
@@ -8636,7 +8636,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vselrv2": {
@@ -8654,7 +8654,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vshl": {
@@ -8672,7 +8672,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vshls": {
@@ -8690,7 +8690,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vshr": {
@@ -8708,7 +8708,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vshrs": {
@@ -8726,7 +8726,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VecScalarMaskedOp family"
     ]
   },
   "vsldb": {
@@ -8744,7 +8744,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsqrt": {
@@ -8762,7 +8762,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vsqz": {
@@ -8780,7 +8780,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_UnaryVecOp family"
     ]
   },
   "vsstb": {
@@ -8798,7 +8798,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vstar": {
@@ -8816,7 +8816,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vstas": {
@@ -8834,7 +8834,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsts": {
@@ -8852,7 +8852,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vstsx2": {
@@ -8870,7 +8870,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vstur": {
@@ -8888,7 +8888,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vstus": {
@@ -8906,7 +8906,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsub": {
@@ -8924,7 +8924,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vsubc": {
@@ -8942,7 +8942,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsubcs": {
@@ -8960,7 +8960,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vsunpack": {
@@ -8978,7 +8978,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vtrc": {
@@ -8996,7 +8996,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vusqz": {
@@ -9014,7 +9014,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "vxor": {
@@ -9032,7 +9032,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_BinaryVecOp family"
     ]
   },
   "vzunpack": {
@@ -9050,7 +9050,7 @@
     ],
     "source": "generated",
     "tags": [
-      "uncategorized"
+      "PTO_VectorMicroOp family"
     ]
   },
   "wait_cross_block": {
