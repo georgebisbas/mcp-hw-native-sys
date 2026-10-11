@@ -104,11 +104,11 @@
           "phase": "decode"
         },
         {
-          "name": "decode_layer.py",
+          "name": "decode_fwd.py",
           "phase": "decode"
         },
         {
-          "name": "decode_layer_plan.py",
+          "name": "decode_layer.py",
           "phase": "decode"
         },
         {
@@ -241,6 +241,10 @@
         },
         {
           "name": "prefill_c2a_reuse.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_fwd.py",
           "phase": "prefill"
         },
         {
@@ -403,6 +407,18 @@
           "phase": "other"
         },
         {
+          "name": "prefill_bootstrap.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_bootstrap_metadata.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_bootstrap_one_l2.py",
+          "phase": "prefill"
+        },
+        {
           "name": "prefill_compressor_ratio128.py",
           "phase": "prefill"
         },
@@ -448,6 +464,10 @@
         },
         {
           "name": "prefill_sparse_attn.py",
+          "phase": "prefill"
+        },
+        {
+          "name": "prefill_state.py",
           "phase": "prefill"
         },
         {
