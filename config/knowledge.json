@@ -231,7 +231,7 @@
       "tier": "enriched"
     },
     "notes/simpler_abstractions": {
-      "path": "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+      "path": "pypto-3.0-notes/simpler/simpler-abstractions.md",
       "max_chars": 8000,
       "tier": "enriched"
     },
@@ -276,7 +276,7 @@
     "distributed_work_policy": "pypto-3.0-notes/tools/sim-known-failures.md",
     "abstractions_master": "pypto-3.0-notes/abstractions/README.md",
     "pypto_abstractions": "pypto-3.0-notes/abstractions/pypto-abstractions.md",
-    "simpler_abstractions": "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+    "simpler_abstractions": "pypto-3.0-notes/simpler/simpler-abstractions.md",
     "ptoisa_abstractions": "pypto-3.0-notes/abstractions/pto-isa-abstractions.md",
     "ptoas_abstractions": "pypto-3.0-notes/abstractions/PTOAS-abstractions.md",
     "runtime_arch_index": "pypto_top_level_documents/pypto-runtime-arch-docs/00-index.md",

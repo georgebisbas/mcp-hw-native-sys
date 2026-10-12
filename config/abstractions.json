@@ -1182,7 +1182,7 @@
     "paths": [
       "pypto-3.0-notes/abstractions/README.md",
       "pypto-3.0-notes/abstractions/pypto-abstractions.md",
-      "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+      "pypto-3.0-notes/simpler/simpler-abstractions.md",
       "pypto-3.0-notes/abstractions/pto-isa-abstractions.md",
       "pypto-3.0-notes/abstractions/PTOAS-abstractions.md"
     ],
@@ -1191,7 +1191,7 @@
     ],
     "docs_enriched": [
       "pypto-3.0-notes/abstractions/pypto-abstractions.md",
-      "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+      "pypto-3.0-notes/simpler/simpler-abstractions.md",
       "pypto-3.0-notes/abstractions/pto-isa-abstractions.md",
       "pypto-3.0-notes/abstractions/PTOAS-abstractions.md"
     ],
@@ -1526,7 +1526,7 @@
       "simpler/docs/comm-domain.md"
     ],
     "docs_enriched": [
-      "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+      "pypto-3.0-notes/simpler/simpler-abstractions.md",
       "pypto-3.0-notes/distributed/simpler_distributed_allreduce.md"
     ],
     "rules": [],
@@ -1559,7 +1559,7 @@
       "simpler/docs/chip-level-arch.md"
     ],
     "docs_enriched": [
-      "pypto-3.0-notes/abstractions/simpler-abstractions.md",
+      "pypto-3.0-notes/simpler/simpler-abstractions.md",
       "pypto-3.0-notes/simpler/notes_simpler.md"
     ],
     "rules": [],

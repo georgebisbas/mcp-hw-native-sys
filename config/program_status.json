@@ -1,9 +1,9 @@
 {
-  "last_verified": "2026-10-10 (manual merge reconciliation for pypto #2792; run `tools/sync_status_prs.sh` for the next live refresh)",
+  "last_verified": "2026-10-12 (run `tools/sync_status_prs.sh`)",
   "dashboard": {
-    "open": 17,
-    "merged_all": 69,
-    "merged_90d": 40,
+    "open": 16,
+    "merged_all": 70,
+    "merged_90d": 41,
     "closed": 26
   },
   "open_prs": [
@@ -48,18 +48,10 @@
       "repo": "pypto"
     },
     {
-      "pr": "#2901",
-      "title": "fix(jit): generalize @pl.jit metadata dispatch past ...",
-      "branch": "fix/2638-jit-pld-tensor-metadata",
-      "ci": "\ud83d\udfe1",
-      "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md), [migrate-l3-host-collectives-to-pl-jit](../pull_requests/migrate-l3-host-collectives-to-pl-jit.md)",
-      "repo": "pypto"
-    },
-    {
       "pr": "#2904",
       "title": "docs(distributed): fix and refresh the existing coll...",
       "branch": "docs/refresh-collectives-ladder",
-      "ci": "\ud83d\udfe1",
+      "ci": "\u2705",
       "notes": "[2904-docs-refresh-collectives-ladder](../pull_requests/2904-docs-refresh-collectives-ladder.md)",
       "repo": "pypto"
     },
@@ -83,7 +75,7 @@
       "pr": "#2917",
       "title": "fix(passes): fold provably-false init_cond predicate...",
       "branch": "fix/fold-dead-init-cond-after-replication",
-      "ci": "\ud83d\udfe1",
+      "ci": "\u2705",
       "notes": "\u2014",
       "repo": "pypto"
     },
@@ -91,7 +83,7 @@
       "pr": "#2922",
       "title": "feat(passes): rotate slots by the iteration counter,...",
       "branch": "feat/slots-general-rotation",
-      "ci": "\ud83d\udfe1",
+      "ci": "\u2705",
       "notes": "\u2014",
       "repo": "pypto"
     },
@@ -121,10 +113,10 @@
     },
     {
       "pr": "#2965",
-      "title": "refactor(ir): split AllReduce and AllGather lowering ...",
+      "title": "refactor(ir): split AllReduce and AllGather lowering...",
       "branch": "refactor/split-lower-composite-ops-pr2",
       "ci": "\u2705",
-      "notes": "Stacked after merged #2792; current head `b2bcfe9ac`; phase 3 is ready at `6676d1f4`.",
+      "notes": "\u2014",
       "repo": "pypto"
     },
     {
@@ -258,14 +250,6 @@
       "blocker": "[issue2683_rfc_composite_adoption_pypto.md](../issues/issue2683_rfc_composite_adoption_pypto.md)"
     },
     {
-      "repo": "pypto",
-      "branch": "[#2800](https://github.com/hw-native-sys/pypto/issues/2800)",
-      "sha": "window_size calculation doesn't account for cache-li...",
-      "plan": "2026-09-16",
-      "npu": "\u2014",
-      "blocker": "[simpler-window-buffer-cacheline-alignment.md](../issues/simpler-window-buffer-cacheline-alignment.md)"
-    },
-    {
       "repo": "pypto-lib",
       "branch": "[#1173](https://github.com/hw-native-sys/pypto-lib/issues/1173)",
       "sha": "[RFC] What collective composite adoption would mean ...",
@@ -309,7 +293,7 @@
       "plan": "05",
       "repo": "pypto-lib",
       "prs": "\u2014",
-      "title": "[In-repo EP documentation for pypto-lib DeepSeek-V4 MoE (four trees)](05-pypto-lib-ep-orch-callsite-doc.md)"
+      "title": "[In-repo EP documentation for pypto-lib DeepSeek-V4 MoE](05-pypto-lib-ep-orch-callsite-doc.md)"
     },
     {
       "plan": "10",
@@ -378,6 +362,18 @@
       "title": "[Chunk the InCore `reduce_scatter` lowering + runtime `SIZE`](123-pypto-incore-reduce-scatter-chunking.md)"
     },
     {
+      "plan": "125",
+      "repo": "pypto",
+      "prs": "[#2922](https://github.com/hw-native-sys/pypto/pull/2922)",
+      "title": "[Rotate slots by the iteration counter, not the induction variable](125-pypto-slots-general-rotation.md)"
+    },
+    {
+      "plan": "124",
+      "repo": "pypto",
+      "prs": "[#2917](https://github.com/hw-native-sys/pypto/pull/2917)",
+      "title": "[Fold the dead `init_cond` predicate after pipeline replication](124-pypto-fold-dead-init-cond-after-pipeline-replication.md)"
+    },
+    {
       "plan": "108",
       "repo": "pypto",
       "prs": "[#2703](https://github.com/hw-native-sys/pypto/pull/2703)",
@@ -392,7 +388,7 @@
     {
       "plan": "110",
       "repo": "pypto",
-      "prs": "[#2521](https://github.com/hw-native-sys/pypto/pull/2521)",
+      "prs": "[#2945](https://github.com/hw-native-sys/pypto/pull/2945)",
       "title": "[AllToAllV benchmark harness + pre-change baseline](110-pypto-alltoallv-benchmark-harness.md)"
     },
     {
@@ -404,7 +400,7 @@
     {
       "plan": "113",
       "repo": "pypto",
-      "prs": "[#2889](https://github.com/hw-native-sys/pypto/pull/2889)",
+      "prs": "[#2900](https://github.com/hw-native-sys/pypto/pull/2900)",
       "title": "[Multi-AIV lane mapping + per-lane sync protocol for all_to_all_v](113-pypto-alltoallv-multiaiv-lane-mapping.md)"
     },
     {

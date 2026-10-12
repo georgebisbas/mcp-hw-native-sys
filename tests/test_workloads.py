@@ -31,7 +31,7 @@ def test_catalog_includes_models_from_the_index():
         "qwen3_14b",
         "deepseek_v4_flash_mtp",
         "deepseek_v4_flash_dspark",
-        "deepseek_v4_pro",
+        "deepseek",
         "deepseek_v4_1_flash",
         "glm5_3_flash",
     } <= names

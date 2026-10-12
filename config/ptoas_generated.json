@@ -7632,12 +7632,12 @@
     ]
   },
   "vcadd": {
-    "description": "Full-vector sum reduction for 16/32-bit integers (signed, unsigned, or signless), f16, and f32. Eight-bit integer inputs are unsupported and rejected by the verifier; callers must explicitly convert to a supported type before reducing. A 16-bit integer input produces a 32-bit integer result with the same signedness and half as many lanes. Other supported inputs preserve the vector type.",
+    "description": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. 16-bit integer inputs produce 32-bit results with the same signedness and half as many lanes; other supported inputs retain their type.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "Full-vector sum reduction for 16/32-bit integers (signed, unsigned, or signless), f16, and f32. Eight-bit integer inputs are unsupported and rejected by the verifier; callers must explicitly convert to a supported type before reducing. A 16-bit integer input produces a 32-bit integer result with the same signedness and half as many lanes. Other supported inputs preserve the vector type.",
+    "one_liner": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. 16-bit integer inputs produce 32-bit results with the same signedness and half as many lanes; other supported inputs retain their type.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -7758,12 +7758,12 @@
     ]
   },
   "vcmax": {
-    "description": "",
+    "description": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. Input and result have the same type.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. Input and result have the same type.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
@@ -7776,12 +7776,12 @@
     ]
   },
   "vcmin": {
-    "description": "",
+    "description": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. Input and result have the same type.",
     "docs_canonical": [],
     "generated_from": "PTOAS/include/PTO/IR/VPTOOps.td",
     "kind": "ir_op",
     "layer": "ptoas/ir",
-    "one_liner": "",
+    "one_liner": "A5 row reduction supporting 16/32-bit integers (signless, signed, or unsigned), f16, and f32. Eight-bit integers, BF16, FP8, and HiF8 are rejected; callers must explicitly convert them before reduction. Input and result have the same type.",
     "paths": [
       "PTOAS/include/PTO/IR/VPTOOps.td"
     ],
