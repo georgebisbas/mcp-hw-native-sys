@@ -33,7 +33,7 @@ def test_explain_scheduler_uses_the_checked_in_catalog():
     assert "a5" in trees["paths"][0]
 
 
-@pytest.mark.workspace
+@pytest.mark.workspace("simpler")
 def test_index_keeps_hierarchical_and_arch_trees_distinct():
     index = build_scheduler_index(workspace_root())
     paths = [item["path"] for item in index["implementations"]]
@@ -43,7 +43,7 @@ def test_index_keeps_hierarchical_and_arch_trees_distinct():
     assert "ISchedulerLayer" not in index["cards"]
 
 
-@pytest.mark.workspace
+@pytest.mark.workspace("simpler")
 def test_level_docs_still_name_l0_and_l6():
     root = workspace_root()
     text = (root / "simpler/docs/hierarchical-level-runtime.md").read_text(encoding="utf-8")

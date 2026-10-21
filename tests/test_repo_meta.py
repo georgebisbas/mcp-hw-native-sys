@@ -18,12 +18,19 @@ def test_registered_repo_meta_paths_exist():
     meta = cfg.get("repository_meta", {})
     assert meta, "repository_meta is empty in config/repos.json"
     ws = workspace_root()
+    repos = cfg.get("repositories", {})
     missing: list[str] = []
+    checked = 0
     for name, entry in sorted(meta.items()):
+        # A repo that is not checked out here is verified on the full workspace.
+        if not (ws / str(repos.get(name, name))).is_dir():
+            continue
+        checked += 1
         for key in ("canonical_docs", "agent_rules"):
             for rel in entry.get(key, []) or []:
                 if not (ws / rel).exists():
                     missing.append(f"[{key}] {name}: {rel}")
+    assert checked, "no registered repo is checked out in the workspace"
     assert not missing, "repository_meta paths missing on disk:\n" + "\n".join(missing)
 
 

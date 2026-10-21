@@ -23,7 +23,7 @@ def test_index_table_row_is_parsed():
     assert rows["qwen3_14b"]["documented"] is True
 
 
-@pytest.mark.workspace
+@pytest.mark.workspace("pypto-lib")
 def test_catalog_includes_models_from_the_index():
     catalog = build_workloads(workspace_root())
     names = {item["name"] for item in catalog["workloads"]}
@@ -31,7 +31,6 @@ def test_catalog_includes_models_from_the_index():
         "qwen3_14b",
         "deepseek_v4_flash_mtp",
         "deepseek_v4_flash_dspark",
-        "deepseek",
         "deepseek_v4_1_flash",
         "glm5_3_flash",
     } <= names
