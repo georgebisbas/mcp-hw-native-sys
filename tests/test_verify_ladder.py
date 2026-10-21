@@ -113,3 +113,31 @@ def test_ptoas_lit_and_pto_isa_tests_count_as_tests():
         "PTOAS/test/lit/pto/foo.pto",
         "pto-isa/tests/cpu/st/testcase/tadd/main.cpp",
     }
+
+
+def test_ptoas_change_runs_ir_smoke_then_lit():
+    result = verify_ladder_impl(["PTOAS/lib/PTO/Transforms/foo.cpp"])
+    assert result["suggested_tasks"] == ["PTOAS:ir_smoke", "PTOAS:lit_tests"]
+    assert all(e["found"] for e in result["ladder"])
+
+
+def test_ptodsl_change_adds_ctest_before_lit():
+    result = verify_ladder_impl(["PTOAS/ptodsl/foo.py"])
+    assert result["suggested_tasks"] == ["PTOAS:ptodsl_ctest", "PTOAS:lit_tests"]
+    assert all(e["found"] for e in result["ladder"])
+
+
+def test_pto_isa_header_change_runs_coverage_check_and_cpu_st():
+    result = verify_ladder_impl(["pto-isa/include/pto/cpu/tadd.hpp"])
+    assert result["suggested_tasks"] == ["pto-isa:validate_op_coverage", "pto-isa:cpu_st_tests"]
+    assert all(e["found"] for e in result["ladder"])
+
+
+def test_pto_isa_test_change_validates_testcase_names():
+    result = verify_ladder_impl(["pto-isa/tests/cpu/st/testcase/tadd/main.cpp"])
+    assert result["suggested_tasks"][0] == "pto-isa:validate_testcase_names"
+
+
+def test_docs_only_changes_in_ptoas_and_pto_isa_suggest_no_tasks():
+    result = verify_ladder_impl(["PTOAS/docs/isa/foo.md", "pto-isa/docs/bar.md"])
+    assert result["suggested_tasks"] == []

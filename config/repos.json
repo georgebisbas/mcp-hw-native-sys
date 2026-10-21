@@ -195,6 +195,27 @@
           "ptoas available in PATH"
         ]
       },
+      "lit_tests": {
+        "command": "ninja -C build check-pto",
+        "category": "test",
+        "risk": "long-running",
+        "long_running": true,
+        "duration_hint": "2-15m",
+        "prerequisites": [
+          "Configured CMake build directory at ./build",
+          "ninja, lit and FileCheck available (see skill llvm-test-tool-fallback)"
+        ]
+      },
+      "ptodsl_ctest": {
+        "command": "ctest --test-dir build --output-on-failure -L PTODSL",
+        "category": "test",
+        "risk": "long-running",
+        "long_running": true,
+        "duration_hint": "1-10m",
+        "prerequisites": [
+          "Configured CMake build directory at ./build"
+        ]
+      },
       "ir_smoke": {
         "command": "ptoas test/lit/pto/empty_func.pto",
         "category": "test",
@@ -215,6 +236,29 @@
       }
     },
     "pto-isa": {
+      "cpu_st_tests": {
+        "command": "bash tests/run_cpu_tests.sh --generator Ninja --build-folder build/cpu_st_ci",
+        "category": "test",
+        "risk": "long-running",
+        "long_running": true,
+        "duration_hint": "5-20m",
+        "prerequisites": [
+          "Python test dependencies installed (numpy, ml-dtypes, en-dtypes)"
+        ],
+        "container_notes": "No NPU reachable \u2192 the MCP auto-redirects this task into the pypto3-hw-native-sys:sim image (mounted pto-isa worktree; builds in place inside the container)."
+      },
+      "validate_op_coverage": {
+        "command": "python3 tests/validate_op_coverage.py",
+        "category": "test",
+        "risk": "safe-read-only",
+        "duration_hint": "<1m"
+      },
+      "validate_testcase_names": {
+        "command": "python3 tests/validate_testcase_names.py",
+        "category": "test",
+        "risk": "safe-read-only",
+        "duration_hint": "<1m"
+      },
       "cpu_smoke": {
         "command": "python3 tests/run_cpu.py --clean --verbose",
         "category": "test",

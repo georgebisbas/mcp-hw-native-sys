@@ -91,6 +91,11 @@ test strategy", not as a hard failure.
 - CI: pre-commit, docs-build, unit-tests (CPU SIM smoke and trace regressions),
   system-tests (`run_cpu_tests.sh`), plus a5-smoke.
 
+`verify_ladder` suggests: PTOAS changes → `ir_smoke`, `lit_tests` (`ninja -C build check-pto`;
+`ptodsl/` adds `ptodsl_ctest`); pto-isa include/kernel changes → `validate_op_coverage`,
+`cpu_st_tests`; pto-isa `tests/` changes → `validate_testcase_names`, `cpu_st_tests`.
+Docs-only changes in either repo suggest nothing. `lit_tests` needs a configured `./build`.
+
 ## Local gate before a PR
 
 1. `pre-commit run --all-files`. In pypto this includes custom lints (emitter
