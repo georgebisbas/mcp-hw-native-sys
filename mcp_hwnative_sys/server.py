@@ -973,7 +973,7 @@ def bootstrap_session(
     detail: Annotated[str, Field(description="Optional free-text context (e.g. symbol, feature, or PR title) used to seed abstraction search")] = "",
     include_health: Annotated[bool, Field(description="When True (default) include repository health summary (branch, dirty state) in the response")] = True,
 ) -> dict[str, Any]:
-    """Single-call session bootstrap: route metadata, read_plan, health, program hints."""
+    """Single-call session bootstrap: route metadata, read_plan, health, program hints, and a testing block (verify tasks, sim/NPU images, rules)."""
     from mcp_hwnative_sys.bootstrap import bootstrap_session_impl
 
     def _health() -> dict[str, Any]:

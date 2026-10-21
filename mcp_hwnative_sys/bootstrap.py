@@ -6,6 +6,7 @@ from mcp_hwnative_sys.knowledge import (
     route_task_impl,
     search_abstractions_impl,
 )
+from mcp_hwnative_sys.paths import load_repos_config
 from mcp_hwnative_sys.programs import load_programs_config, match_program_hints
 from mcp_hwnative_sys.program_status import program_status_impl
 
@@ -52,6 +53,54 @@ def _abstraction_seeds(task_type: str, detail: str) -> list[str]:
         return [m["name"] for m in matches.get("matches", [])]
     except ValueError:
         return []
+
+
+_TESTING_DOCS = ["tools/test_standards", "tools/sim_docker_workflow", "tools/gate_pr_workflow"]
+
+
+def _task_entry(task_key: str, config: dict[str, Any], developer: bool) -> dict[str, Any]:
+    repo, _, name = task_key.partition(":")
+    spec = config.get("tasks", {}).get(repo, {}).get(name)
+    entry: dict[str, Any] = {"task": task_key, "developer_only": developer}
+    if isinstance(spec, dict):
+        entry["command"] = spec.get("command")
+        entry["long_running"] = spec.get("long_running", False)
+    elif isinstance(spec, str):
+        entry["command"] = spec
+    else:
+        entry["found"] = False
+    images = config.get("test_images", {}).get(repo)
+    if images:
+        entry["image"] = images["npu_image"] if developer else images["sim_image"]
+    return entry
+
+
+def _testing_block(route: dict[str, Any]) -> dict[str, Any]:
+    """How to test this kind of work: which tasks, in which image, and where the agent stops."""
+    config = load_repos_config()
+    agent_keys = route.get("agent_verify_tasks", route.get("verify_tasks", []))
+    dev_keys = route.get("developer_verify_tasks", [])
+    agent_tasks = [_task_entry(k, config, developer=False) for k in agent_keys]
+    developer_tasks = [_task_entry(k, config, developer=True) for k in dev_keys]
+
+    images: dict[str, dict[str, Any]] = {}
+    for key in [*agent_keys, *dev_keys]:
+        repo = key.split(":", 1)[0]
+        if repo in config.get("test_images", {}):
+            images[repo] = config["test_images"][repo]
+
+    return {
+        "agent_verify_tasks": agent_tasks,
+        "developer_verify_tasks": developer_tasks,
+        "images": images,
+        "rules": [
+            "Run agent_verify_tasks in the sim image (no NPU); do not run developer_verify_tasks unless asked.",
+            "Real-NPU runs are a developer gate: hand off with generate_verify_handoff.",
+            "New features and bug fixes need tests; verify_ladder(changed_paths) warns when a diff has none.",
+            "Before a PR: verify_ladder(changed_paths), then gate_pr_script(repo).",
+        ],
+        "docs": _TESTING_DOCS,
+    }
 
 
 def bootstrap_session_impl(
@@ -119,7 +168,11 @@ def bootstrap_session_impl(
         "program_hints": unique_hints,
         "health_summary": health_summary,
         "program_status": status_snippet,
-        "session_hint": "Do not re-read docs from read_plan unless editing that area.",
+        "testing": _testing_block(route),
+        "session_hint": (
+            "Do not re-read docs from read_plan unless editing that area. "
+            "Test per the `testing` block (sim image first; NPU is a developer gate)."
+        ),
         "bootstrap_prompt": route.get("bootstrap_prompt"),
         "programs_configured": len(load_programs_config().get("programs", [])),
     }

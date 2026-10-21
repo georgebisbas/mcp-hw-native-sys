@@ -124,6 +124,28 @@
     "pytorch-hccl-tests": "pytorch-hccl-tests",
     "simpler": "simpler"
   },
+  "test_images": {
+    "pypto": {
+      "sim_image": "pypto3-hw-native-sys:sim",
+      "dockerfile": "pypto-docker/Dockerfile.hw-native-sys.sim.ubuntu22.04",
+      "npu_image": "pypto3-hw-native-sys:cann9"
+    },
+    "pto-isa": {
+      "sim_image": "pypto3-hw-native-sys:sim",
+      "dockerfile": "pypto-docker/Dockerfile.hw-native-sys.sim.ubuntu22.04",
+      "npu_image": "pypto3-hw-native-sys:cann9"
+    },
+    "simpler": {
+      "sim_image": "simpler-hw-native-sys:sim",
+      "dockerfile": "pypto-docker/Dockerfile.simpler.sim.ubuntu22.04",
+      "npu_image": null
+    },
+    "pypto-lib": {
+      "sim_image": "pypto-lib-hw-native-sys:sim",
+      "dockerfile": "pypto-docker/Dockerfile.pypto-lib.sim.ubuntu22.04",
+      "npu_image": "pypto-lib-hw-native-sys:cann9"
+    }
+  },
   "tasks": {
     "default": {
       "git_status": {
