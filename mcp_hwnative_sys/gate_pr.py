@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from mcp_hwnative_sys.paths import load_repos_config, safe_relpath, workspace_root
+from mcp_hwnative_sys.verify_ladder import _is_test_path, verify_ladder_impl
 
 
 def _run_command(
@@ -57,6 +58,60 @@ def _changed_cpp_files(repo_path: Path, base_branch: str) -> list[str]:
         for line in proc.stdout.splitlines()
         if line.strip().endswith(_CPP_EXTENSIONS)
     ]
+
+
+def _changed_files(repo_path: Path, base_branch: str) -> list[str]:
+    """All files changed on this branch vs ``origin/<base_branch>`` (repo-relative)."""
+    proc = _git(repo_path, ["diff", "--name-only", f"origin/{base_branch}...HEAD"])
+    if proc.returncode != 0:
+        return []
+    return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+
+
+def _pytest_targets(command: str) -> list[str]:
+    """Positional paths of a ``pytest ...`` task command; empty for other commands."""
+    tokens = command.split()
+    if "pytest" not in tokens:
+        return []
+    return [t for t in tokens[tokens.index("pytest") + 1 :] if not t.startswith("-")]
+
+
+def _derive_test_paths(
+    repo: str, repo_path: Path, changed: list[str]
+) -> tuple[list[str], list[str], list[str]]:
+    """Pick pytest paths from the diff and the verify ladder.
+
+    Returns ``(paths, ladder_tasks, warnings)``. Changed test files come first,
+    then the pytest targets of the ladder's agent-runnable tasks for ``repo``.
+    Only paths that exist on disk are kept.
+    """
+    if not changed:
+        return [], [], []
+
+    ladder = verify_ladder_impl([f"{repo}/{p}" for p in changed])
+    task_specs = load_repos_config().get("tasks", {})
+
+    candidates = [
+        p for p in changed
+        if p.endswith(".py") and _is_test_path(f"{repo}/{p}")
+    ]
+    tasks: list[str] = []
+    for entry in ladder["ladder"]:
+        task_repo, _, name = entry["task"].partition(":")
+        if task_repo != repo or not entry.get("found") or entry.get("developer_only"):
+            continue
+        spec = task_specs.get(repo, {}).get(name)
+        command = spec.get("command", "") if isinstance(spec, dict) else str(spec or "")
+        targets = _pytest_targets(command)
+        if targets:
+            tasks.append(entry["task"])
+            candidates.extend(targets)
+
+    paths: list[str] = []
+    for path in candidates:
+        if path not in paths and (repo_path / path).exists():
+            paths.append(path)
+    return paths, tasks, list(ladder["test_presence"]["warnings"])
 
 
 def _resolve_repo_path(repo_name: str) -> Path:
@@ -298,12 +353,25 @@ def gate_pr_script_impl(
 
     repo_path = _resolve_repo_path(repo)
 
+    test_paths_source = "explicit" if resolved_test_paths else "default"
+    ladder_tasks: list[str] = []
+    ladder_warnings: list[str] = []
+    if not skip_tests:
+        derived, ladder_tasks, ladder_warnings = _derive_test_paths(
+            repo, repo_path, _changed_files(repo_path, base_branch)
+        )
+        if not resolved_test_paths and derived:
+            resolved_test_paths = derived
+            test_paths_source = "ladder"
+
     errors, warnings = _validate_preconditions(
         repo_path,
         base_branch,
         resolved_test_paths,
         skip_tests,
     )
+
+    warnings.extend(ladder_warnings)
 
     branch_result = _git(repo_path, ["rev-parse", "--abbrev-ref", "HEAD"])
     current_branch = branch_result.stdout.strip() if branch_result.returncode == 0 else "unknown"
@@ -379,6 +447,8 @@ def gate_pr_script_impl(
             "warnings": warnings,
         },
         "test_paths": resolved_test_paths,
+        "test_paths_source": test_paths_source,
+        "ladder_tasks": ladder_tasks,
         "test_paths_resolved": [
             str((repo_path / p).resolve()) for p in resolved_test_paths
         ],

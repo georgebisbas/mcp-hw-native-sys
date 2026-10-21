@@ -25,7 +25,13 @@ The `gate_pr_script` tool generates a self-contained bash script for the full PR
 Call `gate_pr_script` from the MCP server with:
 
 - `repo` — repository name (e.g. `"pypto"`)
-- `test_paths` — list of pytest test files/dirs (repo-relative)
+- `test_paths` — list of pytest test files/dirs (repo-relative). When omitted, they are
+  derived from the branch diff vs `origin/<base>`: changed test files first, then the
+  pytest targets of the [`verify_ladder`](test_standards.md) tasks for the repo
+  (`developer_only` tasks excluded). The result reports `test_paths_source`
+  (`explicit` / `ladder` / `default`) and `ladder_tasks`. If nothing is derived it
+  falls back to `tests/st`. Missing-test warnings from the ladder appear in
+  `precondition.warnings`.
 - `extra_test_args` — additional pytest flags (e.g. `"-k allreduce"`)
 - `skip_pre_commit` — skip pre-commit checks (default false)
 - `skip_tests` — skip sim Docker tests (default false)

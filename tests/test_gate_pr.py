@@ -433,3 +433,85 @@ class TestStructuredResult:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+class TestLadderDerivedTestPaths:
+    """test_paths are derived from the diff + verify ladder when not given."""
+
+    @staticmethod
+    def _setup(monkeypatch, tmp_path, changed, tasks):
+        for rel in ("tests/ut", "tests/st", "tests/ut/ir/test_foo.py"):
+            target = tmp_path / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if rel.endswith(".py"):
+                target.write_text("")
+            else:
+                target.mkdir(exist_ok=True)
+
+        monkeypatch.setattr("mcp_hwnative_sys.gate_pr._resolve_repo_path", lambda repo: tmp_path)
+        monkeypatch.setattr("mcp_hwnative_sys.gate_pr._changed_files", lambda p, b: changed)
+        monkeypatch.setattr("mcp_hwnative_sys.gate_pr._changed_cpp_files", lambda p, b: [])
+        monkeypatch.setattr("mcp_hwnative_sys.gate_pr._docker_image_exists", lambda i: True)
+        monkeypatch.setattr(
+            "mcp_hwnative_sys.gate_pr._validate_preconditions",
+            lambda *a, **k: ([], []),
+        )
+        monkeypatch.setattr(
+            "mcp_hwnative_sys.gate_pr.load_repos_config",
+            lambda: {"tasks": {"pypto": tasks}, "repositories": {"pypto": "pypto"}},
+        )
+        monkeypatch.setattr(
+            "mcp_hwnative_sys.verify_ladder.load_repos_config",
+            lambda: {"tasks": {"pypto": tasks}},
+        )
+
+    def test_derives_changed_tests_and_ladder_targets(self, monkeypatch, tmp_path):
+        self._setup(
+            monkeypatch,
+            tmp_path,
+            ["src/ir/transforms/foo.cpp", "tests/ut/ir/test_foo.py"],
+            {"unit_tests_fast": {"command": "pytest tests/ut -q --tb=short", "category": "test"}},
+        )
+        result = gate_pr_script_impl("pypto")
+        assert result["test_paths_source"] == "ladder"
+        assert result["test_paths"] == ["tests/ut/ir/test_foo.py", "tests/ut"]
+        assert result["ladder_tasks"] == ["pypto:unit_tests_fast"]
+        assert "pytest tests/ut/ir/test_foo.py tests/ut " in result["script"]
+
+    def test_explicit_paths_win(self, monkeypatch, tmp_path):
+        self._setup(
+            monkeypatch,
+            tmp_path,
+            ["src/ir/transforms/foo.cpp"],
+            {"unit_tests_fast": {"command": "pytest tests/ut -q", "category": "test"}},
+        )
+        result = gate_pr_script_impl("pypto", test_paths=["tests/st"])
+        assert result["test_paths_source"] == "explicit"
+        assert result["test_paths"] == ["tests/st"]
+
+    def test_developer_only_tasks_are_excluded(self, monkeypatch, tmp_path):
+        self._setup(
+            monkeypatch,
+            tmp_path,
+            ["src/ir/transforms/foo.cpp"],
+            {
+                "unit_tests_fast": {
+                    "command": "pytest tests/ut -q",
+                    "category": "test",
+                    "developer_only": True,
+                }
+            },
+        )
+        result = gate_pr_script_impl("pypto")
+        assert result["test_paths_source"] == "default"
+        assert result["test_paths"] == []
+
+    def test_missing_tests_warning_is_surfaced(self, monkeypatch, tmp_path):
+        self._setup(monkeypatch, tmp_path, ["src/ir/transforms/foo.cpp"], {})
+        result = gate_pr_script_impl("pypto")
+        assert any("no test change" in w for w in result["precondition"]["warnings"])
+
+    def test_skip_tests_does_not_derive(self, monkeypatch, tmp_path):
+        self._setup(monkeypatch, tmp_path, ["tests/ut/ir/test_foo.py"], {})
+        result = gate_pr_script_impl("pypto", skip_tests=True)
+        assert result["test_paths"] == []

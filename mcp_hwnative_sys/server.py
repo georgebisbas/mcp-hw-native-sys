@@ -990,7 +990,7 @@ def bootstrap_session(
 @mcp.tool()
 def gate_pr_script(
     repo: Annotated[str, Field(description='Repository name, e.g. "pypto"')],
-    test_paths: Annotated[list[str], Field(description='List of pytest test files/dirs (repo-relative), e.g. ["tests/st/distributed/collectives/test_allreduce.py"]')] = [],
+    test_paths: Annotated[list[str], Field(description='List of pytest test files/dirs (repo-relative), e.g. ["tests/st/distributed/collectives/test_allreduce.py"]. If empty, derived from the branch diff: changed test files plus the pytest targets of the verify_ladder tasks')] = [],
     extra_test_args: Annotated[str, Field(description="Extra pytest arguments appended after test paths, e.g. '-k allreduce -v'")] = "",
     base_branch: Annotated[str, Field(description="Branch to rebase onto")] = "main",
     skip_pre_commit: Annotated[bool, Field(description="Skip pre-commit checks")] = False,
