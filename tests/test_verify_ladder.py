@@ -96,3 +96,20 @@ def test_test_presence_is_per_repo():
 def test_pypto_lib_model_change_does_not_warn():
     result = verify_ladder_impl(["pypto-lib/models/qwen3/kernel.py"])
     assert result["test_presence"]["warnings"] == []
+
+
+def test_ptoas_lit_and_pto_isa_tests_count_as_tests():
+    result = verify_ladder_impl(
+        [
+            "PTOAS/lib/PTO/Transforms/foo.cpp",
+            "PTOAS/test/lit/pto/foo.pto",
+            "pto-isa/include/pto/tadd.hpp",
+            "pto-isa/tests/cpu/st/testcase/tadd/main.cpp",
+        ]
+    )
+    presence = result["test_presence"]
+    assert presence["warnings"] == []
+    assert set(presence["test_files"]) == {
+        "PTOAS/test/lit/pto/foo.pto",
+        "pto-isa/tests/cpu/st/testcase/tadd/main.cpp",
+    }

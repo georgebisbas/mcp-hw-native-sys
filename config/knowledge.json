@@ -202,7 +202,7 @@
     },
     "tools/test_standards": {
       "path": "content/tools/test_standards.md",
-      "max_chars": 6000,
+      "max_chars": 10000,
       "tier": "mcp-owned"
     },
     "tools/gate_pr_workflow": {
