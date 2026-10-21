@@ -201,7 +201,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `agent/*` | `agent/invariants`, `agent/distributed_work_policy`, `agent/routing` | Agent-facing rules and the task-routing index |
 | `ascend/*` | `ascend/hardware`, `ascend/arch_families`, `ascend/memory_hierarchy`, `ascend/cann_mapping`, `ascend/hccl_runtime`, `ascend/platform_decisions`, `ascend/alignment_rules`, `ascend/hccl_container_checklist` | Ascend hardware/platform reference |
 | `flows/*` | `flows/compile_to_device`, `flows/matmul_demo`, `flows/distributed_allreduce`, `flows/dependency_triangle`, `flows/performance` | End-to-end worked examples |
-| `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate) |
+| `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow`, `tools/test_standards` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate, PR test standards) |
 | `debug/*` | `debug/codegen-inspection` | Pipeline-wide map of generated-code inspection: per-stage artifact → flag/API → output path → inspection tool/skill |
 | `notes/*` | see notes topics below | Enriched notes (secondary tier) |
 

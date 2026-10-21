@@ -44,6 +44,60 @@ def _needs_clang_tidy(path: str) -> bool:
     )
 
 
+_DOC_EXTENSIONS = (".md", ".rst", ".txt")
+_DOC_DIRS = ("docs/", "doc/")
+
+
+# pypto-lib is excluded: model/kernel changes there are verified by the golden
+# harness and must leave tests/ unchanged (see pypto-lib .claude/CLAUDE.md).
+_TEST_EXPECTED_REPOS = frozenset({"pypto", "simpler", "PTOAS", "pto-isa"})
+
+
+def _is_test_path(path: str) -> bool:
+    """True for files under a ``tests/``/``test/`` dir or named like a test."""
+    parts = path.split("/")
+    name = parts[-1]
+    return (
+        "tests" in parts[:-1]
+        or "test" in parts[:-1]
+        or name.startswith("test_")
+        or name.rsplit(".", 1)[0].endswith("_test")
+    )
+
+
+def _is_doc_path(path: str) -> bool:
+    return path.endswith(_DOC_EXTENSIONS) or any(
+        d in path for d in ("/" + x for x in _DOC_DIRS)
+    ) or path.startswith(_DOC_DIRS)
+
+
+def _test_presence(paths: list[str]) -> dict[str, Any]:
+    """Flag per-repo production changes that ship without any test change."""
+    by_repo: dict[str, dict[str, list[str]]] = {}
+    for path in paths:
+        repo = path.split("/", 1)[0]
+        if repo not in _TEST_EXPECTED_REPOS:
+            continue
+        bucket = by_repo.setdefault(repo, {"production": [], "tests": []})
+        if _is_test_path(path):
+            bucket["tests"].append(path)
+        elif not _is_doc_path(path):
+            bucket["production"].append(path)
+
+    warnings = [
+        f"{repo}: {len(b['production'])} production file(s) changed with no test change. "
+        "New features and bug fixes need tests (regression test for fixes); "
+        "see tools/test_standards."
+        for repo, b in by_repo.items()
+        if b["production"] and not b["tests"]
+    ]
+    return {
+        "production_files": [f for b in by_repo.values() for f in b["production"]],
+        "test_files": [f for b in by_repo.values() for f in b["tests"]],
+        "warnings": warnings,
+    }
+
+
 def verify_ladder_impl(changed_paths: list[str]) -> dict[str, Any]:
     if not changed_paths:
         raise ValueError("changed_paths cannot be empty")
@@ -108,5 +162,6 @@ def verify_ladder_impl(changed_paths: list[str]) -> dict[str, Any]:
         "suggested_tasks": ordered_tasks,
         "ladder": ladder,
         "static_checks": ["clang-tidy"] if needs_clang_tidy else [],
+        "test_presence": _test_presence(normalized),
         "note": note,
     }

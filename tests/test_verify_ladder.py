@@ -62,3 +62,37 @@ def test_python_and_markdown_do_not_require_clang_tidy():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_production_change_without_tests_warns():
+    result = verify_ladder_impl(["pypto/src/ir/transforms/foo.cpp"])
+    presence = result["test_presence"]
+    assert presence["test_files"] == []
+    assert len(presence["warnings"]) == 1
+    assert "pypto" in presence["warnings"][0]
+
+
+def test_production_change_with_tests_does_not_warn():
+    result = verify_ladder_impl(
+        ["pypto/src/ir/transforms/foo.cpp", "pypto/tests/ut/ir/transforms/test_foo.py"]
+    )
+    assert result["test_presence"]["warnings"] == []
+    assert result["test_presence"]["test_files"] == ["pypto/tests/ut/ir/transforms/test_foo.py"]
+
+
+def test_docs_only_change_does_not_warn():
+    result = verify_ladder_impl(["pypto/docs/en/user/foo.md", "pypto/README.md"])
+    assert result["test_presence"]["warnings"] == []
+
+
+def test_test_presence_is_per_repo():
+    result = verify_ladder_impl(
+        ["pypto/src/codegen/a.cpp", "simpler/src/b.cpp", "simpler/tests/ut/test_b.py"]
+    )
+    warnings = result["test_presence"]["warnings"]
+    assert len(warnings) == 1 and warnings[0].startswith("pypto:")
+
+
+def test_pypto_lib_model_change_does_not_warn():
+    result = verify_ladder_impl(["pypto-lib/models/qwen3/kernel.py"])
+    assert result["test_presence"]["warnings"] == []
