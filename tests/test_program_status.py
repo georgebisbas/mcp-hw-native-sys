@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
+
+import mcp_hwnative_sys.program_status as ps
 
 from mcp_hwnative_sys.program_status import (
     _parse_pr_row,
+    load_program_status,
     parse_status_prs_markdown,
     re_search_dashboard,
 )
@@ -75,6 +80,40 @@ def test_pr_row_extracts_number_from_link():
     row = _parse_pr_row(["[#1942](http://x/1942)", "Title", "`br`", "author", "ci"])
     assert row is not None
     assert row["pr"] == "#1942"
+
+
+def test_stale_cache_is_reparsed_from_markdown(tmp_path, monkeypatch):
+    # status_prs.md is authoritative; a cache older than the markdown must not win.
+    notes = tmp_path / "pypto-3.0-notes" / "pr_plans"
+    notes.mkdir(parents=True)
+    status_md = notes / "status_prs.md"
+    status_md.write_text(_STATUS_MD, encoding="utf-8")
+    cache = tmp_path / "config" / "program_status.json"
+    cache.parent.mkdir()
+    cache.write_text('{"open_prs": [], "dashboard": {"open": 16}}', encoding="utf-8")
+
+    monkeypatch.setattr(ps, "workspace_root", lambda: tmp_path)
+    monkeypatch.setattr(ps, "program_status_path", lambda: cache)
+
+    older = status_md.stat().st_mtime - 86_400
+    os.utime(cache, (older, older))
+
+    data = load_program_status()
+    assert len(data["open_prs"]) == 3
+
+
+def test_fresh_cache_is_used_without_reparsing(tmp_path, monkeypatch):
+    notes = tmp_path / "pypto-3.0-notes" / "pr_plans"
+    notes.mkdir(parents=True)
+    (notes / "status_prs.md").write_text(_STATUS_MD, encoding="utf-8")
+    cache = tmp_path / "config" / "program_status.json"
+    cache.parent.mkdir()
+    cache.write_text('{"open_prs": [], "dashboard": {"open": 99}}', encoding="utf-8")
+
+    monkeypatch.setattr(ps, "workspace_root", lambda: tmp_path)
+    monkeypatch.setattr(ps, "program_status_path", lambda: cache)
+
+    assert load_program_status()["dashboard"]["open"] == 99
 
 
 if __name__ == "__main__":

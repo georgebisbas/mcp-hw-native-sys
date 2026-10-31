@@ -172,9 +172,20 @@ def sync_program_status_from_workspace() -> dict[str, Any]:
 
 def load_program_status() -> dict[str, Any]:
     path = program_status_path()
-    if path.exists():
+    if path.exists() and not _cache_is_stale(path):
         return json.loads(path.read_text(encoding="utf-8"))
     return sync_program_status_from_workspace()
+
+
+def _cache_is_stale(cache_path: Path) -> bool:
+    """The JSON under config/ is a *derived* copy of status_prs.md. Serving it after the
+    markdown changed keeps reporting PRs as open long after they merged (seen: a cache
+    frozen at 2026-10-12 while the notes were synced daily)."""
+    source = workspace_root() / "pypto-3.0-notes/pr_plans/status_prs.md"
+    try:
+        return source.stat().st_mtime > cache_path.stat().st_mtime
+    except OSError:
+        return False
 
 
 def program_status_impl() -> dict[str, Any]:
