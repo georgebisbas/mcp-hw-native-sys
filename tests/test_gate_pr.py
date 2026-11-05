@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -228,6 +229,59 @@ class TestScriptGeneration:
             push_remote="origin",
         )
         assert "PR gate workflow complete" in script
+
+
+class TestStepNumbering:
+    """Regression tests: printed `[N/total]` markers must stay consistent.
+
+    Covers a bug where skip_tests=True left steps 6/7 (squash/push) numbered
+    against the full 7-step total and the first three steps against a mix of
+    denominators, producing markers like [2/7] inside a 6-step run.
+    """
+
+    def test_step_markers_sequential_with_tests(self):
+        script = _generate_script(
+            repo_path=Path("/tmp/fake"),
+            repo_name="pypto",
+            base_branch="main",
+            test_paths=[],
+            extra_test_args="",
+            skip_pre_commit=False,
+            skip_tests=False,
+            push_remote="origin",
+        )
+        markers = [(int(n), int(t)) for n, t in re.findall(r"\[(\d+)/(\d+)\]", script)]
+        assert {t for _, t in markers} == {7}
+        assert [n for n, _ in markers] == list(range(1, 8))
+
+    def test_step_markers_sequential_skip_tests(self):
+        script = _generate_script(
+            repo_path=Path("/tmp/fake"),
+            repo_name="pypto",
+            base_branch="main",
+            test_paths=[],
+            extra_test_args="",
+            skip_pre_commit=False,
+            skip_tests=True,
+            push_remote="origin",
+        )
+        markers = [(int(n), int(t)) for n, t in re.findall(r"\[(\d+)/(\d+)\]", script)]
+        assert {t for _, t in markers} == {6}
+        assert [n for n, _ in markers] == [1, 2, 3, 4, 5, 6]
+
+    def test_squash_and_push_step_numbers_when_tests_skipped(self):
+        script = _generate_script(
+            repo_path=Path("/tmp/fake"),
+            repo_name="pypto",
+            base_branch="main",
+            test_paths=[],
+            extra_test_args="",
+            skip_pre_commit=False,
+            skip_tests=True,
+            push_remote="origin",
+        )
+        assert "[5/6] Squashing commits" in script
+        assert "[6/6] Force-pushing" in script
 
 
 class TestStructuredResult:

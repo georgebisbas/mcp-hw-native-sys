@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -116,6 +117,52 @@ def safe_relpath(path: Path, root: Path) -> str:
         return str(path.resolve().relative_to(root.resolve()))
     except ValueError:
         return str(path)
+
+
+def run_command(
+    args: list[str],
+    cwd: Path | None = None,
+    timeout_seconds: int = 60,
+) -> subprocess.CompletedProcess[str]:
+    """Run a command, capturing output.
+
+    A timeout is reported as a completed process with exit code 124 (the
+    conventional timeout code) and the partial output preserved, so callers
+    surface it via their normal ``exit_code`` / ``stderr`` envelopes instead
+    of the caller raising ``TimeoutExpired``. A missing executable raises a
+    clean ``RuntimeError`` naming the binary.
+    """
+    try:
+        return subprocess.run(
+            args,
+            cwd=str(cwd) if cwd else None,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as exc:
+        # Under text=True these are str, but typeshed types them loosely.
+        stdout = exc.stdout if isinstance(exc.stdout, str) else ""
+        stderr = exc.stderr if isinstance(exc.stderr, str) else ""
+        note = f"Command timed out after {timeout_seconds}s: {' '.join(args)}"
+        result: subprocess.CompletedProcess[str] = subprocess.CompletedProcess(
+            args=args,
+            returncode=124,
+            stdout=stdout,
+            stderr=(stderr + ("\n" if stderr else "") + note),
+        )
+        return result
+    except FileNotFoundError as exc:
+        raise RuntimeError(f"Executable not found in PATH: {args[0]!r} ({exc})") from exc
+
+
+def git_command(
+    repo_path: Path,
+    args: list[str],
+    timeout_seconds: int = 20,
+) -> subprocess.CompletedProcess[str]:
+    return run_command(["git", "-C", str(repo_path), *args], timeout_seconds=timeout_seconds)
 
 
 def resolve_workspace_path(relative_path: str) -> Path:

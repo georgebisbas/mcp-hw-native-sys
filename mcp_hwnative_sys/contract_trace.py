@@ -148,12 +148,21 @@ def trace_contract_impl(symbol_or_path: str) -> dict[str, Any]:
     token = symbol_or_path.strip()
     contract_artifacts = _load_contract_artifacts()
 
-    # Match contract artifacts by exact or case-insensitive key
+    # Match contract artifacts by exact (case-insensitive) key, else the
+    # longest case-insensitive substring match — longest wins so a specific
+    # key ("codegen_pto") beats a shorter, coincidentally-contained one
+    # ("pto") regardless of dict iteration order.
     contract_key = None
+    token_lower = token.lower()
+    best_match_len = -1
     for key in contract_artifacts:
-        if key.lower() == token.lower() or key in token:
+        key_lower = key.lower()
+        if key_lower == token_lower:
             contract_key = key
             break
+        if key_lower in token_lower and len(key_lower) > best_match_len:
+            contract_key = key
+            best_match_len = len(key_lower)
 
     artifacts = contract_artifacts.get(contract_key, {}) if contract_key else {}
 

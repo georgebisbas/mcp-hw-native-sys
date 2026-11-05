@@ -17,8 +17,10 @@ from mcp_hwnative_sys.ascend_env import npu_available, npu_env_summary
 from mcp_hwnative_sys.knowledge import get_repository_meta, register_knowledge
 from mcp_hwnative_sys.programs import match_program_hints
 from mcp_hwnative_sys.paths import (
+    git_command,
     is_within,
     load_repos_config,
+    run_command,
     safe_relpath,
     workspace_root,
 )
@@ -369,50 +371,14 @@ _HEAVY_BUILD_TEST_RE = re.compile(
 )
 
 
-def _run_command(
-    args: list[str],
-    cwd: Path | None = None,
-    timeout_seconds: int = 60,
-) -> subprocess.CompletedProcess[str]:
-    """Run a command, capturing output.
-
-    A timeout is reported as a completed process with exit code 124 (the
-    conventional timeout code) and the partial output preserved, so callers
-    surface it via their normal ``exit_code`` / ``stderr`` envelopes instead
-    of the server raising ``TimeoutExpired``. A missing executable raises a
-    clean ``RuntimeError`` naming the binary.
-    """
-    try:
-        return subprocess.run(
-            args,
-            cwd=str(cwd) if cwd else None,
-            text=True,
-            capture_output=True,
-            check=False,
-            timeout=timeout_seconds,
-        )
-    except subprocess.TimeoutExpired as exc:
-        # Under text=True these are str, but typeshed types them loosely.
-        stdout = exc.stdout if isinstance(exc.stdout, str) else ""
-        stderr = exc.stderr if isinstance(exc.stderr, str) else ""
-        note = f"Command timed out after {timeout_seconds}s: {' '.join(args)}"
-        result: subprocess.CompletedProcess[str] = subprocess.CompletedProcess(
-            args=args,
-            returncode=124,
-            stdout=stdout,
-            stderr=(stderr + ("\n" if stderr else "") + note),
-        )
-        return result
-    except FileNotFoundError as exc:
-        raise RuntimeError(f"Executable not found in PATH: {args[0]!r} ({exc})") from exc
+_run_command = run_command
 
 
 def _run_shell(command: str, cwd: Path, timeout_seconds: int) -> subprocess.CompletedProcess[str]:
     return _run_command(["bash", "-lc", command], cwd=cwd, timeout_seconds=timeout_seconds)
 
 
-def _git(repo_path: Path, args: list[str], timeout_seconds: int = 20) -> subprocess.CompletedProcess[str]:
-    return _run_command(["git", "-C", str(repo_path), *args], timeout_seconds=timeout_seconds)
+_git = git_command
 
 
 def _status_counts(status_lines: list[str]) -> tuple[int, int, int]:

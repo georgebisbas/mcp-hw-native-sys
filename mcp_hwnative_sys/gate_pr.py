@@ -9,35 +9,20 @@ It does NOT execute any git or docker commands itself.
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 from typing import Any
 
-from mcp_hwnative_sys.paths import load_repos_config, safe_relpath, workspace_root
+from mcp_hwnative_sys.paths import (
+    git_command,
+    load_repos_config,
+    run_command,
+    safe_relpath,
+    workspace_root,
+)
 from mcp_hwnative_sys.verify_ladder import _is_test_path, verify_ladder_impl
 
-
-def _run_command(
-    args: list[str],
-    cwd: Path | None = None,
-    timeout_seconds: int = 30,
-) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        args,
-        cwd=str(cwd) if cwd else None,
-        text=True,
-        capture_output=True,
-        check=False,
-        timeout=timeout_seconds,
-    )
-
-
-def _git(
-    repo_path: Path,
-    args: list[str],
-    timeout_seconds: int = 20,
-) -> subprocess.CompletedProcess[str]:
-    return _run_command(["git", "-C", str(repo_path), *args], timeout_seconds=timeout_seconds)
+_run_command = run_command
+_git = git_command
 
 
 def _docker_image_exists(image: str) -> bool:
@@ -233,32 +218,33 @@ def _generate_script(
     sections.append("}")
     sections.append("")
 
+    total_steps = 7 if not skip_tests else 6
+
     # Step 1: FETCH
     step_num = 1
     sections.append(f"# {'—' * 60}")
     sections.append(f"# Step {step_num}: Fetch origin")
     sections.append(f"# {'—' * 60}")
-    sections.append(f'step "[{step_num}/{7 - (1 if skip_tests else 0) if skip_tests else 7}] Fetching origin ..."')
+    sections.append(f'step "[{step_num}/{total_steps}] Fetching origin ..."')
     sections.append("git fetch origin")
     sections.append("")
 
     # Step 2: REBASE
     step_num += 1
     sections.append(f"# Step {step_num}: Rebase onto origin/{base_branch}")
-    sections.append(f'step "[{step_num}/7] Rebasing onto origin/{base_branch} ..."')
+    sections.append(f'step "[{step_num}/{total_steps}] Rebasing onto origin/{base_branch} ..."')
     sections.append(f"git rebase origin/{base_branch}")
     sections.append("")
 
     # Step 3: Commit log
     step_num += 1
     sections.append(f"# Step {step_num}: Verify commits")
-    sections.append(f'step "[{step_num}/7] Commits to push:"')
+    sections.append(f'step "[{step_num}/{total_steps}] Commits to push:"')
     sections.append(f"git log origin/{base_branch}..HEAD --oneline --decorate")
     sections.append("")
 
     # Step 4: Pre-commit
     step_num += 1
-    total_steps = 7 if not skip_tests else 6
     if skip_pre_commit:
         sections.append(f"# Step {step_num}: PRE-COMMIT (SKIPPED via --skip-pre-commit)")
     else:
@@ -307,15 +293,15 @@ def _generate_script(
         sections.append(docker_cmd)
         sections.append("")
 
-    # Step 6: Squash
-    step_num = 6
+    # Step 6 (5 if tests skipped): Squash
+    step_num = 5 if skip_tests else 6
     sections.append(f"# Step {step_num}: Squash commits (interactive)")
     sections.append(f'step "[{step_num}/{total_steps}] Squashing commits onto origin/{base_branch} (interactive) ..."')
     sections.append(f"git rebase -i origin/{base_branch}")
     sections.append("")
 
-    # Step 7: Push
-    step_num = 7
+    # Step 7 (6 if tests skipped): Push
+    step_num = 6 if skip_tests else 7
     sections.append(f"# Step {step_num}: Force-push with lease")
     sections.append(f'step "[{step_num}/{total_steps}] Force-pushing to {push_remote} ..."')
     sections.append(f"git push --force-with-lease {push_remote} HEAD")
