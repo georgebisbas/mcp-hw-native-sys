@@ -981,6 +981,29 @@ def register_knowledge(mcp: FastMCP) -> None:
         return search_tracker_impl(query, repo, kind, state, max_results)
 
     @mcp.tool()
+    def pr_watch(
+        repo: Annotated[str, Field(description='Single allowlisted repo, e.g. "pypto". "all" is rejected.')],
+        number: Annotated[int, Field(description="Pull request number, e.g. 3248", ge=1)],
+        since: Annotated[str, Field(description="Cursor from a previous call's cursor.next_since; empty on first call.")] = "",
+        seen_ids: Annotated[
+            list[str] | None,
+            Field(description="IDs already reported (cursor.seen_ids from the previous call)."),
+        ] = None,
+        include_resolved: Annotated[bool, Field(description="Include resolved review threads in the snapshot.")] = False,
+    ) -> dict[str, Any]:
+        """Read-only one-shot PR snapshot: CI rollup, review decision, unresolved threads, reviews,
+        comments, and new-only deltas. Never posts; the caller owns the watch cadence."""
+        from mcp_hwnative_sys.pr_watch import pr_watch_impl
+
+        return pr_watch_impl(
+            repo=repo,
+            number=number,
+            since=since,
+            seen_ids=list(seen_ids or []),
+            include_resolved=include_resolved,
+        )
+
+    @mcp.tool()
     def explain_pass(
         name: Annotated[str, Field(description="Pass name from the Default pipeline, e.g. LowerCompositeOps. Case-insensitive fallback is applied.")],
     ) -> dict[str, Any]:

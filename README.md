@@ -35,7 +35,7 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-Requires Python ≥ 3.10, the `mcp` package (installed by the command above), and `rg` (ripgrep) on `PATH` for `search_code`. `search_tracker` also needs the GitHub CLI (`gh`) logged in to an account that can read the `hw-native-sys` org. The server does not pick a model. Cursor, VS Code, Claude Code, and Claude Desktop each choose Claude, GPT, Gemini, Grok, or whatever else that client offers; the tools and prompts are the same.
+Requires Python ≥ 3.10, the `mcp` package (installed by the command above), and `rg` (ripgrep) on `PATH` for `search_code`. `search_tracker`, `pr_watch`, and the `hw-native-sys-pr-watch` CLI also need the GitHub CLI (`gh`) logged in to an account that can read the `hw-native-sys` org. The server does not pick a model. Cursor, VS Code, Claude Code, and Claude Desktop each choose Claude, GPT, Gemini, Grok, or whatever else that client offers; the tools and prompts are the same.
 
 ### Workspace root resolution
 
@@ -172,6 +172,7 @@ for the full loop, and `pypto-3.0-notes/pr_plans/00-branch-and-pr-standards.md`
 | `list_workloads` | pypto-lib model catalog from `docs/models/index.md`. A name returns that model's prefill/decode kernel filenames |
 | `explain_task_queue` | Read-only `task-submit` guide: which hosts require the queue, how to join a container, and the failure rules. Does not submit a job. See `pypto-docker/TASK_QUEUE.md` |
 | `search_tracker` | Read-only GitHub search of issues and PRs (`open`, `closed`, `merged`). Default repos are PTOAS and pto-isa. Also accepts pypto, simpler, pypto-lib, or `all` of that allowlist |
+| `pr_watch` | Read-only one-shot PR snapshot: CI rollup, review decision, unresolved review threads, review summaries, conversation comments, and new-only deltas. Pass `since`/`seen_ids` from the previous `cursor` to get only new items. Never posts |
 | `explain_pass` | Pass-pipeline card: order, phase, neighbors, verify tasks (from the `Default` pypto pipeline); on a miss suggests near-name passes |
 | `program_status` | Structured open PRs, blockers, and plan cross-index from `pypto-3.0-notes/pr_plans/status_prs.md` |
 | `collective_status` | Collective-comm feature parity status (merged/planned/gap) from the parity matrix in `pypto-3.0-notes/distributed/current_status.md`, with optional `op`/`axis` substring filters. Read-only — never writes to the source doc |
@@ -201,7 +202,7 @@ Fixed URIs, read via an MCP resource client (or by finding the matching path via
 | `agent/*` | `agent/invariants`, `agent/distributed_work_policy`, `agent/routing` | Agent-facing rules and the task-routing index |
 | `ascend/*` | `ascend/hardware`, `ascend/arch_families`, `ascend/memory_hierarchy`, `ascend/cann_mapping`, `ascend/hccl_runtime`, `ascend/platform_decisions`, `ascend/alignment_rules`, `ascend/hccl_container_checklist` | Ascend hardware/platform reference |
 | `flows/*` | `flows/compile_to_device`, `flows/matmul_demo`, `flows/distributed_allreduce`, `flows/dependency_triangle`, `flows/performance` | End-to-end worked examples |
-| `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow`, `tools/test_standards` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate, PR test standards) |
+| `tools/*` | `tools/sim_docker_workflow`, `tools/clang_tidy_workflow`, `tools/gate_pr_workflow`, `tools/test_standards`, `tools/pr_watch_workflow` | MCP-owned task workflows (sim-Docker loop, mandatory clang-tidy step, PR gate, PR test standards, PR watch) |
 | `debug/*` | `debug/codegen-inspection` | Pipeline-wide map of generated-code inspection: per-stage artifact → flag/API → output path → inspection tool/skill |
 | `notes/*` | see notes topics below | Enriched notes (secondary tier) |
 
@@ -409,6 +410,34 @@ Balanced profile: fast daily tasks (git, lint) plus heavier tasks (docker, profi
 - "`list_workloads` deepseek_v4_1_flash — which files are prefill?"
 - "`search_tracker` TMOV state=merged repo=PTOAS,pto-isa — was this already fixed?"
 - "`explain_task_queue` — does this host require task-submit?"
+
+## PR watch CLI
+
+`pr_watch` is also exposed as `hw-native-sys-pr-watch`, so a shell/agent loop can
+poll without an MCP client:
+
+```bash
+hw-native-sys-pr-watch --repo pypto --pr 3248 --format summary
+
+# stateful watch: persist the cursor and body hashes between polls
+hw-native-sys-pr-watch --repo pypto --branch feat/x \
+  --state-file ~/.local/state/hw-native-sys/pr-watch/pypto-3248.json \
+  --update-state --format json
+```
+
+- `--pr` or `--branch`; `--since` / `--seen` override the state file.
+- The state file is written atomically only when the snapshot is complete; an
+  incomplete page returns exit code `4` and no cursor.
+- Exit codes: `0` success, `2` usage, `3` gh/transport/GraphQL error, `4`
+  incomplete snapshot.
+- The binary is installed by `pip install -e .` (or `pip install .`). In this
+  workspace it lives at
+  `$HOME/workspace/hw-native-sys/mcp-hw-native-sys/.venv/bin/hw-native-sys-pr-watch`.
+
+The workspace `.mcp.json` must use an **absolute** path to
+`.venv/bin/hw-native-sys-mcp` (or be launched from the workspace root): a
+relative `mcp-hw-native-sys/...` command resolves against the client's cwd and
+fails with ENOENT when the client runs in `pypto-3.0-notes`.
 
 ## Prerequisite notes
 
