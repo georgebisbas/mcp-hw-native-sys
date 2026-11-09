@@ -36,6 +36,15 @@ _CODEX_ATTENTION_MARKERS = (
     "Existing review thread",
     "finding(s) posted as inline comments",
 )
+_CODERABBIT_FINDING_MARKERS = (
+    "Follow-up Comments",
+    "Functional Correctness",
+    "Potential issue",
+    "Quick win",
+    "Critical",
+    "Major",
+    "Minor",
+)
 
 _COPILOT_LOGINS = frozenset({"copilot-pull-request-reviewer", "github-copilot", "copilot"})
 
@@ -654,6 +663,13 @@ def _normalize_review(node: dict[str, Any]) -> dict[str, Any]:
     actionable = noise is None and bool(body.strip()) and (
         not fields["is_bot"] and state in {"CHANGES_REQUESTED", "COMMENTED"}
     )
+    attention = _codex_attention(body, fields["ai"])
+    if fields["ai"] == "coderabbit" and noise is None and any(
+        marker in body for marker in _CODERABBIT_FINDING_MARKERS
+    ):
+        # CodeRabbit sometimes reports a finding in the review body without an
+        # inline thread; surface it for review, but do not mark it actionable.
+        attention = True
     return {
         "surface": "review",
         "id": node.get("id"),
@@ -665,7 +681,7 @@ def _normalize_review(node: dict[str, Any]) -> dict[str, Any]:
         "commit_oid": ((node.get("commit") or {}).get("oid")),
         "body_hash": _body_hash(body),
         "actionable": actionable,
-        "attention_required": _codex_attention(body, fields["ai"]),
+        "attention_required": attention,
         "noise_reason": noise,
         **fields,
     }
@@ -1218,6 +1234,16 @@ def _summary(result: dict[str, Any], previous: dict[str, Any] | None = None) -> 
         )
     elif previous:
         lines.append("no changes")
+    attention = [
+        item
+        for bucket in ("reviews", "comments")
+        for item in result.get(bucket, [])
+        if item.get("attention_required")
+    ]
+    if attention:
+        lines.append(
+            f"attention: {len(attention)} AI review(s) with findings not posted as inline threads"
+        )
     if not result.get("complete"):
         lines.append("INCOMPLETE: " + "; ".join(result.get("warnings") or []))
     return "\n".join(lines)

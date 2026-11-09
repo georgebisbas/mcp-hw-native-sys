@@ -523,3 +523,17 @@ def test_cli_state_roundtrip(monkeypatch, tmp_path, capsys):
     second = json.loads(state_path.read_text())
     assert second["hashes"] == state["hashes"]
     assert second["posted_ids"] == []
+
+
+def test_coderabbit_follow_up_review_requires_attention():
+    review = pr_watch._normalize_review(
+        _review(
+            login="coderabbitai[bot]",
+            typename="Bot",
+            body="## Follow-up Comments\n824-826: Minor · Functional Correctness · Quick win",
+        )
+    )
+    assert review["ai"] == "coderabbit"
+    assert review["noise_reason"] is None
+    assert review["attention_required"] is True
+    assert review["actionable"] is False
