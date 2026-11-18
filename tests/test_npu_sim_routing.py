@@ -7,6 +7,7 @@ when no NPU is reachable and the sim image is absent.
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 import pytest
@@ -70,7 +71,7 @@ def test_run_command_refuses_heavy_when_no_npu(monkeypatch):
     _force_no_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: False)
     with pytest.raises(ValueError, match="sim Docker"):
-        server.run_command(repo="pypto", command="pytest tests/ut -q")
+        server.run_command(repo="pypto", command="pytest tests/ut -q", allow_writes=True)
 
 
 @pytest.mark.workspace
@@ -88,6 +89,7 @@ def test_run_command_allows_dockerized_heavy_when_no_npu(monkeypatch):
     result = server.run_command(
         repo="pypto",
         command="docker run --rm -v /tmp/pypto:/opt/pypto pypto3-hw-native-sys:sim bash -lc 'pytest tests/ut -q'",
+        allow_writes=True,
     )
     assert result["exit_code"] == 0
     assert len(captured) == 1
@@ -120,7 +122,7 @@ def test_run_command_allows_build_when_npu(monkeypatch):
         return server._run_command(["printf", "ok"])
 
     monkeypatch.setattr(server, "_run_shell", fake_run_shell)
-    result = server.run_command(repo="pypto", command="pytest tests/ut -q")
+    result = server.run_command(repo="pypto", command="pytest tests/ut -q", allow_writes=True)
     assert result["exit_code"] == 0
     assert captured == ["pytest tests/ut -q"]
 
@@ -130,7 +132,7 @@ def test_run_task_refuses_when_no_npu_and_no_image(monkeypatch):
     _force_no_npu()
     monkeypatch.setattr(server, "npu_available", lambda *a, **k: False)
     monkeypatch.setattr(server, "_docker_image_present", lambda image: False)
-    result = server.run_task(repo="pypto", task="unit_tests_fast")
+    result = asyncio.run(server.run_task(repo="pypto", task="unit_tests_fast"))
     assert result["exit_code"] == -1
     assert "sim Docker image" in result["note"]
     assert "Refused" in result["stderr"]
@@ -151,7 +153,7 @@ def test_run_task_redirects_when_no_npu_and_image_present(monkeypatch):
         return server._run_command(["printf", "ran"])
 
     monkeypatch.setattr(server, "_run_shell", fake_run_shell)
-    result = server.run_task(repo="pypto", task="unit_tests_fast", extra_args="--tb=short")
+    result = asyncio.run(server.run_task(repo="pypto", task="unit_tests_fast", extra_args="--tb=short"))
     assert result["exit_code"] == 0
     assert "docker run" in captured["command"]
     assert "--tb=short" in captured["command"]
